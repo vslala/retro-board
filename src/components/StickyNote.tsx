@@ -1,8 +1,5 @@
 import React from 'react'
-
-interface StickyNoteModel {
-    noteText: string
-}
+import {StickyNoteModel} from "../interfaces/StickyNoteModel";
 
 class StickyNote extends React.Component<StickyNoteModel> {
     render () {

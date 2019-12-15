@@ -27,7 +27,9 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": ["react-app"]
+    "extends": [
+      "react-app"
+    ]
   },
   "browserslist": {
     "production": [
@@ -43,5 +45,25 @@
   },
   "devDependencies": {
     "eslint-config-typescript": "^3.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "__tests__/**/*.{js,jsx,tsx}",
+      "!src/{serviceWorker.js,index.js}",
+      "!src/config/env-config.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 95,
+        "lines": 100
+      }
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run coverage"
+    }
   }
 }

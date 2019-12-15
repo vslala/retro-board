@@ -1,6 +1,6 @@
 import React from 'react'
 import {render} from '@testing-library/react';
-import StickyNote from "./StickyNote";
+import StickyNote from "../components/StickyNote";
 import '../setupTests'
 
 describe('Component StickyNote Test', function () {
