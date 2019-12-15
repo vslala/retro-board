@@ -1,9 +1,18 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
+import { render, fireEvent } from '@testing-library/react';
 import App from './App';
+import '@testing-library/jest-dom/extend-expect'
+
+const history = createMemoryHistory()
 
 test('renders learn react link', () => {
-  const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  history.push('/')
+  let renderedPage = render(
+    <Router history={history}>
+      <App />
+    </Router>
+  )
+  expect(renderedPage.getByText("What went well")).toBeInTheDocument()
 });
