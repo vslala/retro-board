@@ -17,8 +17,13 @@ describe("StickyWall test suite", () => {
     })
 
     test("it should create a wall with a list of sticky notes", () => {
-        expect(renderedPage.container.querySelectorAll(".sticker").length).toBe(2)
+        expect(renderedPage.container.querySelectorAll(".sticky-wall")[0].querySelectorAll(".card").length).toBe(2)
     })
-
-
+    
+    test("it should contain a `Add Note` button to add new notes to the wall", () => {
+        expect(renderedPage.container.querySelectorAll("button").length).toBe(1)
+    })
+    
+    
+    
 })

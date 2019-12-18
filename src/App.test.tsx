@@ -14,5 +14,5 @@ test('renders learn react link', () => {
       <App />
     </Router>
   )
-  expect(renderedPage.getByText("What went well")).toBeInTheDocument()
+  expect(renderedPage.container.querySelectorAll("a").length).toBe(1)
 });
