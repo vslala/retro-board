@@ -2,7 +2,8 @@ import React from 'react'
 import {InputGroup, FormControl} from "react-bootstrap";
 
 interface Props {
-    handleEnter: (note: string) => void
+    handleEnter: (note: string) => void,
+    noteText?: string
 }
 interface EditorModel {
     editorText: string
@@ -16,7 +17,7 @@ class Editor extends React.Component<Props> {
     }
     
     state: EditorModel = {
-        editorText: ""
+        editorText: this.props.noteText ? this.props.noteText : ""
     }
     
     handleKeyboardKeyPress = (e: React.KeyboardEvent<FormControl>) => {

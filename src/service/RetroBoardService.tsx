@@ -1,4 +1,6 @@
 import {RetroBoardModel, Wall} from "../interfaces/RetroBoardModel";
+import StickyNote from "../components/StickyNote";
+import * as React from "react";
 
 const retroBoardData = {
     "data": [
@@ -32,17 +34,17 @@ const retroBoardData = {
 
 
 class RetroWall implements Wall {
-    notes: string[]
+    notes: StickyNote[]
     title: string
 
-    constructor(title: string, notes: string[]) {
+    constructor(title: string, notes: StickyNote[]) {
         this.notes = notes
         this.title = title
     }
 }
 
 class RetroBoardData implements RetroBoardModel {
-    data: RetroWall[] = []
+    data: RetroWall[]
 
     constructor(retroWalls: RetroWall[]) {
         this.data = retroWalls
@@ -56,9 +58,12 @@ class RetroBoardService {
 }
 
 const testData = [
-    new RetroWall("What went well", ["Foo"]),
-    new RetroWall("Things to improve", ["Bar"]),
-    new RetroWall("Action Items", ["FooBar"])
+    // @ts-ignore
+    new RetroWall("What went well", [<StickyNote noteText={"Foo"} />]),
+    // @ts-ignore
+    new RetroWall("Things to improve", [<StickyNote noteText={"Bar"} />]),
+    // @ts-ignore
+    new RetroWall("Action Items", [<StickyNote noteText={"FooBar"} />])
 ]
 
 export default RetroBoardService
