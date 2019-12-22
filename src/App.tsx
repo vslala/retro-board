@@ -1,6 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Route, Link, Switch } from 'react-router-dom'
-import logo from './logo.svg';
+import {HashRouter as Router, Route} from 'react-router-dom'
 import './App.css';
 import HomePage from "./containers/HomePage";
 import RetroBoard from "./containers/RetroBoard";

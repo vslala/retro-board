@@ -1,5 +1,5 @@
 import React from 'react'
-import {render, RenderResult, fireEvent} from '@testing-library/react';
+import {fireEvent, render, RenderResult} from '@testing-library/react';
 import StickyNote from "../components/StickyNote";
 import '../setupTests'
 

@@ -2,37 +2,6 @@ import {RetroBoardModel, Wall} from "../interfaces/RetroBoardModel";
 import StickyNote from "../components/StickyNote";
 import * as React from "react";
 
-const retroBoardData = {
-    "data": [
-        {
-            "wall": {
-                "title": "What went well",
-                "notes": [
-                    "Foo", "Bar"
-                ]
-            }
-        },
-        {
-            "wall": {
-                "title": "Things to be improved",
-                "notes": [
-                    "Foo", "Bar"
-                ]
-            }
-        },
-        {
-            "wall": {
-                "title": "Action Items",
-                "notes": [
-                    "Foo", "Bar"
-                ]
-            }
-        }
-    ]
-}
-
-
-
 class RetroWall implements Wall {
     notes: StickyNote[]
     title: string

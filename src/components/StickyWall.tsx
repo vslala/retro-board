@@ -3,7 +3,6 @@ import StickyNote from "./StickyNote";
 import {StickyWallModel} from "../interfaces/StickyWallModel";
 import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
-import {StickyNoteModel} from "../interfaces/StickyNoteModel";
 
 interface State {
     notes: StickyNote[]
@@ -28,8 +27,8 @@ class StickyWall extends Component<StickyWallModel, State> {
         this.setState({notes: newNotes})
     }
     
-    updateStickyNote(modifiedNote: string) {
-        
+    updateStickyNote(modifiedNote: StickyNote) {
+        // give service call to update the sticky note
     }
 
     render() {

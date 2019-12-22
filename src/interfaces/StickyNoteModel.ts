@@ -1,3 +1,4 @@
+import StickyNote from "../components/StickyNote";
 
 export interface StickyNoteModel {
     showEditor: boolean,
@@ -6,5 +7,5 @@ export interface StickyNoteModel {
 
 export interface StickyNoteProps {
     noteText: string
-    modifyStickyNote?: (newNote: string) => void
+    modifyStickyNote?: (modifiedNote: StickyNote) => void
 }

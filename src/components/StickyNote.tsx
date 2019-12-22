@@ -1,5 +1,5 @@
 import React from 'react'
-import {StickyNoteProps, StickyNoteModel} from "../interfaces/StickyNoteModel";
+import {StickyNoteModel, StickyNoteProps} from "../interfaces/StickyNoteModel";
 import Card from "react-bootstrap/Card";
 import Editor from "./Editor";
 
@@ -24,9 +24,9 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteModel> {
     
     modifyStickyNote(modifiedNote: string) {
         console.log("Modified Note: ", modifiedNote)
-        if (this.props.modifyStickyNote) 
-            this.props.modifyStickyNote(modifiedNote)
         this.setState({showEditor: false, noteText: modifiedNote})
+        if (this.props.modifyStickyNote) 
+            this.props.modifyStickyNote(this)
     }
     
 

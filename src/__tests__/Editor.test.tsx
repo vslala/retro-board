@@ -1,9 +1,6 @@
 import React from 'react'
-import {render, RenderResult, fireEvent} from "@testing-library/react";
-import * as dom from "@testing-library/react";
+import {fireEvent, render, RenderResult} from "@testing-library/react";
 import Editor from "../components/Editor";
-import {FormControl} from "react-bootstrap";
-import {Simulate} from "react-dom/test-utils";
 import "../setupTests"
 
 describe("EditorTestSuite", () => {

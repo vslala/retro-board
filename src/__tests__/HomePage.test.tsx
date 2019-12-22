@@ -2,9 +2,7 @@ import React from 'react';
 import {render, RenderResult} from '@testing-library/react';
 import HomePage from "../containers/HomePage";
 import '../setupTests'
-import StickyWall from "../components/StickyWall";
-import {homePageModel} from "./testData";
-import { MemoryRouter } from 'react-router-dom';
+import {MemoryRouter} from 'react-router-dom';
 
 describe("HomePage tests", () => {
     
