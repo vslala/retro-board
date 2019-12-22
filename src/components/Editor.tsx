@@ -20,6 +20,7 @@ class Editor extends React.Component<Props> {
     }
     
     handleKeyboardKeyPress = (e: React.KeyboardEvent<FormControl>) => {
+        console.log("Event Fired: ", e.key)
         if (e.key === 'Enter') {
             this.setState({editorText: ""})
             this.props.handleEnter(this.state.editorText)
@@ -34,7 +35,8 @@ class Editor extends React.Component<Props> {
     render() {
         return <InputGroup>
             <FormControl as={"textarea"} autoFocus
-                onKeyPress={this.handleKeyboardKeyPress}
+                data-testid={"editor_textarea"}
+                onKeyUp={this.handleKeyboardKeyPress}
                 onChange={this.handleChange} value={this.state.editorText} aria-label={"Note Editor"} />
         </InputGroup>
     }
