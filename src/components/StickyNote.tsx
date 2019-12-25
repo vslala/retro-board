@@ -1,9 +1,10 @@
 import React from 'react'
-import {StickyNoteModel, StickyNoteProps} from "../interfaces/StickyNoteModel";
+import {StickyNoteProps, StickyNoteState} from "../interfaces/StickyNoteModel";
 import Card from "react-bootstrap/Card";
 import Editor from "./Editor";
+import Like from "./Like";
 
-class StickyNote extends React.Component<StickyNoteProps, StickyNoteModel> {
+class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
     
     constructor(props: StickyNoteProps) {
         super(props)
@@ -12,7 +13,8 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteModel> {
         this.modifyStickyNote = this.modifyStickyNote.bind(this)
     }
     
-    state: StickyNoteModel = {
+    state: StickyNoteState = {
+        stickyNoteId: "1",
         showEditor: false,
         noteText: this.props.noteText
     }
@@ -40,6 +42,7 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteModel> {
                     <Editor noteText={this.state.noteText} handleEnter={this.modifyStickyNote} /> : 
                     <p className="card-text">{ this.state.noteText }</p>
                 }
+                <p><Like stickyNoteId={this.state.stickyNoteId!} /></p>
             </Card.Body>
         </Card>
         )
