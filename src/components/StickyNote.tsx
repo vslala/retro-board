@@ -35,14 +35,16 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
     render () {
     
         return (
-        <Card onClick={this.handleOnClick}>
+        <Card>
             <Card.Body>
+                <div data-testid={"editor"} onClick={this.handleOnClick}>
                 {
                 this.state.showEditor ? 
                     <Editor noteText={this.state.noteText} handleEnter={this.modifyStickyNote} /> : 
                     <p className="card-text">{ this.state.noteText }</p>
                 }
-                <p><Like stickyNoteId={this.state.stickyNoteId!} /></p>
+                </div>
+                <div style={{float: "right"}}><Like stickyNoteId={this.state.stickyNoteId!} /></div>
             </Card.Body>
         </Card>
         )
