@@ -23,7 +23,11 @@ class StickyWall extends Component<StickyWallModel, State> {
     addNote(note: string) {
         let newNotes = this.state.notes
         // @ts-ignore
-        newNotes.push(<StickyNote noteText={note} modifyStickyNote={this.updateStickyNote} />)
+        newNotes.push(<StickyNote style={{
+            backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
+            textColor: this.props.style?.stickyNote?.textColor || "black",
+            likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
+        }} noteText={note} modifyStickyNote={this.updateStickyNote} />)
         this.setState({notes: newNotes})
     }
     

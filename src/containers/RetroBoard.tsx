@@ -23,8 +23,8 @@ class RetroBoard extends React.Component<Props, RetroBoardState> {
 
     render() {
         let walls = this.state.model!.data.map((wall, index) => {
-            return <Col md={4}>
-                <StickyWall title={wall.title} stickyNotes={wall.notes}/>
+            return <Col md={4} key={index}>
+                <StickyWall title={wall.title} stickyNotes={wall.notes} style={wall.style}/>
             </Col>
         })
         return (
