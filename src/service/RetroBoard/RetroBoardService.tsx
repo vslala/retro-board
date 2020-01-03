@@ -6,11 +6,13 @@ import RetroWall from "../../models/RetroWall";
 import Firebase from "../Firebase";
 
 class RetroBoardService {
+    
+    public static RETRO_BOARD_ID = "retroBoardId";
 
     public createNewRetroBoard() {
         console.log("Creating New Retro Board!!!")
         let retroBoardId: string = String(Date.now())
-        localStorage.setItem("retroBoardId", retroBoardId)
+        localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
 
         let retroBoard = new RetroBoard(retroBoardId, [
             RetroWall.newInstance("Went Well", RETRO_BOARD_STYLES.wentWell),
@@ -23,8 +25,12 @@ class RetroBoardService {
         return retroBoardId
     }
 
-    getData(): RetroBoardModel {
-        return new RetroBoard("1", testData)
+    public async getData(): Promise<RetroBoardModel> {
+        let retroBoardId = localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)
+        let snapshot = await Firebase.getInstance().getDatabase().ref("/boards/" + retroBoardId).once('value')
+        let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
+        
+        return retroBoard
     }
 }
 
