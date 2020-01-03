@@ -14,7 +14,7 @@ interface RetroBoardState {
 
 class RetroBoard extends React.Component<Props, RetroBoardState> {
     state: RetroBoardState = {
-        model: {data: []} // init data
+        model: {retroWalls: []} // init data
     }
 
     componentDidMount(): void {
@@ -22,7 +22,7 @@ class RetroBoard extends React.Component<Props, RetroBoardState> {
     }
 
     render() {
-        let walls = this.state.model!.data.map((wall, index) => {
+        let walls = this.state.model!.retroWalls.map((wall, index) => {
             return <Col md={4} key={index}>
                 <StickyWall title={wall.title} stickyNotes={wall.notes} style={wall.style}/>
             </Col>

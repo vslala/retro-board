@@ -8,5 +8,5 @@ export interface WallStyle {
 export interface StickyWallModel {
     title: string
     stickyNotes: StickyNote[]
-    style: WallStyle
+    style: WallStyle | undefined
 }

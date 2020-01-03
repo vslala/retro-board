@@ -21,7 +21,6 @@ class Editor extends React.Component<Props> {
     }
     
     handleKeyboardKeyPress = (e: React.KeyboardEvent<FormControl>) => {
-        console.log("Event Fired: ", e.key)
         if (e.key === 'Enter') {
             this.setState({editorText: ""})
             this.props.handleEnter(this.state.editorText)

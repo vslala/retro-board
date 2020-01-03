@@ -4,7 +4,7 @@ import User from "../models/User";
 export interface StickyNoteStyle {
     backgroundColor: string
     textColor: string
-    likeBtnPosition: "left" | "right"
+    likeBtnPosition: "right" | "left" | "none" | "inherit" | "initial" | "-moz-initial" | "revert" | "unset" | "inline-end" | "inline-start" | undefined
 }
 
 export interface StickyNoteState {

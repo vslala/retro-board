@@ -4,10 +4,12 @@ import './App.css';
 import HomePage from "./containers/HomePage";
 import RetroBoard from "./containers/RetroBoard";
 import Firebase from "./service/Firebase";
+import RetroBoardService from "./service/RetroBoard/RetroBoardService";
+import {RouteComponentProps} from 'react-router';
 
 interface Props {
+    routeComponentProps?: RouteComponentProps
 }
-
 interface State {
     firebase: Firebase
     idToken: string
@@ -36,7 +38,7 @@ class App extends React.Component<Props, State> {
         if (this.state.firebase.isUserAuthenticated()) {
             return (
                 <Router>
-                    <Route exact path={"/"} component={HomePage}/>
+                    <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props} retroBoardService={new RetroBoardService()}  />}/>
                     <Route exact path={"/retro-board"} component={RetroBoard}/>
                 </Router>
             )
