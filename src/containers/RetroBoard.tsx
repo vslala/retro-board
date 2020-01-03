@@ -1,6 +1,6 @@
 import React from 'react'
 import StickyWall from "../components/StickyWall";
-import RetroBoardService from "../service/RetroBoardService";
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {RetroBoardModel} from "../interfaces/RetroBoardModel";
 import {Col, Container, Row} from "react-bootstrap";
 

@@ -1,7 +1,7 @@
-import {RetroBoardModel, Wall} from "../interfaces/RetroBoardModel";
-import StickyNote from "../components/StickyNote";
+import {RetroBoardModel, Wall} from "../../interfaces/RetroBoardModel";
+import StickyNote from "../../components/StickyNote";
 import * as React from "react";
-import {WallStyle} from "../interfaces/StickyWallModel";
+import {WallStyle} from "../../interfaces/StickyWallModel";
 
 class RetroWall implements Wall {
     notes: StickyNote[]
