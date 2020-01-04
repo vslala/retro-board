@@ -3,8 +3,10 @@ import StickyWall from "../components/StickyWall";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {RetroBoardModel} from "../interfaces/RetroBoardModel";
 import {Col, Container, Row} from "react-bootstrap";
+import {RouteComponentProps} from "react-router";
 
-interface Props {
+interface Props extends RouteComponentProps {
+    retroBoardId: string
 }
 
 interface RetroBoardState {
@@ -18,8 +20,11 @@ class RetroBoard extends React.Component<Props, RetroBoardState> {
     }
 
     componentDidMount(): void {
-        new RetroBoardService().getData().then((retroBoard) => {
-            this.setState({retroBoard: retroBoard})
+        console.log("Retro Board ID: ", this.props.match.params)
+        const {retroBoardId} = this.props.match.params as Props
+        new RetroBoardService().getData(retroBoardId).then((retroBoard) => {
+            if (retroBoard)
+                this.setState({retroBoard: retroBoard})
         })
     }
 

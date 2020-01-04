@@ -39,7 +39,7 @@ class App extends React.Component<Props, State> {
             return (
                 <Router>
                     <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props} retroBoardService={new RetroBoardService()}  />}/>
-                    <Route exact path={"/retro-board"} component={RetroBoard}/>
+                    <Route exact path={"/retro-board/:retroBoardId"} component={RetroBoard}/>
                 </Router>
             )
         }

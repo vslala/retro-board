@@ -25,8 +25,8 @@ class RetroBoardService {
         return retroBoardId
     }
 
-    public async getData(): Promise<RetroBoardModel> {
-        let retroBoardId = localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)
+    public async getData(retroBoardId: string): Promise<RetroBoardModel> {
+        // let retroBoardId = localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)
         let snapshot = await Firebase.getInstance().getDatabase().ref("/boards/" + retroBoardId).once('value')
         let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
         

@@ -11,11 +11,11 @@ class HomePage extends React.Component<HomePageModel> {
 
     createNewRetroBoard(e: React.MouseEvent<HTMLElement>) {
         e.preventDefault()
-        const {linkUrl, history, retroBoardService} = this.props
+        const {history, retroBoardService} = this.props
         
         let retroBoardId = retroBoardService.createNewRetroBoard()
         
-        history.push(linkUrl ? linkUrl : "/retro-board")
+        history.push("/retro-board/" + retroBoardId)
     }
 
     render() {
