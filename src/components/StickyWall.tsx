@@ -3,9 +3,11 @@ import StickyNote from "./StickyNote";
 import {StickyWallModel} from "../interfaces/StickyWallModel";
 import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
+import Note from "../models/Note";
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 
 interface State {
-    notes: StickyNote[]
+    notes: Note[]
 }
 
 class StickyWall extends Component<StickyWallModel, State> {
@@ -15,39 +17,45 @@ class StickyWall extends Component<StickyWallModel, State> {
         this.addNote = this.addNote.bind(this)
         this.updateStickyNote = this.updateStickyNote.bind(this)
     }
-    
+
     state: State = {
         notes: this.props.stickyNotes,
     }
-    
+
     addNote(note: string) {
-        let newNotes = this.state.notes
-        // @ts-ignore
-        newNotes.push(<StickyNote style={{
-            backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
-            textColor: this.props.style?.stickyNote?.textColor || "black",
-            likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
-        }} noteText={note} modifyStickyNote={this.updateStickyNote} />)
-        this.setState({notes: newNotes})
+        this.props.retroBoardService!.addNewNote(
+            localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)!,
+            this.props.wallId,
+            new Note(note, {
+                backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
+                textColor: this.props.style?.stickyNote?.textColor || "black",
+                likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
+            })
+        )
+        .then((wall) => {
+            console.log("Sticky Notes: ", wall!.notes)
+            this.setState({notes: wall!.notes})
+        })
+            
     }
-    
+
     updateStickyNote(modifiedNote: StickyNote) {
         // give service call to update the sticky note
     }
 
     render() {
-        const {stickyNotes, title} = this.props
-        let stickers = stickyNotes.map((stickyNote: StickyNote, index: number) => (
+        const {notes} = this.state
+        let stickers = notes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index}>
-                {stickyNote}
+                <StickyNote noteText={stickyNote.noteText} style={stickyNote.style}/>
             </ListGroupItem>
-            
+
         ))
 
         return (
             <section className="sticky-wall">
-                <h3>{title}</h3>
-                <AddNewNote addNote={this.addNote} />
+                <h3>{this.props.title}</h3>
+                <AddNewNote addNote={this.addNote}/>
                 <ListGroup>
                     {stickers}
                 </ListGroup>

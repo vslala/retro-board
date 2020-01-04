@@ -6,7 +6,8 @@ import {Col, Container, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 
 interface Props extends RouteComponentProps {
-    retroBoardId: string
+    retroBoardId?: string
+    retroBoardService: RetroBoardService
 }
 
 interface RetroBoardState {
@@ -22,16 +23,22 @@ class RetroBoard extends React.Component<Props, RetroBoardState> {
     componentDidMount(): void {
         console.log("Retro Board ID: ", this.props.match.params)
         const {retroBoardId} = this.props.match.params as Props
-        new RetroBoardService().getData(retroBoardId).then((retroBoard) => {
-            if (retroBoard)
-                this.setState({retroBoard: retroBoard})
-        })
+        if (retroBoardId) {
+            this.props.retroBoardService.getData(retroBoardId).then((retroBoard) => {
+                if (retroBoard)
+                    this.setState({retroBoard: retroBoard})
+            })
+        }
     }
 
     render() {
         let walls = this.state.retroBoard!.retroWalls.map((wall, index) => {
             return <Col md={4} key={index}>
-                <StickyWall title={wall.title} stickyNotes={wall.notes} style={wall.style}/>
+                <StickyWall retroBoardService={this.props.retroBoardService} 
+                    wallId={wall.wallId}
+                    title={wall.title} 
+                    stickyNotes={wall.notes} 
+                    style={wall.style}/>
             </Col>
         })
         return (

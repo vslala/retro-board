@@ -1,21 +1,26 @@
-import {Wall} from "../interfaces/RetroBoardModel";
-import StickyNote from "../components/StickyNote";
-import {WallStyle} from "../interfaces/StickyWallModel";
+import {StickyWallModel, WallStyle} from "../interfaces/StickyWallModel";
+import Note from "./Note";
 
-class RetroWall implements Wall {
-    notes: StickyNote[]
+class RetroWall implements StickyWallModel {
+    wallId: string
+    notes: Note[]
     title: string
     style: WallStyle
+    stickyNotes: Note[];
 
-    constructor(title: string, notes: StickyNote[], style: WallStyle) {
+    constructor(title: string, notes: Note[], style: WallStyle) {
+        this.wallId = title.replace(" ", "")
         this.notes = notes
         this.title = title
         this.style = style
+        this.stickyNotes = []
     }
     
     public static newInstance(title:string, style: WallStyle) {
         return new RetroWall(title, [], style)
     }
+
+    
 }
 
 export default RetroWall

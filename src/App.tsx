@@ -38,8 +38,8 @@ class App extends React.Component<Props, State> {
         if (this.state.firebase.isUserAuthenticated()) {
             return (
                 <Router>
-                    <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props} retroBoardService={new RetroBoardService()}  />}/>
-                    <Route exact path={"/retro-board/:retroBoardId"} component={RetroBoard}/>
+                    <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props} retroBoardService={RetroBoardService.getInstance()}  />}/>
+                    <Route exact path={"/retro-board/:retroBoardId"} component={(props: RouteComponentProps) => <RetroBoard {...props} retroBoardService={RetroBoardService.getInstance()} />}/>
                 </Router>
             )
         }

@@ -1,12 +1,5 @@
-import StickyNote from "../components/StickyNote";
-import {WallStyle} from "./StickyWallModel";
+import RetroWall from "../models/RetroWall";
 
 export interface RetroBoardModel {
-    retroWalls: Wall[]
-}
-
-export interface Wall {
-    title: string
-    notes: StickyNote[]
-    style?: WallStyle
+    retroWalls: RetroWall[]
 }
