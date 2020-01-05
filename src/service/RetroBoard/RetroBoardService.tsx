@@ -80,6 +80,18 @@ class RetroBoardService {
         Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + modifiedNote.retroBoardId)
             .set(JSON.stringify(retroBoard))
     }
+    
+    public async deleteNote(note:Note) {
+        let retroBoard = await this._getRetroBoardById(note.retroBoardId)
+        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === note.wallId)
+        if (retroWall) {
+            let noteIndex = retroWall.notes.findIndex((n) => n.noteId === note.noteId)
+            retroWall.notes.splice(noteIndex, 1)
+        }
+        
+        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + note.retroBoardId)
+            .set(JSON.stringify(retroBoard))
+    }
 }
 
 const testData = [

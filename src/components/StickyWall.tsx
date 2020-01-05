@@ -5,6 +5,7 @@ import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
 import Note from "../models/Note";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import Badge from "react-bootstrap/Badge";
 
 interface State {
     notes: Note[]
@@ -58,11 +59,18 @@ class StickyWall extends Component<StickyWallModel, State> {
         // give service call to update the sticky note
         return this.retroBoardService.updateNote(modifiedNote)
     }
+    
+    deleteNote(e:React.MouseEvent, note: Note) {
+        let curr = e.currentTarget
+        this.retroBoardService.deleteNote(note)
+            .then(() => curr.parentNode!.parentNode!.removeChild(curr.parentNode!))
+    }
 
     render() {
         const {notes} = this.state
         let stickers = notes.map((stickyNote: Note, index: number) => (
-            <ListGroupItem key={index}>
+            <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
+                <Badge variant={"light"} style={{cursor: "pointer"}} onClick={(e:React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
                 <StickyNote retroBoardId={this.retroBoardId} wallId={this.wallId} 
                     noteId={stickyNote.noteId} noteText={stickyNote.noteText} 
                     style={stickyNote.style}
