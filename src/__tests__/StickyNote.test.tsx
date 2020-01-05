@@ -8,7 +8,9 @@ describe('Component StickyNote Test', function () {
     let mockHandleEnterFn = jest.fn((str: string) => console.log("New Note: ", str))
     
     beforeEach(() => {
-        stickyNote = render(<StickyNote noteText={"FooBar"} />)
+        stickyNote = render(<StickyNote noteId={"testid"} 
+            style={{backgroundColor: '', likeBtnPosition: "right", textColor: "red"}} 
+            noteText={"FooBar"} />)
     })
 
     test("it should display note text in a card style", () => {

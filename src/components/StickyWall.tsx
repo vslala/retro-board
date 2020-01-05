@@ -11,11 +11,18 @@ interface State {
 }
 
 class StickyWall extends Component<StickyWallModel, State> {
-
+    
+    retroBoardService: RetroBoardService
+    retroBoardId: string
+    wallId: string
+    
     constructor(props: StickyWallModel) {
         super(props)
         this.addNote = this.addNote.bind(this)
         this.updateStickyNote = this.updateStickyNote.bind(this)
+        this.retroBoardService = this.props.retroBoardService!
+        this.retroBoardId = localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)!
+        this.wallId = this.props.wallId
     }
 
     state: State = {
@@ -23,31 +30,41 @@ class StickyWall extends Component<StickyWallModel, State> {
     }
 
     addNote(note: string) {
-        this.props.retroBoardService!.addNewNote(
-            localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)!,
+        let prevState = this.state.notes
+        let newState = prevState
+        let newNote = new Note(note, {
+            backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
+            textColor: this.props.style?.stickyNote?.textColor || "black",
+            likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
+        })
+        newState.push(newNote)
+        this.setState({notes: newState})
+        
+        // service call to update the database
+        this.retroBoardService.addNewNote(
+            this.retroBoardId,
             this.props.wallId,
-            new Note(note, {
-                backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
-                textColor: this.props.style?.stickyNote?.textColor || "black",
-                likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
-            })
+            newNote
         )
-        .then((wall) => {
-            console.log("Sticky Notes: ", wall!.notes)
-            this.setState({notes: wall!.notes})
+        // revert the state if note is not stored in the database
+        .catch((e) => {
+            console.log("Error adding new note to the wall", e)
+            this.setState({notes: prevState})
         })
             
     }
 
-    updateStickyNote(modifiedNote: StickyNote) {
+    async updateStickyNote(modifiedNote: Note) {
         // give service call to update the sticky note
+        return this.retroBoardService.updateNote(this.retroBoardId, this.wallId, modifiedNote)
     }
 
     render() {
         const {notes} = this.state
         let stickers = notes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index}>
-                <StickyNote noteText={stickyNote.noteText} style={stickyNote.style}/>
+                <StickyNote noteId={stickyNote.noteId} noteText={stickyNote.noteText} style={stickyNote.style}
+                    modifyStickyNote={this.updateStickyNote}/>
             </ListGroupItem>
 
         ))

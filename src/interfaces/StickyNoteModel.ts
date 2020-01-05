@@ -1,5 +1,5 @@
-import StickyNote from "../components/StickyNote";
 import User from "../models/User";
+import Note from "../models/Note";
 
 export interface StickyNoteStyle {
     backgroundColor: string
@@ -15,7 +15,8 @@ export interface StickyNoteState {
 }
 
 export interface StickyNoteProps {
+    noteId: string
     noteText: string
-    modifyStickyNote?: (modifiedNote: StickyNote) => void
+    modifyStickyNote?: (modifiedNote: Note) => Promise<void>
     style: StickyNoteStyle
 }
