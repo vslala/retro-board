@@ -1,0 +1,43 @@
+stages:
+- test
+- build
+- package
+
+variables:
+  REGISTRY_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+test:
+  image: node:10
+  cache:
+    paths:
+    - node_modules/
+
+  stage: test
+  script:
+  - echo "Running tests"
+  - yarn install
+  - yarn test -- --coverage
+  - yarn run eslint src
+
+
+build:
+  image: node:10
+  stage: build
+  script:
+  - echo "Building the app"
+  - yarn install
+  - yarn build
+  artifacts:
+    paths:
+    - build
+
+
+docker-build:
+  image: docker:latest
+  services:
+  - docker:dind
+  stage: package
+  script:
+  - docker build -t $REGISTRY_IMAGE .
+  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker push $REGISTRY_IMAGE
