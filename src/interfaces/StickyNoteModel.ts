@@ -1,5 +1,6 @@
 import User from "../models/User";
 import Note from "../models/Note";
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 
 export interface StickyNoteStyle {
     backgroundColor: string
@@ -15,8 +16,12 @@ export interface StickyNoteState {
 }
 
 export interface StickyNoteProps {
+    retroBoardId: string
+    wallId: string
     noteId: string
     noteText: string
     modifyStickyNote?: (modifiedNote: Note) => Promise<void>
     style: StickyNoteStyle
+    retroBoardService: RetroBoardService
+    likedBy?: User[]
 }

@@ -48,6 +48,7 @@ class Firebase {
       let loggedInUser = new User()
       loggedInUser.displayName = userCredentials.user?.displayName || ""
       loggedInUser.idToken = idToken
+      loggedInUser.email = userCredentials.user?.email || ""
       
       localStorage.setItem("idToken", idToken)
       localStorage.setItem(User.USER_INFO, JSON.stringify(loggedInUser))

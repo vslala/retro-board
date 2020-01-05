@@ -5,6 +5,7 @@ class User {
     public idToken: string = ""
     public username: string | undefined
     public displayName: string = ""
+    public email: string = ""
 }
 
 export default User

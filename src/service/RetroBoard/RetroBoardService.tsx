@@ -71,13 +71,13 @@ class RetroBoardService {
             })
     } 
 
-    public async updateNote(retroBoardId: string, wallId: string, modifiedNote: Note) {
-        let retroBoard = await this._getRetroBoardById(retroBoardId)
-        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === wallId)!
-        let note = retroWall.notes.find((note) => note.noteId === modifiedNote.noteId)!
-        note.noteText = modifiedNote.noteText
-        
-        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + retroBoardId)
+    public async updateNote(modifiedNote: Note) {
+        let retroBoard = await this._getRetroBoardById(modifiedNote.retroBoardId)
+        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === modifiedNote.wallId)!
+        let noteIndex = retroWall.notes.findIndex((note) => note.noteId === modifiedNote.noteId)!
+        retroWall.notes[noteIndex] = modifiedNote
+         
+        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + modifiedNote.retroBoardId)
             .set(JSON.stringify(retroBoard))
     }
 }

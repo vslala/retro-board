@@ -32,11 +32,11 @@ class StickyWall extends Component<StickyWallModel, State> {
     addNote(note: string) {
         let prevState = this.state.notes
         let newState = prevState
-        let newNote = new Note(note, {
+        let newNote = new Note(this.retroBoardId, this.wallId, note, {
             backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
             textColor: this.props.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
-        })
+        }, this.retroBoardService)
         newState.push(newNote)
         this.setState({notes: newState})
         
@@ -56,15 +56,20 @@ class StickyWall extends Component<StickyWallModel, State> {
 
     async updateStickyNote(modifiedNote: Note) {
         // give service call to update the sticky note
-        return this.retroBoardService.updateNote(this.retroBoardId, this.wallId, modifiedNote)
+        return this.retroBoardService.updateNote(modifiedNote)
     }
 
     render() {
         const {notes} = this.state
         let stickers = notes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index}>
-                <StickyNote noteId={stickyNote.noteId} noteText={stickyNote.noteText} style={stickyNote.style}
-                    modifyStickyNote={this.updateStickyNote}/>
+                <StickyNote retroBoardId={this.retroBoardId} wallId={this.wallId} 
+                    noteId={stickyNote.noteId} noteText={stickyNote.noteText} 
+                    style={stickyNote.style}
+                    modifyStickyNote={this.updateStickyNote}
+                    retroBoardService={this.retroBoardService}
+                    likedBy={stickyNote.likedBy || 0}
+                    />
             </ListGroupItem>
 
         ))
