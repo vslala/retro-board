@@ -1,5 +1,6 @@
 import React from 'react'
 import firebase from "firebase";
+import User from "../models/User";
 
 export const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -43,11 +44,17 @@ class Firebase {
       let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
       this.authenticatedUser = userCredentials
       let idToken = await userCredentials.user!.getIdToken()
+      
+      let loggedInUser = new User()
+      loggedInUser.displayName = userCredentials.user?.displayName || ""
+      loggedInUser.idToken = idToken
+      
       localStorage.setItem("idToken", idToken)
+      localStorage.setItem(User.USER_INFO, JSON.stringify(loggedInUser))
     }
     
     public isUserAuthenticated() {
-      let isAuthenticated =  localStorage.getItem("idToken") !== null
+      let isAuthenticated =  localStorage.getItem(User.ID_TOKEN) !== null
       console.log("Is Authenticated=", isAuthenticated)
       return isAuthenticated
     }

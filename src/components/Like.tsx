@@ -41,7 +41,7 @@ class Like extends React.Component<LikeProps, LikeState> {
     }
 
     private getCurrentUser(): User | undefined {
-        let userJson = localStorage.getItem("user")
+        let userJson = localStorage.getItem(User.USER_INFO)
         if (userJson)
             return JSON.parse(userJson)
         else
