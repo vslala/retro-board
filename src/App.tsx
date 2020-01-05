@@ -22,10 +22,6 @@ class App extends React.Component<Props, State> {
         idToken: ""
     }
 
-    constructor(props: any) {
-        super(props)
-    }
-
     componentDidMount(): void {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {

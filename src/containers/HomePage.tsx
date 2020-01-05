@@ -24,7 +24,7 @@ class HomePage extends React.Component<HomePageModel> {
             <Row>
                 <Col></Col>
                 <Col>
-                    <a href={"#"}
+                    <a href={"/#/"}
                        onClick={this.createNewRetroBoard}>{linkText ? linkText : 'Create New Retro Board'}</a>
                 </Col>
                 <Col></Col>

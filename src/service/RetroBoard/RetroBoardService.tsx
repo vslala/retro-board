@@ -1,6 +1,4 @@
 import {RetroBoardModel} from "../../interfaces/RetroBoardModel";
-import StickyNote from "../../components/StickyNote";
-import * as React from "react";
 import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
 import RetroWall from "../../models/RetroWall";
 import Firebase from "../Firebase";
@@ -93,6 +91,7 @@ class RetroBoardService {
             .set(JSON.stringify(retroBoard))
     }
 }
+/*
 
 const testData = [
     // @ts-ignore
@@ -120,5 +119,6 @@ const testData = [
         }
     })
 ]
+*/
 
 export default RetroBoardService
