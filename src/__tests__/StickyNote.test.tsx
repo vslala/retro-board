@@ -2,15 +2,21 @@ import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react';
 import StickyNote from "../components/StickyNote";
 import '../setupTests'
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
     let mockHandleEnterFn = jest.fn((str: string) => console.log("New Note: ", str))
     
     beforeEach(() => {
-        stickyNote = render(<StickyNote noteId={"testid"} 
+        stickyNote = render(<StickyNote 
+            retroBoardId={"1"} wallId={"wentWell"} 
+            retroBoardService={RetroBoardService.getInstance()} 
+            noteId={"testid"} 
             style={{backgroundColor: '', likeBtnPosition: "right", textColor: "red"}} 
-            noteText={"FooBar"} />)
+            noteText={"FooBar"} 
+            likedBy={[]}
+            />)
     })
 
     test("it should display note text in a card style", () => {

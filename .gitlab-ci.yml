@@ -17,7 +17,6 @@ test:
   - echo "Running tests"
   - yarn install
   - yarn test -- --coverage
-  - yarn run eslint src
 
 
 build:
