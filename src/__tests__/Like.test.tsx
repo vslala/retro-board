@@ -46,4 +46,5 @@ describe("LikeComponent test suite", () => {
         fireEvent.click(btn)
         expect(handleUpVoteMock).toBeCalledTimes(3)
     })
+    
 })

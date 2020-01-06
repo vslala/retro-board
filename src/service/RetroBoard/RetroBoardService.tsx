@@ -49,6 +49,7 @@ class RetroBoardService {
         let retroBoard = await this._getRetroBoardById(retroBoardId)
         console.log("Retro Board: ", retroBoard)
         let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === retroWallId)
+        
         if (retroWall) 
             retroWall.notes.push(newNote)
         

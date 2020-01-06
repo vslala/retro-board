@@ -6,6 +6,7 @@ import {ListGroup, ListGroupItem} from "react-bootstrap";
 import Note from "../models/Note";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import Badge from "react-bootstrap/Badge";
+import Firebase from "../service/Firebase";
 
 interface State {
     notes: Note[]
@@ -38,6 +39,7 @@ class StickyWall extends Component<StickyWallModel, State> {
             textColor: this.props.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
         }, this.retroBoardService)
+        newNote.createdBy.push(Firebase.getInstance().getLoggedInUser().email)
         newState.push(newNote)
         this.setState({notes: newState})
         
@@ -61,6 +63,8 @@ class StickyWall extends Component<StickyWallModel, State> {
     }
     
     deleteNote(e:React.MouseEvent, note: Note) {
+        if (! note.createdBy.includes(Firebase.getInstance().getLoggedInUser().email))
+            return
         let curr = e.currentTarget
         this.retroBoardService.deleteNote(note)
             .then(() => curr.parentNode!.parentNode!.removeChild(curr.parentNode!))
@@ -70,13 +74,14 @@ class StickyWall extends Component<StickyWallModel, State> {
         const {notes} = this.state
         let stickers = notes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
-                <Badge variant={"light"} style={{cursor: "pointer"}} onClick={(e:React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
+                <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}} onClick={(e:React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
                 <StickyNote retroBoardId={this.retroBoardId} wallId={this.wallId} 
                     noteId={stickyNote.noteId} noteText={stickyNote.noteText} 
                     style={stickyNote.style}
                     modifyStickyNote={this.updateStickyNote}
                     retroBoardService={this.retroBoardService}
                     likedBy={stickyNote.likedBy || 0}
+                    createdBy={stickyNote.createdBy}
                     />
             </ListGroupItem>
 

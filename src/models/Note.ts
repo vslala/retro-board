@@ -5,11 +5,12 @@ import User from "./User";
 class Note implements StickyNoteProps {
     retroBoardId: string
     retroBoardService: RetroBoardService
-    wallId: string;
-    noteId: string;
-    noteText: string;
-    style: StickyNoteStyle;
+    wallId: string
+    noteId: string
+    noteText: string
+    style: StickyNoteStyle
     likedBy: User[]
+    createdBy: string[]
     
     constructor(retroBoardId: string, wallId: string, noteText:string, style:StickyNoteStyle, retroBoardService: RetroBoardService) {
         this.retroBoardId = retroBoardId
@@ -19,6 +20,7 @@ class Note implements StickyNoteProps {
         this.style = style
         this.retroBoardService = retroBoardService
         this.likedBy = []
+        this.createdBy = []
     }
 
 

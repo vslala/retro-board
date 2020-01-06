@@ -24,4 +24,5 @@ export interface StickyNoteProps {
     style: StickyNoteStyle
     retroBoardService: RetroBoardService
     likedBy?: User[]
+    createdBy: string[]
 }

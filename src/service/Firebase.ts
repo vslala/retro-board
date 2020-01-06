@@ -20,6 +20,7 @@ class Firebase {
     private auth: firebase.auth.Auth
     private authenticatedUser: firebase.auth.UserCredential | undefined;
     private googleAuthenticationProvider = new firebase.auth.GoogleAuthProvider()
+    private loggedInUser: User | undefined
 
     private constructor() {
         firebase.initializeApp(config)
@@ -45,18 +46,24 @@ class Firebase {
       this.authenticatedUser = userCredentials
       let idToken = await userCredentials.user!.getIdToken()
       
-      let loggedInUser = new User()
-      loggedInUser.displayName = userCredentials.user?.displayName || ""
-      loggedInUser.idToken = idToken
-      loggedInUser.email = userCredentials.user?.email || ""
+      console.log(userCredentials.user)
+      
+      this.loggedInUser = new User()
+      this.loggedInUser.displayName = userCredentials.user?.displayName || ""
+      this.loggedInUser.idToken = idToken
+      this.loggedInUser.email = userCredentials.user?.email || ""
       
       localStorage.setItem("idToken", idToken)
-      localStorage.setItem(User.USER_INFO, JSON.stringify(loggedInUser))
+      localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
+    }
+    
+    public getLoggedInUser(): User {
+        return this.loggedInUser!
     }
     
     public isUserAuthenticated() {
       let isAuthenticated =  localStorage.getItem(User.ID_TOKEN) !== null
-      console.log("Is Authenticated=", isAuthenticated)
+      console.log("Is Authenticated=" + isAuthenticated, this.getLoggedInUser())
       return isAuthenticated
     }
     

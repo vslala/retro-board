@@ -39,7 +39,8 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
                 noteText: modifiedNoteText,
                 style: this.props.style,
                 retroBoardService: this.props.retroBoardService,
-                likedBy: this.state.likedBy!
+                likedBy: this.state.likedBy!,
+                createdBy: this.props.createdBy
             })
                 .catch((e) => {
                     console.log("Error updating the note: ", e)
