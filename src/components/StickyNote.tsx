@@ -4,7 +4,6 @@ import Card from "react-bootstrap/Card";
 import Editor from "./Editor";
 import Like from "./Like";
 import User from "../models/User";
-import Note from "../models/Note";
 
 class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
 
@@ -19,7 +18,7 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
     state: StickyNoteState = {
         stickyNoteId: "1",
         showEditor: false,
-        noteText: this.props.noteText,
+        noteText: this.props.note.noteText,
         likedBy: []
     }
 
@@ -31,21 +30,7 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
     modifyStickyNote(modifiedNoteText: string) {
         let prevState = this.state.noteText
         this.setState({showEditor: false, noteText: modifiedNoteText})
-        if (this.props.modifyStickyNote)
-            this.props.modifyStickyNote({
-                retroBoardId: this.props.retroBoardId,
-                wallId: this.props.wallId,
-                noteId: this.props.noteId,
-                noteText: modifiedNoteText,
-                style: this.props.style,
-                retroBoardService: this.props.retroBoardService,
-                likedBy: this.state.likedBy!,
-                createdBy: this.props.createdBy
-            })
-                .catch((e) => {
-                    console.log("Error updating the note: ", e)
-                    this.setState({noteText: prevState})
-                })
+        
     }
 
     handleUpVote(user: User) {
@@ -56,19 +41,17 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
             let newUsersState = users
             this.setState({likedBy: newUsersState})
 
-            let note = new Note(this.props.retroBoardId, this.props.wallId, this.state.noteText, this.props.style, this.props.retroBoardService)
-            note.noteId = this.props.noteId
+            let note = this.props.note
             note.likedBy = users
             console.log("Liked Note: ", note)
-            this.props.retroBoardService.updateNote(note)
+            this.props.note.retroBoardService.updateNote(note)
         }
-
 
     }
 
 
     render() {
-        let style = this.props.style
+        let style = this.props.note.style
         return (
             <Card style={{backgroundColor: style?.backgroundColor || "white"}}>
                 <Card.Body>
@@ -82,7 +65,7 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
                     </div>
                     <div style={{float: style?.likeBtnPosition || "right"}}>
                         <Like handleUpVote={this.handleUpVote}
-                              likedBy={this.props.likedBy!}
+                              likedBy={this.props.note.likedBy || []}
                               stickyNoteId={this.state.stickyNoteId!}/></div>
                 </Card.Body>
             </Card>

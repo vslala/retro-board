@@ -1,15 +1,11 @@
 import {StickyNoteStyle} from "./StickyNoteModel";
-import Note from "../models/Note";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroWall from "../models/RetroWall";
 
 export interface WallStyle {
     stickyNote: StickyNoteStyle
 }
 
 export interface StickyWallModel {
-    wallId: string
-    title: string
-    stickyNotes: Note[]
-    style: WallStyle | undefined
-    retroBoardService?: RetroBoardService
+    retroWall: RetroWall
+    sortCards: boolean
 }

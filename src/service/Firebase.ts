@@ -58,7 +58,7 @@ class Firebase {
     }
     
     public getLoggedInUser(): User {
-        return this.loggedInUser!
+        return JSON.parse(localStorage.getItem(User.USER_INFO)!) as User
     }
     
     public isUserAuthenticated() {

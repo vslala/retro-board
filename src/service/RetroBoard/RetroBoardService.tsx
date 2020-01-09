@@ -1,97 +1,107 @@
-import {RetroBoardModel} from "../../interfaces/RetroBoardModel";
 import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
 import RetroWall from "../../models/RetroWall";
 import Firebase from "../Firebase";
 import Note from "../../models/Note";
+import RetroWalls from "../../models/RetroWalls";
+import Notes from "../../models/Notes";
 
 class RetroBoardService {
 
-    public static DATABASE_PATH = "/boards/"
+    public static BOARDS = "/boards/"
+    public static WALLS = "/walls"
+    public static NOTES = "/notes"
     public static RETRO_BOARD_ID = "retroBoardId";
     public static instance: RetroBoardService
-    
-    private constructor() {}
-    
-    public static getInstance():RetroBoardService {
+
+    private constructor() {
+    }
+
+    public static getInstance(): RetroBoardService {
         if (!RetroBoardService.instance)
             RetroBoardService.instance = new RetroBoardService()
-        
+
         return RetroBoardService.instance
     }
 
-    public async _getRetroBoardById(retroBoardId:string) {
+    private async _getData(dbPath: string) {
+        let snapshot = await Firebase.getInstance().getDatabase()
+            .ref(dbPath).once('value')
+
+        return snapshot.val()
+    }
+
+    public async getRetroBoardById(retroBoardId: string): Promise<RetroBoard> {
         console.log("Retro Board ID: ", retroBoardId)
         let snapshot = await Firebase.getInstance().getDatabase()
-            .ref(RetroBoardService.DATABASE_PATH + retroBoardId).once('value')
+            .ref(RetroBoardService.BOARDS + retroBoardId).once('value')
         let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
 
         return retroBoard
+    }
+
+    public async getRetroWalls(retroBoardId: string): Promise<RetroWalls> {
+        let snapshot = await Firebase.getInstance().getDatabase()
+            .ref(`${RetroBoardService.WALLS}/${retroBoardId}`)
+            .once('value')
+        return RetroWalls.fromJSON(snapshot.val())
     }
 
     public createNewRetroBoard() {
         let retroBoardId: string = String(Date.now())
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
 
-        let retroBoard = new RetroBoard(retroBoardId, [
-            RetroWall.newInstance("Went Well", RETRO_BOARD_STYLES.wentWell),
-            RetroWall.newInstance("To Improve", RETRO_BOARD_STYLES.toImprove),
-            RetroWall.newInstance("Action Items", RETRO_BOARD_STYLES.actionItems),
-        ]);
+        let retroBoard = new RetroBoard(retroBoardId, "Spring Board");
+        let retroWalls = new RetroWalls([
+            RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardService.getInstance()),
+            RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardService.getInstance()),
+            RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardService.getInstance()),
+        ])
 
         Firebase.getInstance().getDatabase()
-            .ref(RetroBoardService.DATABASE_PATH + retroBoardId)
-            .set(JSON.stringify(retroBoard))
+            .ref(RetroBoardService.BOARDS + retroBoardId)
+            .set(RetroBoard.toJSON(retroBoard))
+        Firebase.getInstance().getDatabase()
+            .ref(`${RetroBoardService.WALLS}/${retroBoardId}`)
+            .set(JSON.stringify(retroWalls))
 
         return retroBoardId
     }
 
     public async addNewNote(retroBoardId: string, retroWallId: string, newNote: Note) {
-        let retroBoard = await this._getRetroBoardById(retroBoardId)
-        console.log("Retro Board: ", retroBoard)
-        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === retroWallId)
-        
-        if (retroWall) 
-            retroWall.notes.push(newNote)
-        
-        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + retroBoardId)
-            .set(JSON.stringify(retroBoard))
-        
-        return retroWall
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${retroWallId}/${newNote.noteId}`)
+            .set(newNote)
+        return newNote
     }
-
-    public async getData(retroBoardId: string): Promise<RetroBoardModel> {
-        return this._getRetroBoardById(retroBoardId)
-    }
-    
-    public async getDataOnUpdate(retroBoardId: string, callback: (retroBoard: RetroBoard) => void) {
-        let ref = Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + retroBoardId)
-        ref.on('value', (snapshot) => {
-                callback(JSON.parse(snapshot.val()) as RetroBoard)
-            })
-    } 
 
     public async updateNote(modifiedNote: Note) {
-        let retroBoard = await this._getRetroBoardById(modifiedNote.retroBoardId)
-        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === modifiedNote.wallId)!
-        let noteIndex = retroWall.notes.findIndex((note) => note.noteId === modifiedNote.noteId)!
-        retroWall.notes[noteIndex] = modifiedNote
-         
-        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + modifiedNote.retroBoardId)
-            .set(JSON.stringify(retroBoard))
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.wallId}/${modifiedNote.noteId}`)
+            .update(modifiedNote)
     }
-    
-    public async deleteNote(note:Note) {
-        let retroBoard = await this._getRetroBoardById(note.retroBoardId)
-        let retroWall = retroBoard.retroWalls.find((wall) => wall.wallId === note.wallId)
-        if (retroWall) {
-            let noteIndex = retroWall.notes.findIndex((n) => n.noteId === note.noteId)
-            retroWall.notes.splice(noteIndex, 1)
+
+    public async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${retroWallId}`)
+        ref.on('value', (snapshot) => {
+            callback(snapshot.val() ? new Notes(Object.values(snapshot.val())) : new Notes([]))
+        })
+    }
+
+
+    public async deleteNote(note: Note) {
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
+            .remove()
+    }
+
+    public async getNotes(retroBoardId: string, wallId: string): Promise<Notes> {
+        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${wallId}`)
+            .once('value')
+
+        if (snapshot.val() !== null) {
+            return new Notes(Object.values(snapshot.val()))
         }
-        
-        Firebase.getInstance().getDatabase().ref(RetroBoardService.DATABASE_PATH + note.retroBoardId)
-            .set(JSON.stringify(retroBoard))
+        return new Notes([])
     }
 }
+
 /*
 
 const testData = [

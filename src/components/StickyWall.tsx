@@ -4,92 +4,93 @@ import {StickyWallModel} from "../interfaces/StickyWallModel";
 import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
 import Note from "../models/Note";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import Badge from "react-bootstrap/Badge";
 import Firebase from "../service/Firebase";
+import RetroWall from "../models/RetroWall";
+import Notes from "../models/Notes";
 
 interface State {
     notes: Note[]
 }
 
 class StickyWall extends Component<StickyWallModel, State> {
-    
-    retroBoardService: RetroBoardService
-    retroBoardId: string
-    wallId: string
-    
+
+    retroWall: RetroWall
+
     constructor(props: StickyWallModel) {
         super(props)
         this.addNote = this.addNote.bind(this)
         this.updateStickyNote = this.updateStickyNote.bind(this)
-        this.retroBoardService = this.props.retroBoardService!
-        this.retroBoardId = localStorage.getItem(RetroBoardService.RETRO_BOARD_ID)!
-        this.wallId = this.props.wallId
+        this.retroWall = props.retroWall
     }
 
     state: State = {
-        notes: this.props.stickyNotes,
+        notes: [],
+    }
+
+    componentDidMount(): void {
+        this.retroWall.retroBoardService.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
+            .then((notes) => {
+                this.setState({notes: notes.notes})
+            })
+            .finally(() => this.retroWall.retroBoardService.getDataOnUpdate(
+                this.retroWall.retroBoardId, this.retroWall.wallId, (notes:Notes) => {
+                this.setState({notes:  [...notes.notes]})
+            }))
+        
     }
 
     addNote(note: string) {
         let prevState = this.state.notes
         let newState = prevState
-        let newNote = new Note(this.retroBoardId, this.wallId, note, {
-            backgroundColor: this.props.style?.stickyNote?.backgroundColor || "white",
-            textColor: this.props.style?.stickyNote?.textColor || "black",
-            likeBtnPosition: this.props.style?.stickyNote?.likeBtnPosition || "right"
-        }, this.retroBoardService)
+        let newNote = new Note(this.retroWall.retroBoardId, this.retroWall.wallId, note, {
+            backgroundColor: this.retroWall.style?.stickyNote?.backgroundColor || "white",
+            textColor: this.retroWall.style?.stickyNote?.textColor || "black",
+            likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
+        }, this.retroWall.retroBoardService)
         newNote.createdBy.push(Firebase.getInstance().getLoggedInUser().email)
         newState.push(newNote)
         this.setState({notes: newState})
-        
+
         // service call to update the database
-        this.retroBoardService.addNewNote(
-            this.retroBoardId,
-            this.props.wallId,
-            newNote
+        this.retroWall.retroBoardService.addNewNote(
+            this.retroWall.retroBoardId, this.retroWall.wallId, newNote
         )
         // revert the state if note is not stored in the database
         .catch((e) => {
-            console.log("Error adding new note to the wall", e)
-            this.setState({notes: prevState})
-        })
-            
+                console.log("Error adding new note to the wall", e)
+                this.setState({notes: prevState})
+            })
+
     }
 
     async updateStickyNote(modifiedNote: Note) {
         // give service call to update the sticky note
-        return this.retroBoardService.updateNote(modifiedNote)
+        return this.retroWall.retroBoardService.updateNote(modifiedNote)
     }
-    
-    deleteNote(e:React.MouseEvent, note: Note) {
-        if (! note.createdBy.includes(Firebase.getInstance().getLoggedInUser().email))
+
+    deleteNote(e: React.MouseEvent, note: Note) {
+        if (!note.createdBy.includes(Firebase.getInstance().getLoggedInUser().email))
             return
         let curr = e.currentTarget
-        this.retroBoardService.deleteNote(note)
-            .then(() => curr.parentNode!.parentNode!.removeChild(curr.parentNode!))
+        this.retroWall.retroBoardService.deleteNote(note)
+            .catch((e) => console.log("Delete failed!", e))
     }
 
     render() {
         const {notes} = this.state
         let stickers = notes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
-                <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}} onClick={(e:React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
-                <StickyNote retroBoardId={this.retroBoardId} wallId={this.wallId} 
-                    noteId={stickyNote.noteId} noteText={stickyNote.noteText} 
-                    style={stickyNote.style}
-                    modifyStickyNote={this.updateStickyNote}
-                    retroBoardService={this.retroBoardService}
-                    likedBy={stickyNote.likedBy || 0}
-                    createdBy={stickyNote.createdBy}
-                    />
+                <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
+                       onClick={(e: React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
+                <StickyNote note={stickyNote} />
             </ListGroupItem>
 
         ))
 
         return (
             <section className="sticky-wall">
-                <h3>{this.props.title}</h3>
+                <h3>{this.retroWall.title}</h3>
                 <AddNewNote addNote={this.addNote}/>
                 <ListGroup>
                     {stickers}
@@ -100,3 +101,28 @@ class StickyWall extends Component<StickyWallModel, State> {
 }
 
 export default StickyWall
+
+
+
+
+
+
+
+
+
+ /*
+        // this method is called whenever there is a change in the properties
+        public static getDerivedStateFromProps(props: StickyWallModel, state: State) {
+            if (props.sortCards) {
+                let notes = [...props.stickyNotes]
+                notes = notes.sort((a, b) => {
+                    if (a.likedBy.length > b.likedBy.length)
+                        return -1
+                    if (a.likedBy.length < b.likedBy.length)
+                        return 1
+                    return 0
+                }).slice()
+                return {notes: notes}
+            }
+        }
+    */

@@ -1,8 +1,8 @@
-import {StickyNoteProps, StickyNoteStyle} from "../interfaces/StickyNoteModel";
+import {StickyNoteStyle} from "../interfaces/StickyNoteModel";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import User from "./User";
 
-class Note implements StickyNoteProps {
+class Note {
     retroBoardId: string
     retroBoardService: RetroBoardService
     wallId: string
@@ -23,6 +23,13 @@ class Note implements StickyNoteProps {
         this.createdBy = []
     }
 
+    public static toJSON(note:Note): string {
+        return JSON.stringify(note)
+    }
+    
+    public static fromJSON(json:string): Note {
+        return JSON.parse(json)
+    }
 
     
 }

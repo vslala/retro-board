@@ -1,5 +1,4 @@
 import {RetroBoardModel} from "../interfaces/RetroBoardModel";
-import RetroWall from "./RetroWall";
 import {WallStyle} from "../interfaces/StickyWallModel";
 
 
@@ -34,11 +33,19 @@ export const RETRO_BOARD_STYLES = {
 
 class RetroBoard implements RetroBoardModel {
     id: string
-    retroWalls: RetroWall[]
+    name: string
 
-    constructor(id:string, retroWalls: RetroWall[]) {
-        this.retroWalls = retroWalls
+    constructor(id:string, name:string) {
         this.id = id
+        this.name = name
+    }
+    
+    public static toJSON(retroBoard: RetroBoard) {
+        return JSON.stringify(retroBoard)
+    }
+    
+    public static fromJSON(json:string): RetroBoard {
+        return JSON.parse(json) as RetroBoard
     }
 }
 
