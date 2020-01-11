@@ -43,8 +43,9 @@ class Like extends React.Component<LikeProps, LikeState> {
     }
 
     render() {
+        console.log("rendering like component...")
         return <div data-testid={"like_btn"} onClick={this.handleUpVote}>
-            <Badge variant="dark" style={{cursor: "pointer"}}><span data-testid={"total_votes"}>{this.state.users.length}</span></Badge>
+            <Badge variant="dark" style={{cursor: "pointer"}}><span data-testid={"total_votes"}>{this.props.likedBy.length}</span></Badge>
             <Card.Link style={{color: "white"}} href={"#"}><span>Like</span></Card.Link>
         </div>
     }

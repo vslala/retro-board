@@ -57,7 +57,7 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
             }
             
         case ActionTypes.GET_NOTES:
-        
+            
             return {
                 ...state,
                 notes: new Notes(state.notes.notes.concat(action.payload.notes))

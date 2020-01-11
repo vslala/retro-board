@@ -96,12 +96,21 @@ class RetroBoardService {
     public async updateNote(modifiedNote: Note) {
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.wallId}/${modifiedNote.noteId}`)
             .update(modifiedNote)
+        return modifiedNote
     }
 
     public async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${retroWallId}`)
         ref.on('value', (snapshot) => {
             callback(snapshot.val() ? new Notes(Object.values(snapshot.val())) : new Notes([]))
+        })
+    }
+    
+    public async getNoteWhenLiked(note:Note, callback: (note: Note) => void) {
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
+        ref.on('value', (snapshot) => {
+            console.log("Note Data Changed!", snapshot.val())
+            callback(snapshot.val() as Note)
         })
     }
 

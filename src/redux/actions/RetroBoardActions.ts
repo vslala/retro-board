@@ -47,6 +47,7 @@ class RetroBoardActions {
             payload: notes
         }
     }
+
 }
 
 export default RetroBoardActions

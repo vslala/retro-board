@@ -18,13 +18,13 @@ interface State {
 }
 
 interface DispatchProps {
-    addNewNote: (note:Note) => Promise<RetroBoardActionTypes>
-    getNotes: (retroBoardId:string, wallId:string) => Promise<RetroBoardActionTypes>
-    deleteNote: (note:Note) => Promise<RetroBoardActionTypes>
+    addNewNote: (note: Note) => Promise<RetroBoardActionTypes>
+    getNotes: (retroBoardId: string, wallId: string) => Promise<RetroBoardActionTypes>
+    deleteNote: (note: Note) => Promise<RetroBoardActionTypes>
 }
 
 interface Props extends StickyWallModel, State, DispatchProps {
-    
+
 }
 
 class StickyWall extends Component<Props, State> {
@@ -34,7 +34,6 @@ class StickyWall extends Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.addNote = this.addNote.bind(this)
-        this.updateStickyNote = this.updateStickyNote.bind(this)
         this.retroWall = props.retroWall
     }
 
@@ -43,8 +42,10 @@ class StickyWall extends Component<Props, State> {
     }
 
     componentDidMount(): void {
-        console.log("calling get notes...")
-        this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
+        this.props.retroWall.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
+            console.log("Data Changed!")
+            this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
+        })
     }
 
     addNote(note: string) {
@@ -57,11 +58,6 @@ class StickyWall extends Component<Props, State> {
         this.props.addNewNote(newNote)
     }
 
-    async updateStickyNote(modifiedNote: Note) {
-        // give service call to update the sticky note
-        return this.retroWall.retroBoardService.updateNote(modifiedNote)
-    }
-
     deleteNote(note: Note) {
         if (!note.createdBy?.includes(Firebase.getInstance().getLoggedInUser().email))
             return
@@ -69,12 +65,13 @@ class StickyWall extends Component<Props, State> {
     }
 
     render() {
+        console.log("Rendering StickyWall...")
         const {notes} = this.props
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
                 <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
                        onClick={() => this.deleteNote(stickyNote)}>x</Badge>
-                <StickyNote key={stickyNote.noteId} note={stickyNote} />
+                <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService}/>
             </ListGroupItem>
 
         ))
@@ -95,35 +92,28 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     const service = RetroBoardService.getInstance()
     const retroBoardActions = new RetroBoardActions();
     return {
-        addNewNote: async (note:Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
-        deleteNote: async (note:Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
-        getNotes: async (retroBoardId:string, wallId:string) => dispatch(retroBoardActions.getNotes(await service.getNotes(retroBoardId,wallId)))
+        addNewNote: async (note: Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
+        deleteNote: async (note: Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
+        getNotes: async (retroBoardId: string, wallId: string) => dispatch(retroBoardActions.getNotes(await service.getNotes(retroBoardId, wallId))),
     }
 }
 
 export default connect(null, mapDispatchToProps)(StickyWall)
 
 
-
-
-
-
-
-
-
- /*
-        // this method is called whenever there is a change in the properties
-        public static getDerivedStateFromProps(props: StickyWallModel, state: State) {
-            if (props.sortCards) {
-                let notes = [...props.stickyNotes]
-                notes = notes.sort((a, b) => {
-                    if (a.likedBy.length > b.likedBy.length)
-                        return -1
-                    if (a.likedBy.length < b.likedBy.length)
-                        return 1
-                    return 0
-                }).slice()
-                return {notes: notes}
-            }
-        }
-    */
+/*
+       // this method is called whenever there is a change in the properties
+       public static getDerivedStateFromProps(props: StickyWallModel, state: State) {
+           if (props.sortCards) {
+               let notes = [...props.stickyNotes]
+               notes = notes.sort((a, b) => {
+                   if (a.likedBy.length > b.likedBy.length)
+                       return -1
+                   if (a.likedBy.length < b.likedBy.length)
+                       return 1
+                   return 0
+               }).slice()
+               return {notes: notes}
+           }
+       }
+   */

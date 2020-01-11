@@ -4,15 +4,36 @@ import Card from "react-bootstrap/Card";
 import Editor from "./Editor";
 import Like from "./Like";
 import User from "../models/User";
+import Note from "../models/Note";
+import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
+import {Dispatch} from "redux";
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import {connect} from "react-redux";
 
-class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
+interface DispatchProps {
+    updateNote: (note: Note) => Promise<RetroBoardActionTypes>
+}
 
-    constructor(props: StickyNoteProps) {
+interface Props extends StickyNoteProps, DispatchProps {
+    retroBoardService: RetroBoardService
+}
+
+class StickyNote extends React.Component<Props, StickyNoteState> {
+
+    constructor(props: Props) {
         super(props)
 
         this.handleOnClick = this.handleOnClick.bind(this)
         this.modifyStickyNote = this.modifyStickyNote.bind(this)
         this.handleUpVote = this.handleUpVote.bind(this)
+    }
+
+    componentDidMount(): void {
+        let note = this.props.note
+        this.props.retroBoardService.getNoteWhenLiked(note, (note:Note) => {
+            this.props.updateNote(note)
+        })
     }
 
     state: StickyNoteState = {
@@ -27,10 +48,9 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
         this.setState({showEditor: true, noteText: noteText})
     }
 
-    modifyStickyNote(modifiedNoteText: string) {
-        let prevState = this.state.noteText
-        this.setState({showEditor: false, noteText: modifiedNoteText})
-        
+    modifyStickyNote(modifiedNote: Note) {
+        this.setState({showEditor: false, noteText: modifiedNote.noteText})
+        this.props.updateNote(modifiedNote)
     }
 
     handleUpVote(user: User) {
@@ -44,33 +64,46 @@ class StickyNote extends React.Component<StickyNoteProps, StickyNoteState> {
             let note = this.props.note
             note.likedBy = users
             console.log("Liked Note: ", note)
-            this.props.note.retroBoardService.updateNote(note)
+            this.props.updateNote(note)
         }
 
     }
 
 
     render() {
-        let style = this.props.note.style
+        console.log("Rendering StickyNote component...")
+        let note = this.props.note
         return (
-            <Card style={{backgroundColor: style?.backgroundColor || "white"}}>
+            <Card style={{backgroundColor: note.style?.backgroundColor || "white"}}>
                 <Card.Body>
                     <div data-testid={"editor"} onClick={this.handleOnClick}
-                         style={{color: style?.textColor || "black"}}>
+                         style={{color: note.style?.textColor || "black"}}>
                         {
                             this.state.showEditor ?
-                                <Editor noteText={this.state.noteText} handleEnter={this.modifyStickyNote}/> :
-                                <p className="card-text">{this.state.noteText}</p>
+                                <Editor noteText={note.noteText}
+                                        handleEnter={(modifiedNoteText) => this.modifyStickyNote({
+                                            ...note,
+                                            noteText: modifiedNoteText
+                                        })}/> :
+                                <p className="card-text">{note.noteText}</p>
                         }
                     </div>
-                    <div style={{float: style?.likeBtnPosition || "right"}}>
-                        <Like handleUpVote={this.handleUpVote}
-                              likedBy={this.props.note.likedBy || []}
-                              stickyNoteId={this.state.stickyNoteId!}/></div>
+                    <div style={{float: note.style?.likeBtnPosition || "right"}}>
+                        <Like key={`like_note.noteId`} handleUpVote={this.handleUpVote}
+                              likedBy={note.likedBy || []}
+                              stickyNoteId={note.noteId}/></div>
                 </Card.Body>
             </Card>
         )
     }
 }
 
-export default StickyNote
+const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
+    const service = RetroBoardService.getInstance()
+    const retroBoardActions = new RetroBoardActions();
+    return {
+        updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note)))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(StickyNote)
