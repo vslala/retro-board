@@ -25,19 +25,22 @@ interface StateFromReduxStore {
 }
 
 interface DispatchProps {
-    createRetroBoard: (retroBoardId: string) => RetroBoardActionTypes
+    createRetroBoard: (retroBoardId: string) => Promise<RetroBoardActionTypes>
+    createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
 
 interface State {
-    retroBoard: RetroBoard
-    retroWalls: RetroWalls
     sortCards: boolean
 }
 
 
 class RetroBoardPage extends React.Component<Props, State> {
+
+    state: State = {
+        sortCards: false
+    }
 
     constructor(props: Props) {
         super(props)
@@ -51,13 +54,13 @@ class RetroBoardPage extends React.Component<Props, State> {
 
         if (retroBoardId) {
             this.props.createRetroBoard(retroBoardId)
+            this.props.createRetroWalls(retroBoardId)
         }
 
     }
 
     refresh(retroWalls: RetroWalls) {
         console.log("Data Changed: ", retroWalls)
-        this.setState({retroWalls: retroWalls})
     }
 
     sortCards(): void {
@@ -73,6 +76,7 @@ class RetroBoardPage extends React.Component<Props, State> {
             return <Col md={4} key={index}>
                 <StickyWall retroWall={wall}
                             sortCards={this.state.sortCards}
+                            notes={this.props.notes.notes}
                 />
             </Col>
         })
@@ -92,6 +96,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 
 function mapStateToProps(state: RetroBoardState): RetroBoardState {
     console.log("Mapping state to props...", state)
+    
     return {
         retroBoard: state.retroBoard,
         retroWalls: state.retroWalls,
@@ -101,8 +106,12 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
     let service = RetroBoardService.getInstance()
+    const retroBoardActions = new RetroBoardActions();
+        
+        
     return {
-        createRetroBoard: (retroBoardId:string) => dispatch(new RetroBoardActions().createRetroBoard(service.createNewRetroBoard(retroBoardId)))
+        createRetroBoard: async (retroBoardId:string) => dispatch(retroBoardActions.createRetroBoard(await service.createNewRetroBoard(retroBoardId))),
+        createRetroWalls: async (retroBoardId:string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId)))
     }
 }
 

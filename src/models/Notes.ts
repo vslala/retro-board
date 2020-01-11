@@ -1,10 +1,14 @@
 import Note from "./Note";
 
 class Notes {
-    notes: Note[]
+    get notes(): Note[] {
+        return [...this._notes];
+    }
+    
+    private _notes: Note[]
     
     constructor(notes:Note[]) {
-        this.notes = notes
+        this._notes = notes
     }
     
     public static fromJSON(json:string): Notes {

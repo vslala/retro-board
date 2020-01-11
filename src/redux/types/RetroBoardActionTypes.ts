@@ -1,8 +1,11 @@
 import RetroBoard from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
+import Notes from "../../models/Notes";
 
 export enum ActionTypes {
+    GET_NOTES,
+    RETRIEVE_RETRO_BOARD,
     UPDATE_NOTE,
     DELETE_NOTE,
     CREATE_NOTE,
@@ -35,5 +38,10 @@ interface DeleteNoteAction {
     payload: Note
 }
 
+interface GetNotesAction {
+    type: typeof ActionTypes.GET_NOTES
+    payload: Notes
+}
+
 export type RetroBoardActionTypes = CreateRetroBoardAction | CreateRetroWallsAction | CreateNoteAction |
-    UpdateNoteAction | DeleteNoteAction
+    UpdateNoteAction | DeleteNoteAction | GetNotesAction

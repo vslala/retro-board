@@ -3,7 +3,7 @@ import RetroBoard from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import {ActionTypes, RetroBoardActionTypes} from "../types/RetroBoardActionTypes";
-import {combineReducers} from "redux";
+import Note from "../../models/Note";
 
 export const initialState: RetroBoardState = {
     retroBoard: new RetroBoard("", ""),
@@ -45,20 +45,24 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
             }
             
         case ActionTypes.DELETE_NOTE:
-            let noteIndex = state.notes.notes.findIndex((note) => note.noteId === action.payload.noteId)
-            const oldNotes = [...state.notes.notes]
-            oldNotes.splice(noteIndex, 1)
-            const newNotes = oldNotes
+            let notes: Note[] = []
+            state.notes.notes.forEach((note) => {
+                if (note.noteId !== action.payload.noteId)
+                    notes.push(note)
+            })
             
             return {
                 ...state,
-                notes: new Notes(newNotes)
+                notes: new Notes(notes)
             }
-
+            
+        case ActionTypes.GET_NOTES:
+        
+            return {
+                ...state,
+                notes: new Notes(state.notes.notes.concat(action.payload.notes))
+            }
+            
     }
     return initialState
 }
-
-const rootReducer = combineReducers({retroBoardReducer})
-
-export {rootReducer}

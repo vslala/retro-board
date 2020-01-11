@@ -7,17 +7,31 @@ import Note from "../models/Note";
 import Badge from "react-bootstrap/Badge";
 import Firebase from "../service/Firebase";
 import RetroWall from "../models/RetroWall";
-import Notes from "../models/Notes";
+import {connect} from "react-redux";
+import {Dispatch} from 'redux'
+import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
+import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 
 interface State {
     notes: Note[]
 }
 
-class StickyWall extends Component<StickyWallModel, State> {
+interface DispatchProps {
+    addNewNote: (note:Note) => Promise<RetroBoardActionTypes>
+    getNotes: (retroBoardId:string, wallId:string) => Promise<RetroBoardActionTypes>
+    deleteNote: (note:Note) => Promise<RetroBoardActionTypes>
+}
+
+interface Props extends StickyWallModel, State, DispatchProps {
+    
+}
+
+class StickyWall extends Component<Props, State> {
 
     retroWall: RetroWall
 
-    constructor(props: StickyWallModel) {
+    constructor(props: Props) {
         super(props)
         this.addNote = this.addNote.bind(this)
         this.updateStickyNote = this.updateStickyNote.bind(this)
@@ -29,34 +43,18 @@ class StickyWall extends Component<StickyWallModel, State> {
     }
 
     componentDidMount(): void {
-        this.retroWall.retroBoardService.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
-            .then((notes) => {
-                this.setState({notes: notes.notes})
-            })
-            .finally(() => this.retroWall.retroBoardService.getDataOnUpdate(
-                this.retroWall.retroBoardId, this.retroWall.wallId, (notes:Notes) => {
-                this.setState({notes:  [...notes.notes]})
-            }))
-        
+        console.log("calling get notes...")
+        this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
     }
 
     addNote(note: string) {
-        let prevState = this.state.notes
-        let newState = prevState
         let newNote = new Note(this.retroWall.retroBoardId, this.retroWall.wallId, note, {
             backgroundColor: this.retroWall.style?.stickyNote?.backgroundColor || "white",
             textColor: this.retroWall.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
         }, this.retroWall.retroBoardService)
         newNote.createdBy.push(Firebase.getInstance().getLoggedInUser().email)
-        newState.push(newNote)
-        this.setState({notes: newState})
-
-        // service call to update the database
-        this.retroWall.retroBoardService.addNewNote(
-            this.retroWall.retroBoardId, this.retroWall.wallId, newNote
-        )
-
+        this.props.addNewNote(newNote)
     }
 
     async updateStickyNote(modifiedNote: Note) {
@@ -64,20 +62,19 @@ class StickyWall extends Component<StickyWallModel, State> {
         return this.retroWall.retroBoardService.updateNote(modifiedNote)
     }
 
-    deleteNote(e: React.MouseEvent, note: Note) {
-        if (!note.createdBy.includes(Firebase.getInstance().getLoggedInUser().email))
+    deleteNote(note: Note) {
+        if (!note.createdBy?.includes(Firebase.getInstance().getLoggedInUser().email))
             return
-        let curr = e.currentTarget
-        this.retroWall.retroBoardService.deleteNote(note)
+        this.props.deleteNote(note)
     }
 
     render() {
-        const {notes} = this.state
-        let stickers = notes.map((stickyNote: Note, index: number) => (
+        const {notes} = this.props
+        let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
                 <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
-                       onClick={(e: React.MouseEvent) => this.deleteNote(e, stickyNote)}>x</Badge>
-                <StickyNote note={stickyNote} />
+                       onClick={() => this.deleteNote(stickyNote)}>x</Badge>
+                <StickyNote key={stickyNote.noteId} note={stickyNote} />
             </ListGroupItem>
 
         ))
@@ -94,7 +91,17 @@ class StickyWall extends Component<StickyWallModel, State> {
     }
 }
 
-export default StickyWall
+const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
+    const service = RetroBoardService.getInstance()
+    const retroBoardActions = new RetroBoardActions();
+    return {
+        addNewNote: async (note:Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
+        deleteNote: async (note:Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
+        getNotes: async (retroBoardId:string, wallId:string) => dispatch(retroBoardActions.getNotes(await service.getNotes(retroBoardId,wallId)))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(StickyWall)
 
 
 

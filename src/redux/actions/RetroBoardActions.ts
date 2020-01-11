@@ -2,6 +2,7 @@ import RetroBoard from "../../models/RetroBoard";
 import {ActionTypes, RetroBoardActionTypes} from "../types/RetroBoardActionTypes";
 import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
+import Notes from "../../models/Notes";
 
 class RetroBoardActions {
     
@@ -37,6 +38,13 @@ class RetroBoardActions {
         return {
             type: ActionTypes.DELETE_NOTE,
             payload: note
+        }
+    }
+
+    public getNotes(notes: Notes): RetroBoardActionTypes {
+        return {
+            type: ActionTypes.GET_NOTES,
+            payload: notes
         }
     }
 }
