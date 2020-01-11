@@ -32,7 +32,8 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     componentDidMount(): void {
         let note = this.props.note
         this.props.retroBoardService.getNoteWhenLiked(note, (note:Note) => {
-            this.props.updateNote(note)
+            if (note) // check is for delete case
+                this.props.updateNote(note)
         })
     }
 

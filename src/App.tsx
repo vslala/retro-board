@@ -1,11 +1,11 @@
 import React from 'react';
-import {HashRouter as Router, Route} from 'react-router-dom'
+import {HashRouter as Router} from 'react-router-dom'
 import './App.css';
-import HomePage from "./containers/HomePage";
-import RetroBoardPage from "./containers/RetroBoardPage";
 import Firebase from "./service/Firebase";
-import RetroBoardService from "./service/RetroBoard/RetroBoardService";
 import {RouteComponentProps} from 'react-router';
+import LayoutAuthenticated from "./components/LayoutAuthenticated";
+import LayoutUnauthenticated from "./components/LayoutUnauthenticated";
+import User from "./models/User";
 
 interface Props {
     routeComponentProps?: RouteComponentProps
@@ -13,6 +13,7 @@ interface Props {
 interface State {
     firebase: Firebase
     idToken: string
+    loggedInUser?: User
 }
 
 class App extends React.Component<Props, State> {
@@ -21,26 +22,28 @@ class App extends React.Component<Props, State> {
         firebase: Firebase.getInstance(),
         idToken: ""
     }
+    
+    constructor(props:Props) {
+        super(props)
+        this.handleLoginSuccessful = this.handleLoginSuccessful.bind(this)
+    }
 
     componentDidMount(): void {
-        if (!this.state.firebase.isUserAuthenticated()) {
-            this.state.firebase.authenticateUser().then(() => {
-                this.setState({idToken: this.state.firebase.getIdToken()})
-            })
+        if (this.state.firebase.isUserAuthenticated()) {
+            this.setState({loggedInUser: this.state.firebase.getLoggedInUser()})
+            console.log("Login State: ", this.state)
         }
+    }
+    
+    handleLoginSuccessful(user:User) {
+        this.setState({loggedInUser: user})
     }
 
     render() {
-        if (this.state.firebase.isUserAuthenticated()) {
-            return (
-                <Router>
-                    <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props} retroBoardService={RetroBoardService.getInstance()}  />}/>
-                    <Route exact path={"/retro-board/:retroBoardId"} component={(props: RouteComponentProps) => <RetroBoardPage {...props} retroBoardService={RetroBoardService.getInstance()} />}/>
-                </Router>
-            )
-        }
-
-        return <h2>Access Restricted. <a href={"/"}>Login Here!</a></h2>
+        return <Router>
+            <LayoutUnauthenticated onSuccess={this.handleLoginSuccessful} auth={this.state.loggedInUser} />
+            <LayoutAuthenticated auth={this.state.loggedInUser} />
+        </Router>
 
     }
 }

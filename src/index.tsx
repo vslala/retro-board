@@ -5,6 +5,10 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
+import 'bootstrap-social/assets/css/docs.css'
+import 'bootstrap-social/assets/css/font-awesome.css'
+import 'bootstrap-social/assets/img/bootstrap-social.png'
+import 'bootstrap-social/bootstrap-social.css'
 
 ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
 

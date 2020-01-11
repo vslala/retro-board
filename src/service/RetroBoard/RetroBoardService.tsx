@@ -94,6 +94,9 @@ class RetroBoardService {
     }
 
     public async updateNote(modifiedNote: Note) {
+        if (!modifiedNote)
+            return modifiedNote
+            
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.wallId}/${modifiedNote.noteId}`)
             .update(modifiedNote)
         return modifiedNote
