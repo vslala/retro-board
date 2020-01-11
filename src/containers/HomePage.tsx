@@ -13,8 +13,7 @@ class HomePage extends React.Component<HomePageModel> {
         e.preventDefault()
         const {history, retroBoardService} = this.props
         
-        let retroBoardId = retroBoardService.createNewRetroBoard()
-        
+        let retroBoardId = String(Date.now())
         history.push("/retro-board/" + retroBoardId)
     }
 

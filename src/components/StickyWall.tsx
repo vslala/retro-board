@@ -56,11 +56,6 @@ class StickyWall extends Component<StickyWallModel, State> {
         this.retroWall.retroBoardService.addNewNote(
             this.retroWall.retroBoardId, this.retroWall.wallId, newNote
         )
-        // revert the state if note is not stored in the database
-        .catch((e) => {
-                console.log("Error adding new note to the wall", e)
-                this.setState({notes: prevState})
-            })
 
     }
 
@@ -74,7 +69,6 @@ class StickyWall extends Component<StickyWallModel, State> {
             return
         let curr = e.currentTarget
         this.retroWall.retroBoardService.deleteNote(note)
-            .catch((e) => console.log("Delete failed!", e))
     }
 
     render() {

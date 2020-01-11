@@ -46,28 +46,34 @@ class RetroBoardService {
         return RetroWalls.fromJSON(snapshot.val())
     }
 
-    public createNewRetroBoard() {
-        let retroBoardId: string = String(Date.now())
+    public createNewRetroBoard(retroBoardId:string) {
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
 
         let retroBoard = new RetroBoard(retroBoardId, "Spring Board");
+        
+
+        Firebase.getInstance().getDatabase()
+            .ref(RetroBoardService.BOARDS + retroBoardId)
+            .set(RetroBoard.toJSON(retroBoard))
+
+        return retroBoard
+    }
+    
+    public createRetroWalls(retroBoardId: string) {
         let retroWalls = new RetroWalls([
             RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardService.getInstance()),
             RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardService.getInstance()),
             RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardService.getInstance()),
         ])
-
-        Firebase.getInstance().getDatabase()
-            .ref(RetroBoardService.BOARDS + retroBoardId)
-            .set(RetroBoard.toJSON(retroBoard))
+        
         Firebase.getInstance().getDatabase()
             .ref(`${RetroBoardService.WALLS}/${retroBoardId}`)
             .set(JSON.stringify(retroWalls))
-
-        return retroBoardId
+        
+        return retroWalls
     }
 
-    public async addNewNote(retroBoardId: string, retroWallId: string, newNote: Note) {
+    public addNewNote(retroBoardId: string, retroWallId: string, newNote: Note) {
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${retroWallId}/${newNote.noteId}`)
             .set(newNote)
         return newNote
@@ -86,9 +92,10 @@ class RetroBoardService {
     }
 
 
-    public async deleteNote(note: Note) {
+    public deleteNote(note: Note) {
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
             .remove()
+        return note
     }
 
     public async getNotes(retroBoardId: string, wallId: string): Promise<Notes> {

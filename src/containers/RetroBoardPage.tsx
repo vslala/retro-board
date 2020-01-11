@@ -1,4 +1,5 @@
 import React from 'react'
+import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {Col, Container, Row} from "react-bootstrap";
@@ -6,25 +7,37 @@ import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
 import Toggle from "../components/Toggle";
 import RetroWalls from "../models/RetroWalls";
+import {connect} from 'react-redux'
+import RetroBoardState from "../redux/reducers/RetroBoardState";
+import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
+import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import Notes from "../models/Notes";
 
-interface Props extends RouteComponentProps {
+interface PropsFromParent extends RouteComponentProps {
     retroBoardId?: string
     retroBoardService: RetroBoardService
 }
 
-interface RetroBoardState {
+interface StateFromReduxStore {
+    retroBoard: RetroBoard
+    retroWalls: RetroWalls
+    notes: Notes
+}
+
+interface DispatchProps {
+    createRetroBoard: (retroBoardId: string) => RetroBoardActionTypes
+}
+
+type Props = PropsFromParent & StateFromReduxStore & DispatchProps
+
+interface State {
     retroBoard: RetroBoard
     retroWalls: RetroWalls
     sortCards: boolean
 }
 
 
-class RetroBoardPage extends React.Component<Props, RetroBoardState> {
-    state: RetroBoardState = {
-        retroBoard: new RetroBoard("", ""), // init data
-        retroWalls: new RetroWalls([]),
-        sortCards: false
-    }
+class RetroBoardPage extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
@@ -33,20 +46,11 @@ class RetroBoardPage extends React.Component<Props, RetroBoardState> {
     }
 
     componentDidMount(): void {
-        const {retroBoardId} = this.props.match.params as Props
+        const {retroBoardId} = this.props.match.params as PropsFromParent
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
-        
+
         if (retroBoardId) {
-            this.props.retroBoardService.getRetroBoardById(retroBoardId)
-                .then((retroBoard) => {
-                    this.setState({retroBoard: retroBoard})
-                })
-                // .finally(() => this.props.retroBoardService.getDataOnUpdate(retroBoardId, this.refresh))
-            
-            this.props.retroBoardService.getRetroWalls(retroBoardId)
-                .then((retroWalls) => {
-                    this.setState({retroWalls: retroWalls})
-                })
+            this.props.createRetroBoard(retroBoardId)
         }
 
     }
@@ -62,14 +66,14 @@ class RetroBoardPage extends React.Component<Props, RetroBoardState> {
 
 
     render() {
-        let {retroBoardId} = this.props.match.params as Props
-        let walls = this.state.retroWalls.walls.map((wall, index) => {
+        let {retroBoardId} = this.props.match.params as PropsFromParent
+        let walls = this.props.retroWalls.walls.map((wall, index) => {
             wall.retroBoardService = this.props.retroBoardService
             wall.retroBoardId = retroBoardId!
             return <Col md={4} key={index}>
                 <StickyWall retroWall={wall}
                             sortCards={this.state.sortCards}
-                            />
+                />
             </Col>
         })
         return (
@@ -86,4 +90,20 @@ class RetroBoardPage extends React.Component<Props, RetroBoardState> {
 
 }
 
-export default RetroBoardPage
+function mapStateToProps(state: RetroBoardState): RetroBoardState {
+    console.log("Mapping state to props...", state)
+    return {
+        retroBoard: state.retroBoard,
+        retroWalls: state.retroWalls,
+        notes: state.notes
+    }
+}
+
+function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
+    let service = RetroBoardService.getInstance()
+    return {
+        createRetroBoard: (retroBoardId:string) => dispatch(new RetroBoardActions().createRetroBoard(service.createNewRetroBoard(retroBoardId)))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RetroBoardPage)
