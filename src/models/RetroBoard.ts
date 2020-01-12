@@ -34,10 +34,12 @@ export const RETRO_BOARD_STYLES = {
 class RetroBoard implements RetroBoardModel {
     id: string
     name: string
+    maxLikes:number
 
     constructor(id:string, name:string) {
         this.id = id
         this.name = name
+        this.maxLikes = 5
     }
     
     public static toJSON(retroBoard: RetroBoard) {

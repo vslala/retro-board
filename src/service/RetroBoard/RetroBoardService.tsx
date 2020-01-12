@@ -46,45 +46,48 @@ class RetroBoardService {
         return RetroWalls.fromJSON(snapshot.val())
     }
 
-    public async createNewRetroBoard(retroBoardId:string) {
-        let retroBoard = await this._getData(RetroBoardService.BOARDS + retroBoardId)
-        
-        if (retroBoard) {
+    public async createNewRetroBoard({title, maxLikes}:
+                                         { title: string, maxLikes: number }) {
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}`).push()
+        let retroBoardId = ref.key
+
+        if (retroBoardId) {
+            const retroBoard = new RetroBoard(retroBoardId, title);
+            retroBoard.maxLikes = maxLikes
+            await Firebase.getInstance().getDatabase()
+                .ref(RetroBoardService.BOARDS + retroBoardId)
+                .set(retroBoard)
             localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
-            return RetroBoard.fromJSON(retroBoard)
+            
+            return retroBoard
         }
 
-        retroBoard = new RetroBoard(retroBoardId, "Spring Board");
-        Firebase.getInstance().getDatabase()
-            .ref(RetroBoardService.BOARDS + retroBoardId)
-            .set(RetroBoard.toJSON(retroBoard))
-
-        return retroBoard
+        throw new Error("Cannot retrieve RetroBoardId from the firebase!")
     }
-    
+
     public async createRetroWalls(retroBoardId: string) {
         let retroWalls = await this._getData(`${RetroBoardService.WALLS}/${retroBoardId}`)
         if (retroWalls) {
             console.log(retroWalls)
             return RetroWalls.fromJSON(retroWalls)
         }
-        
+
         retroWalls = new RetroWalls([
             RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardService.getInstance()),
             RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardService.getInstance()),
             RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardService.getInstance()),
         ])
-        
+
         Firebase.getInstance().getDatabase()
             .ref(`${RetroBoardService.WALLS}/${retroBoardId}`)
             .set(JSON.stringify(retroWalls))
-        
+
         return retroWalls
     }
 
     public async addNewNote(newNote: Note) {
         console.log("Adding new note...")
-        
+
         let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${newNote.retroBoardId}/${newNote.wallId}`)
             .push()
         newNote.noteId = String(snapshot.key)
@@ -108,8 +111,8 @@ class RetroBoardService {
             callback(snapshot.val() ? new Notes(Object.values(snapshot.val())) : new Notes([]))
         })
     }
-    
-    public async getNoteWhenLiked(note:Note, callback: (note: Note) => void) {
+
+    public async getNoteWhenLiked(note: Note, callback: (note: Note) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
         ref.on('value', (snapshot) => {
             console.log("Note Data Changed!", snapshot.val())

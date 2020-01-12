@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Firebase from "../service/Firebase";
 import User from "../models/User";
+import Button from "react-bootstrap/Button";
 
 interface Props {
     onSuccess: (loggedInUser:User) => void
@@ -41,10 +42,10 @@ class LoginPage extends React.Component<Props, State> {
                 <Col></Col>
                 <Col>
                     <h2>Login Here!</h2>
-                    <a className="btn btn-block btn-social btn-google" onClick={this.tryGoogleLogin}>
+                    <Button className="btn btn-block btn-social btn-google" onClick={this.tryGoogleLogin}>
                         <span className="fa fa-google"></span>
                         Sign in with Google
-                    </a>
+                    </Button>
                 </Col>
                 <Col></Col>
             </Row>

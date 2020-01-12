@@ -5,13 +5,13 @@ import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {Col, Container, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
-import Toggle from "../components/Toggle";
 import RetroWalls from "../models/RetroWalls";
 import {connect} from 'react-redux'
 import RetroBoardState from "../redux/reducers/RetroBoardState";
 import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
+import RetroNavbar from "../components/RetroNavbar";
 
 interface PropsFromParent extends RouteComponentProps {
     retroBoardId?: string
@@ -25,7 +25,6 @@ interface StateFromReduxStore {
 }
 
 interface DispatchProps {
-    createRetroBoard: (retroBoardId: string) => Promise<RetroBoardActionTypes>
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
 }
 
@@ -53,7 +52,6 @@ class RetroBoardPage extends React.Component<Props, State> {
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
 
         if (retroBoardId) {
-            this.props.createRetroBoard(retroBoardId)
             this.props.createRetroWalls(retroBoardId)
         }
 
@@ -81,14 +79,17 @@ class RetroBoardPage extends React.Component<Props, State> {
             </Col>
         })
         return (
-            <Container>
-                <Row>
-                    <Col md={4}><Toggle onSort={this.sortCards}/></Col>
-                </Row>
-                <Row>
-                    {walls}
-                </Row>
-            </Container>
+            <div>
+                <RetroNavbar />
+                <Container>
+                    {/*<Row>*/}
+                    {/*    <Col md={4}><Toggle onSort={this.sortCards}/></Col>*/}
+                    {/*</Row>*/}
+                    <Row>
+                        {walls}
+                    </Row>
+                </Container>
+            </div>
         )
     }
 
@@ -96,7 +97,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 
 function mapStateToProps(state: RetroBoardState): RetroBoardState {
     console.log("Mapping state to props...", state)
-    
+
     return {
         retroBoard: state.retroBoard,
         retroWalls: state.retroWalls,
@@ -107,11 +108,10 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
     let service = RetroBoardService.getInstance()
     const retroBoardActions = new RetroBoardActions();
-        
-        
+
+
     return {
-        createRetroBoard: async (retroBoardId:string) => dispatch(retroBoardActions.createRetroBoard(await service.createNewRetroBoard(retroBoardId))),
-        createRetroWalls: async (retroBoardId:string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId)))
+        createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId)))
     }
 }
 
