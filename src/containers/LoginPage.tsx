@@ -3,11 +3,10 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Firebase from "../service/Firebase";
-import User from "../models/User";
 import Button from "react-bootstrap/Button";
+import {RouteComponentProps, withRouter} from 'react-router-dom';
 
-interface Props {
-    onSuccess: (loggedInUser:User) => void
+interface Props extends RouteComponentProps {
 }
 
 interface State {
@@ -30,7 +29,7 @@ class LoginPage extends React.Component<Props, State> {
     tryGoogleLogin() {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {
-                this.props.onSuccess(this.state.firebase.getLoggedInUser())
+                this.props.history.push("/")
             })
         }
     }
@@ -53,4 +52,4 @@ class LoginPage extends React.Component<Props, State> {
     }
 }
 
-export default LoginPage
+export default withRouter(LoginPage)

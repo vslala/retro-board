@@ -7,7 +7,7 @@ import Notes from "../../models/Notes";
 
 class RetroBoardService {
 
-    public static BOARDS = "/boards/"
+    public static BOARDS = "/boards"
     public static WALLS = "/walls"
     public static NOTES = "/notes"
     public static RETRO_BOARD_ID = "retroBoardId";
@@ -48,14 +48,15 @@ class RetroBoardService {
 
     public async createNewRetroBoard({title, maxLikes}:
                                          { title: string, maxLikes: number }) {
-        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}`).push()
+        let retroBoardDBPath = this._getRetroBoardDBPath();
+        let ref = Firebase.getInstance().getDatabase().ref(retroBoardDBPath).push()
         let retroBoardId = ref.key
 
         if (retroBoardId) {
             const retroBoard = new RetroBoard(retroBoardId, title);
             retroBoard.maxLikes = maxLikes
             await Firebase.getInstance().getDatabase()
-                .ref(RetroBoardService.BOARDS + retroBoardId)
+                .ref(`${retroBoardDBPath}/${retroBoardId}`)
                 .set(retroBoard)
             localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
             
@@ -63,6 +64,13 @@ class RetroBoardService {
         }
 
         throw new Error("Cannot retrieve RetroBoardId from the firebase!")
+    }
+
+    private _getRetroBoardDBPath() {
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        console.log("Logged In User: ", loggedInUser)
+        const retroBoardPath = `${RetroBoardService.BOARDS}/${loggedInUser.uid}`;
+        return retroBoardPath
     }
 
     public async createRetroWalls(retroBoardId: string) {

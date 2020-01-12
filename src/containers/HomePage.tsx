@@ -21,14 +21,22 @@ class HomePage extends React.Component<HomePageModel> {
 
     render() {
         return <>
-            <RetroNavbar />
+            <RetroNavbar/>
             <Container>
                 <Row>
-                    <Col></Col>
                     <Col>
+                        <div className={"pb-2 mt-4 mb-2 border-bottom"}>
+                            <h3>Create Boards</h3>
+                        </div>
                         <CreateRetroBoard retroBoardService={this.props.retroBoardService}/>
                     </Col>
-                    <Col></Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <div className={"pb-2 mt-4 mb-2 border-bottom"}>
+                            <h3>My Boards</h3>
+                        </div>
+                    </Col>
                 </Row>
             </Container>
         </>

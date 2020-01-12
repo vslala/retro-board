@@ -1,19 +1,28 @@
 import React from 'react'
-import {Redirect} from "react-router-dom";
+import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
 import LoginPage from "../containers/LoginPage";
-import User from "../models/User";
+import Firebase from "../service/Firebase";
 
-interface Props {
-    onSuccess: (user:User) => void
-    auth?: User
+interface Props extends RouteComponentProps {
 }
+
 class LayoutUnauthenticated extends React.Component<Props> {
 
     render(): JSX.Element {
-        if (this.props.auth)
-            return <Redirect to={"/"} />
-        return <LoginPage onSuccess={this.props.onSuccess} />
+        console.log("Route Props: ", this.props.location)
+        const {pathname, search} = this.props.location
+        
+        // if user is logged in and requests for login page
+        // then redirect it to home (/)
+        // otherwise, forward the request to original address
+        if (Firebase.getInstance().getLoggedInUser()) {
+            if (pathname.includes("login"))
+                return <Redirect to={"/"} />
+            return <Redirect to={`${pathname}${search}`}/>
+        }
+
+        return <LoginPage />
     }
 }
 
-export default LayoutUnauthenticated
+export default withRouter(LayoutUnauthenticated)

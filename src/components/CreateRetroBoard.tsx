@@ -37,12 +37,12 @@ const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {
 
     return <>
         <Button variant="primary" onClick={handleShow}>
-            Create Dashboard
+            Create Retro Board
         </Button>
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Create New Dashboard</Modal.Title>
+                <Modal.Title>Create Retro Board</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>

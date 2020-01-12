@@ -25,7 +25,7 @@ class Firebase {
     private constructor() {
         firebase.initializeApp(config)
         this.auth = firebase.auth()
-      
+
         console.log(config)
     }
 
@@ -36,39 +36,40 @@ class Firebase {
 
         return Firebase.instance;
     }
-    
+
     public getDatabase(): firebase.database.Database {
-      return firebase.database()
+        return firebase.database()
     }
 
     public async authenticateUser(): Promise<void> {
-      let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
-      this.authenticatedUser = userCredentials
-      let idToken = await userCredentials.user!.getIdToken()
-      
-      console.log(userCredentials.user)
-      
-      this.loggedInUser = new User()
-      this.loggedInUser.displayName = userCredentials.user?.displayName || ""
-      this.loggedInUser.idToken = idToken
-      this.loggedInUser.email = userCredentials.user?.email || ""
-      
-      localStorage.setItem("idToken", idToken)
-      localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
+        let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
+        let idToken = await userCredentials.user!.getIdToken()
+
+        console.log(userCredentials)
+
+        this.loggedInUser = new User()
+        this.loggedInUser.displayName = userCredentials.user?.displayName || ""
+        this.loggedInUser.idToken = idToken
+        this.loggedInUser.email = userCredentials.user?.email || ""
+        this.loggedInUser.uid = userCredentials.user?.uid || ""
+
+        localStorage.setItem("credentials", JSON.stringify(userCredentials))
+        localStorage.setItem("idToken", idToken)
+        localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
     }
-    
+
     public getLoggedInUser(): User {
         return JSON.parse(localStorage.getItem(User.USER_INFO)!) as User
     }
-    
+
     public isUserAuthenticated() {
-      let isAuthenticated =  localStorage.getItem(User.ID_TOKEN) !== null
-      console.log("Is Authenticated=" + isAuthenticated, this.getLoggedInUser())
-      return isAuthenticated
+        let isAuthenticated = localStorage.getItem(User.ID_TOKEN) !== null
+        console.log("Is Authenticated=" + isAuthenticated, this.getLoggedInUser())
+        return isAuthenticated
     }
-    
+
     public getIdToken(): string {
-      return this.authenticatedUser!.credential!.providerId
+        return this.authenticatedUser!.credential!.providerId
     }
 }
 
