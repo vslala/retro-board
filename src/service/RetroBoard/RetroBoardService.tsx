@@ -145,6 +145,14 @@ class RetroBoardService {
         }
         return new Notes([])
     }
+    
+    public async getMyBoards(): Promise<RetroBoard[]> {
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
+            .once('value')
+        console.log("My Boards: ", snapshot.val())
+        return Object.values(snapshot.val())
+    }
 }
 
 /*

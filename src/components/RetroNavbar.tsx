@@ -10,7 +10,7 @@ class RetroNavbar extends React.Component {
 
     render(): JSX.Element {
         return <Navbar bg="light" expand="lg">
-            <Navbar.Brand href="#home">Retro Board</Navbar.Brand>
+            <Navbar.Brand href="/#/">Retro Board</Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="mr-auto">

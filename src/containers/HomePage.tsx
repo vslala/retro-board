@@ -3,6 +3,7 @@ import {HomePageModel} from "../interfaces/HomePageModel"
 import {Col, Container, Row} from "react-bootstrap"
 import CreateRetroBoard from "../components/CreateRetroBoard";
 import RetroNavbar from "../components/RetroNavbar";
+import MyBoards from "../components/MyBoards";
 
 class HomePage extends React.Component<HomePageModel> {
 
@@ -36,6 +37,7 @@ class HomePage extends React.Component<HomePageModel> {
                         <div className={"pb-2 mt-4 mb-2 border-bottom"}>
                             <h3>My Boards</h3>
                         </div>
+                        <MyBoards retroBoardService={this.props.retroBoardService} />
                     </Col>
                 </Row>
             </Container>
