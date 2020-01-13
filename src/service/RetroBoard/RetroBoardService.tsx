@@ -59,7 +59,7 @@ class RetroBoardService {
                 .ref(`${retroBoardDBPath}/${retroBoardId}`)
                 .set(retroBoard)
             localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId)
-            
+
             return retroBoard
         }
 
@@ -107,7 +107,7 @@ class RetroBoardService {
     public async updateNote(modifiedNote: Note) {
         if (!modifiedNote)
             return modifiedNote
-            
+
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.wallId}/${modifiedNote.noteId}`)
             .update(modifiedNote)
         return modifiedNote
@@ -145,13 +145,27 @@ class RetroBoardService {
         }
         return new Notes([])
     }
-    
+
     public async getMyBoards(): Promise<RetroBoard[]> {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()
         let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
             .once('value')
         console.log("My Boards: ", snapshot.val())
         return Object.values(snapshot.val())
+    }
+
+    public async sortByVotes(notes: Notes) {
+        return new Notes(notes.notes.sort((item1, item2) => {
+            let itemOneLikesCount = 0
+            let itemTwoLikesCount = 0
+            
+            if (item1.likedBy)
+               itemOneLikesCount = item1.likedBy.length
+            if (item2.likedBy)
+                itemTwoLikesCount = item2.likedBy.length
+                
+            return 0 - (itemOneLikesCount > itemTwoLikesCount ? 1 : -1)
+        }))
     }
 }
 

@@ -7,5 +7,4 @@ export interface WallStyle {
 
 export interface StickyWallModel {
     retroWall: RetroWall
-    sortCards: boolean
 }

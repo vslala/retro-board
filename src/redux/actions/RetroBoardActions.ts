@@ -48,6 +48,12 @@ class RetroBoardActions {
         }
     }
 
+    public sortByVotes(notes: Notes): RetroBoardActionTypes {
+        return {
+            type: ActionTypes.SORT_BY_VOTES,
+            payload: notes
+        };
+    }
 }
 
 export default RetroBoardActions

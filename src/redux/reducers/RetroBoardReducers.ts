@@ -63,6 +63,13 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
                 notes: new Notes(state.notes.notes.concat(action.payload.notes))
             }
             
+        case ActionTypes.SORT_BY_VOTES:
+            
+            return {
+                ...state,
+                notes: action.payload
+            }
+            
     }
     return initialState
 }

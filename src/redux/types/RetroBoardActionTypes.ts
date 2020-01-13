@@ -4,6 +4,7 @@ import Note from "../../models/Note";
 import Notes from "../../models/Notes";
 
 export enum ActionTypes {
+    SORT_BY_VOTES,
     GET_NOTES,
     RETRIEVE_RETRO_BOARD,
     UPDATE_NOTE,
@@ -43,5 +44,10 @@ interface GetNotesAction {
     payload: Notes
 }
 
+interface SortByVotes {
+    type: typeof ActionTypes.SORT_BY_VOTES
+    payload: Notes
+}
+
 export type RetroBoardActionTypes = CreateRetroBoardAction | CreateRetroWallsAction | CreateNoteAction |
-    UpdateNoteAction | DeleteNoteAction | GetNotesAction
+    UpdateNoteAction | DeleteNoteAction | GetNotesAction | SortByVotes

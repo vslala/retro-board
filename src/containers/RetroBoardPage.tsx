@@ -12,6 +12,8 @@ import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
 import RetroNavbar from "../components/RetroNavbar";
+import Form from "react-bootstrap/Form";
+import FormControl from "react-bootstrap/FormControl";
 
 interface PropsFromParent extends RouteComponentProps {
     retroBoardId?: string
@@ -26,31 +28,32 @@ interface StateFromReduxStore {
 
 interface DispatchProps {
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
+    sortByVotes: (notes:Notes) => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
 
 interface State {
-    sortCards: boolean
+    sortSelectValue: string
 }
 
 
 class RetroBoardPage extends React.Component<Props, State> {
 
     state: State = {
-        sortCards: false
+        sortSelectValue: "select"
     }
 
     constructor(props: Props) {
         super(props)
         this.refresh = this.refresh.bind(this)
-        this.sortCards = this.sortCards.bind(this)
+        this.handleSort = this.handleSort.bind(this)
     }
 
     componentDidMount(): void {
         const {retroBoardId} = this.props.match.params as PropsFromParent
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
-
+        
         if (retroBoardId) {
             this.props.createRetroWalls(retroBoardId)
         }
@@ -60,9 +63,13 @@ class RetroBoardPage extends React.Component<Props, State> {
     refresh(retroWalls: RetroWalls) {
         console.log("Data Changed: ", retroWalls)
     }
-
-    sortCards(): void {
-        this.setState({sortCards: true})
+    
+    handleSort(e:React.ChangeEvent<HTMLSelectElement>): void {
+        let sortBy = e.target.value
+        if (sortBy === "votes") {
+            this.props.sortByVotes(this.props.notes)
+            this.setState({sortSelectValue: "votes"})
+        }
     }
 
 
@@ -73,7 +80,6 @@ class RetroBoardPage extends React.Component<Props, State> {
             wall.retroBoardId = retroBoardId!
             return <Col md={4} key={index}>
                 <StickyWall retroWall={wall}
-                            sortCards={this.state.sortCards}
                             notes={this.props.notes.notes}
                 />
             </Col>
@@ -82,9 +88,17 @@ class RetroBoardPage extends React.Component<Props, State> {
             <div>
                 <RetroNavbar />
                 <Container>
-                    {/*<Row>*/}
-                    {/*    <Col md={4}><Toggle onSort={this.sortCards}/></Col>*/}
-                    {/*</Row>*/}
+                    <Row>
+                        <Form>
+                            <Form.Group>
+                                <Form.Label>Sort cards: </Form.Label>
+                                <FormControl as={"select"} onChange={this.handleSort} value={this.state.sortSelectValue}>
+                                    <option defaultValue={"select"}>select...</option>
+                                    <option defaultValue={"votes"} value={"votes"}>Sort by Up-votes</option>
+                                </FormControl>
+                            </Form.Group>
+                        </Form>
+                    </Row>
                     <Row>
                         {walls}
                     </Row>
@@ -111,7 +125,8 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
 
     return {
-        createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId)))
+        createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
+        sortByVotes: async (notes:Notes) => dispatch(retroBoardActions.sortByVotes(await service.sortByVotes(notes)))
     }
 }
 
