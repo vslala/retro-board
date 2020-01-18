@@ -15,6 +15,8 @@ import RetroNavbar from "../components/RetroNavbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
+import {CSVLink} from "react-csv";
+import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 
 interface PropsFromParent extends RouteComponentProps {
     retroBoardId?: string
@@ -49,6 +51,7 @@ class RetroBoardPage extends React.Component<Props, State> {
         super(props)
         this.refresh = this.refresh.bind(this)
         this.handleSort = this.handleSort.bind(this)
+        this.convertJsonToCsv = this.convertJsonToCsv.bind(this)
     }
 
     componentDidMount(): void {
@@ -71,6 +74,29 @@ class RetroBoardPage extends React.Component<Props, State> {
             this.props.sortByVotes(this.props.notes)
             this.setState({sortSelectValue: "votes"})
         }
+    }
+    
+    convertJsonToCsv(): {data: Data, headers: LabelKeyObject[]} {
+        let headers: LabelKeyObject[] = [
+            {label: "Wall Name", key: "wallName"},
+            {label: "Note", key: "noteText"},
+            {label: "Up-votes", key: "upvotes"}
+        ]
+        
+        let data: Data = []
+        const {notes, retroWalls} = this.props
+        
+        retroWalls.walls.forEach((wall) => {
+            notes.notes.forEach((note) => {
+                if (note.wallId === wall.wallId) {
+                    data.push(
+                        {wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length || 0}
+                    )
+                }
+            })
+        })
+        
+        return {data: data, headers: headers}
     }
 
 
@@ -105,7 +131,7 @@ class RetroBoardPage extends React.Component<Props, State> {
                         <Col></Col>
                         <Col className={"align-self-center"}>
                             <Button className={"pull-right"} variant={"info"}>
-                                <i className="fa fa-print"></i>
+                                <CSVLink {...this.convertJsonToCsv()} target={"_blank"} filename={this.props.retroBoard.name}><i className="fa fa-print"></i></CSVLink>
                             </Button>
                         </Col>
                     </Row>
