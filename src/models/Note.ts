@@ -1,5 +1,4 @@
 import {StickyNoteStyle} from "../interfaces/StickyNoteModel";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import User from "./User";
 
 class Note {

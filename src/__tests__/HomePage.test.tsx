@@ -3,7 +3,7 @@ import {render, RenderResult} from '@testing-library/react';
 import HomePage from "../containers/HomePage";
 import '../setupTests'
 import {MemoryRouter} from 'react-router-dom';
-import {createMemoryHistory, createLocation} from 'history'
+import {createLocation, createMemoryHistory} from 'history'
 import {match} from 'react-router'
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";

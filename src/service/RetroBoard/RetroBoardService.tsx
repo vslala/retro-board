@@ -67,7 +67,7 @@ class RetroBoardService {
     }
 
     private _getRetroBoardDBPath() {
-        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()!
         
         const retroBoardPath = `${RetroBoardService.BOARDS}/${loggedInUser.uid}`;
         return retroBoardPath
@@ -147,7 +147,7 @@ class RetroBoardService {
     }
 
     public async getMyBoards(): Promise<RetroBoard[]> {
-        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()!
         let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
             .once('value')
         

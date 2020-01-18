@@ -54,12 +54,12 @@ class StickyWall extends Component<Props, State> {
             textColor: this.retroWall.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
         })
-        newNote.createdBy.push(Firebase.getInstance().getLoggedInUser().email)
+        newNote.createdBy.push(Firebase.getInstance().getLoggedInUser()!.email)
         this.props.addNewNote(newNote)
     }
 
     deleteNote(note: Note) {
-        if (!note.createdBy?.includes(Firebase.getInstance().getLoggedInUser().email))
+        if (!note.createdBy?.includes(Firebase.getInstance().getLoggedInUser()!.email))
             return
         this.props.deleteNote(note)
     }
