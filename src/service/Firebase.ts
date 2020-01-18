@@ -26,7 +26,7 @@ class Firebase {
         firebase.initializeApp(config)
         this.auth = firebase.auth()
 
-        console.log(config)
+        
     }
 
     public static getInstance() {
@@ -45,7 +45,7 @@ class Firebase {
         let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
         let idToken = await userCredentials.user!.getIdToken()
 
-        console.log(userCredentials)
+        
 
         this.loggedInUser = new User()
         this.loggedInUser.displayName = userCredentials.user?.displayName || ""
@@ -58,13 +58,15 @@ class Firebase {
         localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
     }
 
-    public getLoggedInUser(): User {
-        return JSON.parse(localStorage.getItem(User.USER_INFO)!) as User
+    public getLoggedInUser(): User | undefined {
+        let loggedInUserJson = localStorage.getItem(User.USER_INFO)!;
+        if (loggedInUserJson)
+            return JSON.parse(loggedInUserJson) as User
     }
 
     public isUserAuthenticated() {
         let isAuthenticated = localStorage.getItem(User.ID_TOKEN) !== null
-        console.log("Is Authenticated=" + isAuthenticated, this.getLoggedInUser())
+        
         return isAuthenticated
     }
 

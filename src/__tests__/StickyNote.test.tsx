@@ -3,20 +3,25 @@ import {fireEvent, render, RenderResult} from '@testing-library/react';
 import StickyNote from "../components/StickyNote";
 import '../setupTests'
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import {Provider} from "react-redux";
+import store from "../redux/store/Store";
+import Note from "../models/Note";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
-    let mockHandleEnterFn = jest.fn((str: string) => console.log("New Note: ", str))
+    let service = RetroBoardService.getInstance();
+    let testNoteObj = new Note("testId-1", "wallId", "FooBar",
+        {backgroundColor: '', likeBtnPosition: "right", textColor: "red"});
+    service.updateNote = jest.fn().mockImplementation(() => {
+        testNoteObj.noteText = "Foo Bar Tar"
+        return testNoteObj
+    })
     
     beforeEach(() => {
-        stickyNote = render(<StickyNote 
-            retroBoardId={"1"} wallId={"wentWell"} 
-            retroBoardService={RetroBoardService.getInstance()} 
-            noteId={"testid"} 
-            style={{backgroundColor: '', likeBtnPosition: "right", textColor: "red"}} 
-            noteText={"FooBar"} 
-            likedBy={[]}
-            />)
+        stickyNote = render(<Provider store={store}><StickyNote 
+            retroBoardService={service} 
+            note={testNoteObj}
+        /></Provider>)
     })
 
     test("it should display note text in a card style", () => {
@@ -37,14 +42,15 @@ describe('Component StickyNote Test', function () {
         expect(editor.value).toBe("FooBar")
     })
     
-    test("it should modify the note text and hide the editor", () => {
+    test("it should modify the note text and hide the editor", async () => {
         let note = stickyNote.getByTestId("editor")
-        fireEvent.click(note)
+        await fireEvent.click(note)
         
         let editor = stickyNote.container.querySelector("textarea")!
-        fireEvent.change(editor, {target: { value: "Foo Bar Tar"}})
-        fireEvent.keyUp(editor, {key: "Enter"})
         
-        expect(stickyNote.getByText("Foo Bar Tar")).toBeInTheDocument()
+        await fireEvent.change(editor, {target: { value: "Foo Bar Tar"}})
+        await fireEvent.keyUp(editor, {key: "Enter"})
+        
+        expect(service.updateNote).toHaveBeenCalledTimes(1)
     })
 });

@@ -23,7 +23,7 @@ class AddNewNote extends React.Component<Props, State> {
     }
 
     showEditor() {
-        console.log("Show editor!")
+        
         this.setState({showEditor: true})
     }
     

@@ -31,7 +31,7 @@ class RetroBoardService {
     }
 
     public async getRetroBoardById(retroBoardId: string): Promise<RetroBoard> {
-        console.log("Retro Board ID: ", retroBoardId)
+        
         let snapshot = await Firebase.getInstance().getDatabase()
             .ref(RetroBoardService.BOARDS + retroBoardId).once('value')
         let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
@@ -68,7 +68,7 @@ class RetroBoardService {
 
     private _getRetroBoardDBPath() {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()
-        console.log("Logged In User: ", loggedInUser)
+        
         const retroBoardPath = `${RetroBoardService.BOARDS}/${loggedInUser.uid}`;
         return retroBoardPath
     }
@@ -76,7 +76,7 @@ class RetroBoardService {
     public async createRetroWalls(retroBoardId: string) {
         let retroWalls = await this._getData(`${RetroBoardService.WALLS}/${retroBoardId}`)
         if (retroWalls) {
-            console.log(retroWalls)
+            
             return RetroWalls.fromJSON(retroWalls)
         }
 
@@ -94,7 +94,7 @@ class RetroBoardService {
     }
 
     public async addNewNote(newNote: Note) {
-        console.log("Adding new note...")
+        
 
         let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${newNote.retroBoardId}/${newNote.wallId}`)
             .push()
@@ -123,14 +123,14 @@ class RetroBoardService {
     public async getNoteWhenLiked(note: Note, callback: (note: Note) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
         ref.on('value', (snapshot) => {
-            console.log("Note Data Changed!", snapshot.val())
+            
             callback(snapshot.val() as Note)
         })
     }
 
 
     public deleteNote(note: Note) {
-        console.log("Deleting note: ", note)
+        
         Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
             .remove()
         return note
@@ -150,7 +150,7 @@ class RetroBoardService {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()
         let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
             .once('value')
-        console.log("My Boards: ", snapshot.val())
+        
         return Object.values(snapshot.val())
     }
 

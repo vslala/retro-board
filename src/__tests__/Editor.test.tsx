@@ -6,7 +6,7 @@ import "../setupTests"
 describe("EditorTestSuite", () => {
     
     let editor: RenderResult
-    let enterKey = jest.fn((str: string) => console.log("Enter key pressed! String passed: ", str))
+    let enterKey = jest.fn((str: string) => "")
     
     beforeEach(() => {
         editor = render(<Editor handleEnter={enterKey} />)

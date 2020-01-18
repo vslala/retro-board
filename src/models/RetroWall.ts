@@ -11,7 +11,7 @@ class RetroWall {
 
     constructor(retroBoardId:string, title: string, style: WallStyle, retroBoardService: RetroBoardService) {
         this.retroBoardId = retroBoardId
-        this.wallId = title.replace(" ", "")
+        this.wallId = title.replace(/\s/g, "")
         this.title = title
         this.style = style
         this.sortCards = false

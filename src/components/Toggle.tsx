@@ -22,7 +22,7 @@ class Toggle extends React.Component<Props, State> {
     }
     
     handleChange(val: any): void {
-        console.log("Toggling:", val)
+        
         this.setState({sort: val})
         if (val)
             this.props.onSort()

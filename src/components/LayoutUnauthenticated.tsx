@@ -9,7 +9,7 @@ interface Props extends RouteComponentProps {
 class LayoutUnauthenticated extends React.Component<Props> {
 
     render(): JSX.Element {
-        console.log("Route Props: ", this.props.location)
+        
         const {pathname, search} = this.props.location
         
         // if user is logged in and requests for login page

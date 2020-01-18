@@ -47,6 +47,7 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
         case ActionTypes.DELETE_NOTE:
             let notes: Note[] = []
             state.notes.notes.forEach((note) => {
+                
                 if (note.noteId !== action.payload.noteId)
                     notes.push(note)
             })

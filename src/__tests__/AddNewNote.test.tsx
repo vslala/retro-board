@@ -9,7 +9,7 @@ describe('AddNewNote test suite', () => {
     let addNewNoteBtn: HTMLInputElement
     
     beforeEach(() => {
-        let addNewNoteFn = jest.fn((note:string) => console.log("New Note: ", note))
+        let addNewNoteFn = jest.fn((note:string) => "")
         addNewNote = render(<AddNewNote addNote={addNewNoteFn} />)
         addNewNoteBtn = addNewNote.container.querySelector<HTMLInputElement>("button")!
     })

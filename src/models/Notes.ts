@@ -12,7 +12,7 @@ class Notes {
     }
     
     public static fromJSON(json:string): Notes {
-        console.log("json", json)
+        
         return JSON.parse(json)
     }
     

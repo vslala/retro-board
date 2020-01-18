@@ -61,7 +61,7 @@ class RetroBoardPage extends React.Component<Props, State> {
     }
 
     refresh(retroWalls: RetroWalls) {
-        console.log("Data Changed: ", retroWalls)
+        
     }
     
     handleSort(e:React.ChangeEvent<HTMLSelectElement>): void {
@@ -110,7 +110,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RetroBoardState): RetroBoardState {
-    console.log("Mapping state to props...", state)
+    
 
     return {
         retroBoard: state.retroBoard,

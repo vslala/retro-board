@@ -43,7 +43,7 @@ class StickyWall extends Component<Props, State> {
 
     componentDidMount(): void {
         this.props.retroWall.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
-            console.log("Data Changed!")
+            
             this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
         })
     }
@@ -53,7 +53,7 @@ class StickyWall extends Component<Props, State> {
             backgroundColor: this.retroWall.style?.stickyNote?.backgroundColor || "white",
             textColor: this.retroWall.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
-        }, this.retroWall.retroBoardService)
+        })
         newNote.createdBy.push(Firebase.getInstance().getLoggedInUser().email)
         this.props.addNewNote(newNote)
     }
@@ -65,8 +65,11 @@ class StickyWall extends Component<Props, State> {
     }
 
     render() {
-        console.log("Rendering StickyWall...")
+        
         const {notes} = this.props
+        
+        
+        
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
                 <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
@@ -91,6 +94,7 @@ class StickyWall extends Component<Props, State> {
 const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     const service = RetroBoardService.getInstance()
     const retroBoardActions = new RetroBoardActions();
+    
     return {
         addNewNote: async (note: Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
         deleteNote: async (note: Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),

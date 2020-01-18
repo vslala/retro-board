@@ -64,7 +64,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
             let note = this.props.note
             note.likedBy = users
-            console.log("Liked Note: ", note)
+            
             this.props.updateNote(note)
         }
 
@@ -72,7 +72,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
 
     render() {
-        console.log("Rendering StickyNote component...")
+        
         let note = this.props.note
         return (
             <Card style={{backgroundColor: note.style?.backgroundColor || "white"}}>

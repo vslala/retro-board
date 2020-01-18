@@ -4,7 +4,6 @@ import User from "./User";
 
 class Note {
     retroBoardId: string
-    retroBoardService: RetroBoardService
     wallId: string
     noteId: string
     noteText: string
@@ -12,13 +11,12 @@ class Note {
     likedBy: User[]
     createdBy: string[]
     
-    constructor(retroBoardId: string, wallId: string, noteText:string, style:StickyNoteStyle, retroBoardService: RetroBoardService) {
+    constructor(retroBoardId: string, wallId: string, noteText:string, style:StickyNoteStyle) {
         this.retroBoardId = retroBoardId
         this.wallId = wallId
         this.noteId = String(Date.now())
         this.noteText = noteText
         this.style = style
-        this.retroBoardService = retroBoardService
         this.likedBy = []
         this.createdBy = []
     }
