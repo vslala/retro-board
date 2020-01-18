@@ -14,14 +14,15 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
 
     const [boards, setBoards] = useState<RetroBoard[]>([])
 
-    async function _getMyBoards() {
-        let myBoards = await retroBoardService.getMyBoards()
-        setBoards(myBoards)
-    }
 
     useEffect(() => {
+        async function _getMyBoards() {
+            let myBoards = await retroBoardService.getMyBoards()
+            setBoards(myBoards)
+        }
+        // eslint
         _getMyBoards();
-    }, [])
+    }, [retroBoardService])
 
     return <>
         <Row>

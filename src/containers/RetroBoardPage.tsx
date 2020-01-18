@@ -14,6 +14,7 @@ import Notes from "../models/Notes";
 import RetroNavbar from "../components/RetroNavbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
+import Button from "react-bootstrap/Button";
 
 interface PropsFromParent extends RouteComponentProps {
     retroBoardId?: string
@@ -28,7 +29,7 @@ interface StateFromReduxStore {
 
 interface DispatchProps {
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
-    sortByVotes: (notes:Notes) => Promise<RetroBoardActionTypes>
+    sortByVotes: (notes: Notes) => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
@@ -61,10 +62,10 @@ class RetroBoardPage extends React.Component<Props, State> {
     }
 
     refresh(retroWalls: RetroWalls) {
-        
+
     }
-    
-    handleSort(e:React.ChangeEvent<HTMLSelectElement>): void {
+
+    handleSort(e: React.ChangeEvent<HTMLSelectElement>): void {
         let sortBy = e.target.value
         if (sortBy === "votes") {
             this.props.sortByVotes(this.props.notes)
@@ -86,18 +87,27 @@ class RetroBoardPage extends React.Component<Props, State> {
         })
         return (
             <div>
-                <RetroNavbar />
+                <RetroNavbar/>
                 <Container>
                     <Row>
-                        <Form>
-                            <Form.Group>
-                                <Form.Label>Sort cards: </Form.Label>
-                                <FormControl as={"select"} onChange={this.handleSort} value={this.state.sortSelectValue}>
-                                    <option defaultValue={"select"}>select...</option>
-                                    <option defaultValue={"votes"} value={"votes"}>Sort by Up-votes</option>
-                                </FormControl>
-                            </Form.Group>
-                        </Form>
+                        <Col>
+                            <Form>
+                                <Form.Group>
+                                    <Form.Label>Sort cards: </Form.Label>
+                                    <FormControl as={"select"} onChange={this.handleSort}
+                                                 value={this.state.sortSelectValue}>
+                                        <option defaultValue={"select"}>select...</option>
+                                        <option defaultValue={"votes"} value={"votes"}>Sort by Up-votes</option>
+                                    </FormControl>
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                        <Col></Col>
+                        <Col className={"align-self-center"}>
+                            <Button className={"pull-right"} variant={"info"}>
+                                <i className="fa fa-print"></i>
+                            </Button>
+                        </Col>
                     </Row>
                     <Row>
                         {walls}
