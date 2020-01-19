@@ -49,13 +49,15 @@ const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {
                     <Form.Group>
                         <Form.Label>Dashboard Title</Form.Label>
                         <Form.Control name={"title"} type={"text"} placeholder={"e.g. Spring 400 "}
-                                      value={formInput.title}
+                                      value={formInput.title} autoComplete={"false"}
                                       onChange={handleChange("title")}/>
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Max Likes</Form.Label>
                         <Form.Control name={"maxLikes"} type={"number"} placeholder={"e.g. 5 or 6 "}
-                                      onChange={handleChange("maxLikes")} value={String(formInput.maxLikes)}/>
+                                      onChange={handleChange("maxLikes")} 
+                                      autoComplete={"false"}
+                                      value={String(formInput.maxLikes)}/>
                     </Form.Group>
                 </Form>
             </Modal.Body>
