@@ -44,9 +44,9 @@ class Firebase {
     public async authenticateUser(): Promise<void> {
         let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
         let idToken = await userCredentials.user!.getIdToken()
-
         
-
+        console.log("Logged In User: ", userCredentials)
+        
         this.loggedInUser = new User()
         this.loggedInUser.displayName = userCredentials.user?.displayName || ""
         this.loggedInUser.idToken = idToken

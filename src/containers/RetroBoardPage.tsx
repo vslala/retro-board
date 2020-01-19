@@ -131,7 +131,7 @@ class RetroBoardPage extends React.Component<Props, State> {
                         <Col></Col>
                         <Col className={"align-self-center"}>
                             <Button className={"pull-right"} variant={"info"}>
-                                <CSVLink {...this.convertJsonToCsv()} target={"_blank"} filename={this.props.retroBoard.name}><i className="fa fa-print"></i></CSVLink>
+                                <CSVLink {...this.convertJsonToCsv()} target={"_blank"} filename={this.props.retroBoard.name}><i className="fa fa-print" style={{color: "white"}}></i></CSVLink>
                             </Button>
                         </Col>
                     </Row>

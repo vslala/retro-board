@@ -1,7 +1,8 @@
 stages:
-- test
-- build
-- package
+  - test
+  - build
+  - package
+  - deploy
 
 variables:
   REGISTRY_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
@@ -10,35 +11,56 @@ test:
   image: node:10
   cache:
     paths:
-    - node_modules/
+      - node_modules/
 
   stage: test
   script:
-  - echo "Setting up test env"
-  - echo $ENV | base64 -d > .env
-  - echo "Running tests"
-  - yarn install
-  - yarn test -- --coverage
+    - echo "Setting up test env"
+    - echo $ENV | base64 -d > .env
+    - echo "Running tests"
+    - yarn install
+    - yarn test -- --coverage
 
 
 build:
   image: node:10
   stage: build
   script:
-  - echo "Building the app"
-  - yarn install
-  - yarn build
+    - echo "Building the app"
+    - yarn install
+    - yarn build
   artifacts:
     paths:
-    - build
+      - build
 
 
 docker-build:
   image: docker:latest
   services:
-  - docker:dind
+    - docker:dind
   stage: package
   script:
-  - docker build -t $REGISTRY_IMAGE .
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-  - docker push $REGISTRY_IMAGE
+    - docker build -t $REGISTRY_IMAGE .
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push $REGISTRY_IMAGE
+
+deploy:
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    ## Install ssh agent (so we can access the Digital Ocean Droplet) and run it.
+    - apk update && apk add openssh-client
+    - eval $(ssh-agent -s)
+    ## Test it!
+    - apk update && apk add sshpass
+    - sshpass -p ${SERVER_PASSWORD} ssh -o StrictHostKeyChecking=no -tt ${SERVER_USERNAME}@${SERVER_IP} 'echo $HOME'
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: deploy
+  script:
+    - echo "Deploying Docker Image To The Server"
+    - ls -lsa
+    - whoami
+    - chmod +x deploy.sh
+    - ./deploy.sh ${SERVER_USER} ${SERVER_PASSWORD} ${SERVER_IP} ${CI_REGISTRY} ${CI_JOB_TOKEN} ${REGISTRY_IMAGE} 
