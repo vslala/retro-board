@@ -9,20 +9,21 @@ import Firebase from "../service/Firebase";
 interface Props {
 }
 
+const AUTH_ROUTES = <>
+    <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props}
+                                                                                 retroBoardService={RetroBoardService.getInstance()}/>}/>
+    <Route exact path={"/retro-board/:retroBoardId"}
+           component={(props: RouteComponentProps) => <RetroBoardPage {...props}
+                                                                      retroBoardService={RetroBoardService.getInstance()}/>}/>
+</>
 
 class LayoutAuthenticated extends React.Component<Props> {
 
     render(): JSX.Element {
-
-        return <div>
-            <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props}
-                                                                                         retroBoardService={RetroBoardService.getInstance()}/>}/>
-            <Route exact path={"/retro-board/:retroBoardId"}
-                   component={(props: RouteComponentProps) => <RetroBoardPage {...props}
-                                                                              retroBoardService={RetroBoardService.getInstance()}/>}/>
-            
-            {Firebase.getInstance().getLoggedInUser()?null:<Redirect to={"/login"} />}                                                                               
-        </div>
+        if (Firebase.getInstance().getLoggedInUser())
+            return AUTH_ROUTES
+        
+        return <Redirect to={"/login"}/>
     }
 }
 

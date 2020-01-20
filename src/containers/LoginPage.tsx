@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import {RouteComponentProps, withRouter} from 'react-router-dom';
 
 interface Props extends RouteComponentProps {
+    success: () => void
 }
 
 interface State {
@@ -29,6 +30,7 @@ class LoginPage extends React.Component<Props, State> {
     tryGoogleLogin() {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {
+                this.props.success()
                 this.props.history.push("/")
             })
         }

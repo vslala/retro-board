@@ -6,11 +6,19 @@ import LayoutUnauthenticated from "./components/LayoutUnauthenticated";
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
 
-class App extends React.Component {
+interface Props {}
+interface State {
+    isLoggedIn: boolean
+}
+class App extends React.Component<Props, State> {
+
+    state: State = {
+        isLoggedIn: false
+    }
     
     render() {
         return <Provider store={store}><Router>
-            <LayoutUnauthenticated />
+            <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})} />
             <LayoutAuthenticated />
         </Router></Provider>
 

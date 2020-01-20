@@ -4,6 +4,7 @@ import LoginPage from "../containers/LoginPage";
 import Firebase from "../service/Firebase";
 
 interface Props extends RouteComponentProps {
+    success: () => void
 }
 
 class LayoutUnauthenticated extends React.Component<Props> {
@@ -21,7 +22,7 @@ class LayoutUnauthenticated extends React.Component<Props> {
             return <Redirect to={`${pathname}${search}`}/>
         }
 
-        return <LoginPage />
+        return <LoginPage success={this.props.success} />
     }
 }
 
