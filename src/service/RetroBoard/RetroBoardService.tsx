@@ -31,7 +31,7 @@ class RetroBoardService {
     }
 
     public async getRetroBoardById(retroBoardId: string): Promise<RetroBoard> {
-        
+
         let snapshot = await Firebase.getInstance().getDatabase()
             .ref(RetroBoardService.BOARDS + retroBoardId).once('value')
         let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
@@ -68,7 +68,7 @@ class RetroBoardService {
 
     private _getRetroBoardDBPath() {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()!
-        
+
         const retroBoardPath = `${RetroBoardService.BOARDS}/${loggedInUser.uid}`;
         return retroBoardPath
     }
@@ -76,7 +76,7 @@ class RetroBoardService {
     public async createRetroWalls(retroBoardId: string) {
         let retroWalls = await this._getData(`${RetroBoardService.WALLS}/${retroBoardId}`)
         if (retroWalls) {
-            
+
             return RetroWalls.fromJSON(retroWalls)
         }
 
@@ -147,23 +147,26 @@ class RetroBoardService {
     }
 
     public async getMyBoards(): Promise<RetroBoard[]> {
-        let loggedInUser = Firebase.getInstance().getLoggedInUser()!
-        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
-            .once('value')
-        
-        return Object.values(snapshot.val())
+        let snapshot
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        if (loggedInUser) {
+            snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
+                .once('value')
+            return Object.values(snapshot.val())
+        }
+        return []
     }
 
     public async sortByVotes(notes: Notes) {
         return new Notes(notes.notes.sort((item1, item2) => {
             let itemOneLikesCount = 0
             let itemTwoLikesCount = 0
-            
+
             if (item1.likedBy)
-               itemOneLikesCount = item1.likedBy.length
+                itemOneLikesCount = item1.likedBy.length
             if (item2.likedBy)
                 itemTwoLikesCount = item2.likedBy.length
-                
+
             return 0 - (itemOneLikesCount > itemTwoLikesCount ? 1 : -1)
         }))
     }

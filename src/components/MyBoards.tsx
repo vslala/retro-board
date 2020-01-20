@@ -20,8 +20,8 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
             let myBoards = await retroBoardService.getMyBoards()
             setBoards(myBoards)
         }
-        // eslint
-        _getMyBoards();
+        
+        _getMyBoards().catch((e) => console.log("User not logged In!", e));
     }, [retroBoardService])
 
     return <>
