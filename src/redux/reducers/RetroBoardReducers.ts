@@ -58,10 +58,10 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
             }
             
         case ActionTypes.GET_NOTES:
-            
+            console.log("Get Notes: ", action.payload)
             return {
                 ...state,
-                notes: new Notes(state.notes.notes.concat(action.payload.notes))
+                notes: action.payload
             }
             
         case ActionTypes.SORT_BY_VOTES:

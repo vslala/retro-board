@@ -43,7 +43,7 @@ class StickyWall extends Component<Props, State> {
 
     componentDidMount(): void {
         this.props.retroWall.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
-            
+            console.log("Data Changed!")
             this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
         })
     }

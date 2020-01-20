@@ -49,7 +49,6 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props)
-        this.refresh = this.refresh.bind(this)
         this.handleSort = this.handleSort.bind(this)
         this.convertJsonToCsv = this.convertJsonToCsv.bind(this)
     }
@@ -61,10 +60,6 @@ class RetroBoardPage extends React.Component<Props, State> {
         if (retroBoardId) {
             this.props.createRetroWalls(retroBoardId)
         }
-
-    }
-
-    refresh(retroWalls: RetroWalls) {
 
     }
 
@@ -114,7 +109,7 @@ class RetroBoardPage extends React.Component<Props, State> {
         return (
             <div>
                 <RetroNavbar/>
-                <Container>
+                <Container fluid={true}>
                     <Row>
                         <Col>
                             <Form>

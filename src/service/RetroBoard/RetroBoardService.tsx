@@ -94,13 +94,14 @@ class RetroBoardService {
     }
 
     public async addNewNote(newNote: Note) {
-        
-
-        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${newNote.retroBoardId}/${newNote.wallId}`)
+        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`).child(newNote.retroBoardId)
             .push()
         newNote.noteId = String(snapshot.key)
-        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${newNote.retroBoardId}/${newNote.wallId}/${newNote.noteId}`)
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`)
+            .child(newNote.retroBoardId)
+            .child(newNote.noteId)
             .set(newNote)
+
         return newNote
     }
 
@@ -108,38 +109,42 @@ class RetroBoardService {
         if (!modifiedNote)
             return modifiedNote
 
-        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.wallId}/${modifiedNote.noteId}`)
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${modifiedNote.retroBoardId}/${modifiedNote.noteId}`)
             .update(modifiedNote)
         return modifiedNote
     }
 
     public async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
-        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${retroWallId}`)
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`).child(retroBoardId)
         ref.on('value', (snapshot) => {
             callback(snapshot.val() ? new Notes(Object.values(snapshot.val())) : new Notes([]))
         })
     }
 
     public async getNoteWhenLiked(note: Note, callback: (note: Note) => void) {
-        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.noteId}`)
         ref.on('value', (snapshot) => {
-            
+
             callback(snapshot.val() as Note)
         })
     }
 
 
     public deleteNote(note: Note) {
-        
-        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${note.retroBoardId}/${note.wallId}/${note.noteId}`)
+        console.log("Deleting Note: ", note)
+        Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`)
+            .child(note.retroBoardId).child(note.noteId)
             .remove()
         return note
     }
 
     public async getNotes(retroBoardId: string, wallId: string): Promise<Notes> {
-        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${retroBoardId}/${wallId}`)
+        let snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`)
+            .child(retroBoardId)
             .once('value')
 
+        console.log(`BoardID: ${retroBoardId}`)
+        console.log("Notes:", snapshot.val())
         if (snapshot.val() !== null) {
             return new Notes(Object.values(snapshot.val()))
         }
