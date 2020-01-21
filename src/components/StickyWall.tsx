@@ -19,6 +19,7 @@ interface State {
 
 interface DispatchProps {
     addNewNote: (note: Note) => Promise<RetroBoardActionTypes>
+    updateNote: (note: Note) => Promise<RetroBoardActionTypes>
     getNotes: (retroBoardId: string, wallId: string) => Promise<RetroBoardActionTypes>
     deleteNote: (note: Note) => Promise<RetroBoardActionTypes>
     sortByVotes: () => Promise<RetroBoardActionTypes>
@@ -36,6 +37,9 @@ class StickyWall extends Component<Props, State> {
         super(props)
         this.addNote = this.addNote.bind(this)
         this.retroWall = props.retroWall
+        this.handleDragStart = this.handleDragStart.bind(this)
+        this.handleDrop = this.handleDrop.bind(this)
+        this.handleDragOver = this.handleDragOver.bind(this)
     }
 
     state: State = {
@@ -66,12 +70,38 @@ class StickyWall extends Component<Props, State> {
             return
         this.props.deleteNote(note)
     }
+    
+    handleDrop(e: React.DragEvent<HTMLAnchorElement>, droppedOnNote: Note) {
+        const draggedNote = JSON.parse(e.dataTransfer.getData("text/plain")) as Note
+        droppedOnNote.noteText += "<MERGE_NOTE>" + draggedNote.noteText
+        
+        this.props.updateNote({...droppedOnNote}).then(() => {
+            this.deleteNote(draggedNote)
+        })
+        
+        
+    } 
+    
+    handleDragOver(e: React.DragEvent<HTMLAnchorElement>) {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = "move"
+    }
+    
+    handleDragStart(e: React.DragEvent<HTMLAnchorElement>, note: Note) {
+        e.dataTransfer.setData("text/plain", JSON.stringify(note))
+    }
 
     render() {
         const {notes} = this.props
         
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
-            <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
+            <ListGroupItem key={index} style={{padding: "0px", border: "none"}} 
+                id={`list_group_item_${index}`}
+                draggable={true}
+                onDragStart={(e: React.DragEvent<HTMLAnchorElement>) => this.handleDragStart(e, stickyNote)}
+                onDragOver={this.handleDragOver}
+                onDrop={(e: React.DragEvent<HTMLAnchorElement>) => this.handleDrop(e, stickyNote)}
+                >
                 <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
                        onClick={() => this.deleteNote(stickyNote)}>x</Badge>
                 <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService} sortBy={this.props.sortBy}/>
@@ -97,6 +127,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     
     return {
         addNewNote: async (note: Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
+        updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note))),
         deleteNote: async (note: Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
         getNotes: async (retroBoardId: string, wallId: string) => dispatch(retroBoardActions.getNotes(await service.getNotes(retroBoardId, wallId))),
         sortByVotes: async () => dispatch(retroBoardActions.sortByVotes())

@@ -9,7 +9,7 @@ interface EditorModel {
     editorText: string
 }
 
-class Editor extends React.Component<Props> {
+class Editor extends React.Component<Props, EditorModel> {
 
     constructor(props: Props) {
         super(props)

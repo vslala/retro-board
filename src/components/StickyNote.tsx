@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import {StickyNoteProps, StickyNoteState} from "../interfaces/StickyNoteModel";
 import Card from "react-bootstrap/Card";
 import Editor from "./Editor";
@@ -69,7 +69,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
             
             this.props.updateNote(note).then(() => {
                 if (this.props.sortBy === SortType.SORT_BY_VOTES)
-                    this.props.sortByVotes()
+                this.props.sortByVotes()
             })
         }
 
@@ -79,6 +79,13 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     render() {
         
         let note = this.props.note
+        let cardBodyContent: ReactNode = <p className={"card-text"}>{note.noteText}</p>
+        if (note.noteText.includes("<MERGE_NOTE>")) {
+            let mergedNotes = note.noteText.split("<MERGE_NOTE>")
+                .map((noteText) => (<><span>{noteText}</span><hr/></>))
+            cardBodyContent = <p className={"card-text"}>{mergedNotes}</p>
+        }
+        
         return (
             <Card style={{backgroundColor: note.style?.backgroundColor || "white"}}>
                 <Card.Body>
@@ -91,7 +98,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                                             ...note,
                                             noteText: modifiedNoteText
                                         })}/> :
-                                <p className="card-text">{note.noteText}</p>
+                                cardBodyContent
                         }
                     </div>
                     <div style={{float: note.style?.likeBtnPosition || "right"}}>
