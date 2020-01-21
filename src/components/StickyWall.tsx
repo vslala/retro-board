@@ -9,7 +9,7 @@ import Firebase from "../service/Firebase";
 import RetroWall from "../models/RetroWall";
 import {connect} from "react-redux";
 import {Dispatch} from 'redux'
-import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
+import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 
@@ -21,10 +21,11 @@ interface DispatchProps {
     addNewNote: (note: Note) => Promise<RetroBoardActionTypes>
     getNotes: (retroBoardId: string, wallId: string) => Promise<RetroBoardActionTypes>
     deleteNote: (note: Note) => Promise<RetroBoardActionTypes>
+    sortByVotes: () => Promise<RetroBoardActionTypes>
 }
 
 interface Props extends StickyWallModel, State, DispatchProps {
-
+    sortBy?: SortType
 }
 
 class StickyWall extends Component<Props, State> {
@@ -55,7 +56,9 @@ class StickyWall extends Component<Props, State> {
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
         })
         newNote.createdBy.push(Firebase.getInstance().getLoggedInUser()!.email)
-        this.props.addNewNote(newNote)
+        this.props.addNewNote(newNote).then(() => {
+            this.props.sortByVotes()
+        })
     }
 
     deleteNote(note: Note) {
@@ -65,16 +68,13 @@ class StickyWall extends Component<Props, State> {
     }
 
     render() {
-        
         const {notes} = this.props
-        
-        
         
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}}>
                 <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
                        onClick={() => this.deleteNote(stickyNote)}>x</Badge>
-                <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService}/>
+                <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService} sortBy={this.props.sortBy}/>
             </ListGroupItem>
 
         ))
@@ -99,6 +99,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
         addNewNote: async (note: Note) => dispatch(retroBoardActions.createNote(await service.addNewNote(note))),
         deleteNote: async (note: Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
         getNotes: async (retroBoardId: string, wallId: string) => dispatch(retroBoardActions.getNotes(await service.getNotes(retroBoardId, wallId))),
+        sortByVotes: async () => dispatch(retroBoardActions.sortByVotes())
     }
 }
 

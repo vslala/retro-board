@@ -1,5 +1,5 @@
 import RetroBoard from "../../models/RetroBoard";
-import {ActionTypes, RetroBoardActionTypes} from "../types/RetroBoardActionTypes";
+import {ActionTypes, RetroBoardActionTypes, SortType} from "../types/RetroBoardActionTypes";
 import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
 import Notes from "../../models/Notes";
@@ -48,10 +48,17 @@ class RetroBoardActions {
         }
     }
 
-    public sortByVotes(notes: Notes): RetroBoardActionTypes {
+    public sortByVotes(): RetroBoardActionTypes {
         return {
-            type: ActionTypes.SORT_BY_VOTES,
-            payload: notes
+            type: ActionTypes.SORT,
+            payload: SortType.SORT_BY_VOTES
+        };
+    }
+    
+    public sortByTimestamp(): RetroBoardActionTypes {
+        return {
+            type: ActionTypes.SORT,
+            payload: SortType.SORT_BY_TIMESTAMP
         };
     }
 }

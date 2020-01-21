@@ -5,7 +5,7 @@ import Editor from "./Editor";
 import Like from "./Like";
 import User from "../models/User";
 import Note from "../models/Note";
-import {RetroBoardActionTypes} from "../redux/types/RetroBoardActionTypes";
+import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import {Dispatch} from "redux";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
@@ -13,10 +13,12 @@ import {connect} from "react-redux";
 
 interface DispatchProps {
     updateNote: (note: Note) => Promise<RetroBoardActionTypes>
+    sortByVotes: () => Promise<RetroBoardActionTypes>
 }
 
 interface Props extends StickyNoteProps, DispatchProps {
     retroBoardService: RetroBoardService
+    sortBy?: SortType
 }
 
 class StickyNote extends React.Component<Props, StickyNoteState> {
@@ -65,7 +67,10 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
             let note = this.props.note
             note.likedBy = users
             
-            this.props.updateNote(note)
+            this.props.updateNote(note).then(() => {
+                if (this.props.sortBy === SortType.SORT_BY_VOTES)
+                    this.props.sortByVotes()
+            })
         }
 
     }
@@ -103,7 +108,8 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     const service = RetroBoardService.getInstance()
     const retroBoardActions = new RetroBoardActions();
     return {
-        updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note)))
+        updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note))),
+        sortByVotes: async () => dispatch(retroBoardActions.sortByVotes())
     }
 }
 
