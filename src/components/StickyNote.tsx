@@ -40,10 +40,10 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     state: StickyNoteState = {
-        stickyNoteId: "1",
+        stickyNoteId: this.props.note.noteId,
         showEditor: false,
         noteText: this.props.note.noteText,
-        likedBy: []
+        likedBy: this.props.note.likedBy
     }
 
     handleOnClick(): void {
@@ -57,7 +57,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     handleUpVote(user: User) {
-        let users = this.state.likedBy!
+        let users = this.props.note.likedBy
         let hasVotedBefore = users.filter((u) => u.email === user.email).length > 0
         if (!hasVotedBefore) {
             users.push(user as User)

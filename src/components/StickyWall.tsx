@@ -96,6 +96,7 @@ class StickyWall extends Component<Props, State> {
         
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none"}} 
+                className={"text-left"}
                 id={`list_group_item_${index}`}
                 draggable={true}
                 onDragStart={(e: React.DragEvent<HTMLAnchorElement>) => this.handleDragStart(e, stickyNote)}
@@ -110,7 +111,7 @@ class StickyWall extends Component<Props, State> {
         ))
 
         return (
-            <section className="sticky-wall">
+            <section className="sticky-wall text-center">
                 <h3>{this.retroWall.title}</h3>
                 <AddNewNote addNote={this.addNote}/>
                 <ListGroup>
