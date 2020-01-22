@@ -2,7 +2,7 @@ import React from 'react'
 import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
 import RetroWalls from "../models/RetroWalls";
@@ -11,7 +11,6 @@ import RetroBoardState from "../redux/reducers/RetroBoardState";
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
-import RetroNavbar from "../components/RetroNavbar";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
@@ -56,7 +55,7 @@ class RetroBoardPage extends React.Component<Props, State> {
     componentDidMount(): void {
         const {retroBoardId} = this.props.match.params as PropsFromParent
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
-        
+
         if (retroBoardId) {
             this.props.createRetroWalls(retroBoardId)
         }
@@ -70,17 +69,17 @@ class RetroBoardPage extends React.Component<Props, State> {
             this.setState({sortSelectValue: SortType.SORT_BY_VOTES})
         }
     }
-    
-    convertJsonToCsv(): {data: Data, headers: LabelKeyObject[]} {
+
+    convertJsonToCsv(): { data: Data, headers: LabelKeyObject[] } {
         let headers: LabelKeyObject[] = [
             {label: "Wall Name", key: "wallName"},
             {label: "Note", key: "noteText"},
             {label: "Up-votes", key: "upvotes"}
         ]
-        
+
         let data: Data = []
         const {notes, retroWalls} = this.props
-        
+
         retroWalls.walls.forEach((wall) => {
             notes.notes.forEach((note) => {
                 if (note.wallId === wall.wallId) {
@@ -90,7 +89,7 @@ class RetroBoardPage extends React.Component<Props, State> {
                 }
             })
         })
-        
+
         return {data: data, headers: headers}
     }
 
@@ -108,33 +107,34 @@ class RetroBoardPage extends React.Component<Props, State> {
             </Col>
         })
         return (
-            <div>
-                <RetroNavbar/>
-                <Container fluid={true}>
-                    <Row>
-                        <Col>
-                            <Form>
-                                <Form.Group>
-                                    <Form.Label>Sort cards: </Form.Label>
-                                    <FormControl as={"select"} onChange={this.handleSort}
-                                                 value={String(this.state.sortSelectValue)}>
-                                        <option defaultValue={String(SortType.NONE)}>select...</option>
-                                        <option defaultValue={String(SortType.SORT_BY_VOTES)} value={SortType.SORT_BY_VOTES}>Sort by Up-votes</option>
-                                    </FormControl>
-                                </Form.Group>
-                            </Form>
-                        </Col>
-                        <Col></Col>
-                        <Col className={"align-self-center"}>
-                            <Button className={"pull-right"} variant={"info"}>
-                                <CSVLink {...this.convertJsonToCsv()} target={"_blank"} filename={this.props.retroBoard.name}><i className="fa fa-print" style={{color: "white"}}></i></CSVLink>
-                            </Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        {walls}
-                    </Row>
-                </Container>
+            <div style={{padding: "50px"}}>
+                <Row>
+                    <Col>
+                        <Form>
+                            <Form.Group>
+                                <Form.Label>Sort cards: </Form.Label>
+                                <FormControl as={"select"} onChange={this.handleSort}
+                                             value={String(this.state.sortSelectValue)}>
+                                    <option defaultValue={String(SortType.NONE)}>select...</option>
+                                    <option defaultValue={String(SortType.SORT_BY_VOTES)}
+                                            value={SortType.SORT_BY_VOTES}>Sort by Up-votes
+                                    </option>
+                                </FormControl>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    <Col></Col>
+                    <Col className={"align-self-center"}>
+                        <Button className={"pull-right"} variant={"info"}>
+                            <CSVLink {...this.convertJsonToCsv()} target={"_blank"}
+                                     filename={this.props.retroBoard.name}><i className="fa fa-print"
+                                                                              style={{color: "white"}}></i></CSVLink>
+                        </Button>
+                    </Col>
+                </Row>
+                <Row>
+                    {walls}
+                </Row>
             </div>
         )
     }
@@ -142,7 +142,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state: RetroBoardState): RetroBoardState {
-    
+
 
     return {
         retroBoard: state.retroBoard,
@@ -158,7 +158,7 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
     return {
         createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
-        sortByVotes: async (notes:Notes) => dispatch(retroBoardActions.sortByVotes())
+        sortByVotes: async (notes: Notes) => dispatch(retroBoardActions.sortByVotes())
     }
 }
 

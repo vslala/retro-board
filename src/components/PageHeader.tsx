@@ -6,7 +6,7 @@ import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 
-class RetroNavbar extends React.Component {
+class PageHeader extends React.Component {
 
     render(): JSX.Element {
         return <Navbar bg="light" expand="lg">
@@ -33,4 +33,4 @@ class RetroNavbar extends React.Component {
     }
 }
 
-export default RetroNavbar
+export default PageHeader

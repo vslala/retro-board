@@ -2,7 +2,6 @@ import React from 'react';
 import {HomePageModel} from "../interfaces/HomePageModel"
 import {Col, Container, Row} from "react-bootstrap"
 import CreateRetroBoard from "../components/CreateRetroBoard";
-import RetroNavbar from "../components/RetroNavbar";
 import MyBoards from "../components/MyBoards";
 
 class HomePage extends React.Component<HomePageModel> {
@@ -21,9 +20,7 @@ class HomePage extends React.Component<HomePageModel> {
     }
 
     render() {
-        return <>
-            <RetroNavbar/>
-            <Container>
+        return <Container>
                 <Row>
                     <Col>
                         <div className={"pb-2 mt-4 mb-2 border-bottom"}>
@@ -40,8 +37,7 @@ class HomePage extends React.Component<HomePageModel> {
                         <MyBoards retroBoardService={this.props.retroBoardService} />
                     </Col>
                 </Row>
-            </Container>
-        </>
+        </Container>
     }
 }
 
