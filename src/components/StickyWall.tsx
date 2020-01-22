@@ -73,13 +73,13 @@ class StickyWall extends Component<Props, State> {
     
     handleDrop(e: React.DragEvent<HTMLAnchorElement>, droppedOnNote: Note) {
         const draggedNote = JSON.parse(e.dataTransfer.getData("text/plain")) as Note
+        if (draggedNote.noteId === droppedOnNote.noteId)
+            return
+            
         droppedOnNote.noteText += "<MERGE_NOTE>" + draggedNote.noteText
-        
         this.props.updateNote({...droppedOnNote}).then(() => {
             this.deleteNote(draggedNote)
         })
-        
-        
     } 
     
     handleDragOver(e: React.DragEvent<HTMLAnchorElement>) {
