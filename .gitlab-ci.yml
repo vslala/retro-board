@@ -27,6 +27,7 @@ build:
   stage: build
   script:
     - echo "Building the app"
+    - echo $ENV | base64 -d > .env
     - yarn install
     - yarn build
   artifacts:
@@ -58,9 +59,11 @@ deploy:
   services:
     - docker:dind
   stage: deploy
+  when: manual
   script:
     - echo "Deploying Docker Image To The Server"
+    - echo "Sever User=${SERVER_USERNAME}, Registry Image=${REGISTRY_IMAGE}"
     - ls -lsa
     - whoami
     - chmod +x deploy.sh
-    - ./deploy.sh ${SERVER_USER} ${SERVER_PASSWORD} ${SERVER_IP} ${CI_REGISTRY} ${CI_JOB_TOKEN} ${REGISTRY_IMAGE} 
+    - ./deploy.sh ${SERVER_USERNAME} ${SERVER_PASSWORD} ${SERVER_IP} ${REGISTRY_IMAGE} 

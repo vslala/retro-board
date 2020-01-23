@@ -1,15 +1,19 @@
 username=$1
 password=$2
 server=$3
-registry=$4
-registry_token=$5
-registry_image=$6
+registry_token=$4
+
+repository=$(echo "$registry_token" | cut -d ':' -f 1)
+registry_image=$(echo "$registry_token" | cut -d ':' -f 2)
+
+container="its-retro"
+
 
 echo "Registry Token: ${registry_token}"
-echo "Registry: ${registry}"
-echo "Registry Image: ${registry_image}"
 
-sshpass  -p "${password}" ssh -o StrictHostKeyChecking=no "${username}"@"${server}" <<-'ENDSSH'
-  ssh ${username}@${server} sudo docker pull "${registry}:${registry_image}"
-  ssh ${username}@${server} sudo docker run -d --rm --name retro-board -p 3000:3000 ${registry_image}
-ENDSSH
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "echo $HOME -> $repository"
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "docker images | grep $repository | awk '{print $3}'"
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "docker container stop $container"
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "docker rmi -f $(docker images | grep "$repository" | awk '{print $3}')"
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "docker pull $registry_token"
+sshpass  -p "${password}" ssh -tt -o StrictHostKeyChecking=no "${username}"@"${server}" "docker run -d --rm --name $container -p 3000:80 $registry_token"
