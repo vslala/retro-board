@@ -57,7 +57,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     handleUpVote(user: User) {
-        let users = this.props.note.likedBy
+        let users = this.props.note?.likedBy || []
         let hasVotedBefore = users.filter((u) => u.email === user.email).length > 0
         if (!hasVotedBefore) {
             users.push(user as User)
