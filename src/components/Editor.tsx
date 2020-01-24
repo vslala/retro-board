@@ -21,6 +21,9 @@ class Editor extends React.Component<Props, EditorModel> {
     }
     
     handleKeyboardKeyPress = (e: React.KeyboardEvent<FormControl>) => {
+        if (e.key === 'Escape') {
+            this.props.handleEnter(this.state.editorText.replace(/\n/g, ""))
+        }
         if (e.key === 'Enter') {
             this.setState({editorText: ""})
             this.props.handleEnter(this.state.editorText.replace(/\n/g, ""))
@@ -37,7 +40,9 @@ class Editor extends React.Component<Props, EditorModel> {
             <FormControl as={"textarea"} autoFocus
                 data-testid={"editor_textarea"}
                 onKeyUp={this.handleKeyboardKeyPress}
-                onChange={this.handleChange} value={this.state.editorText} aria-label={"Note Editor"} />
+                onChange={this.handleChange} value={this.state.editorText} aria-label={"Note Editor"} 
+                onBlur={() => this.props.handleEnter(this.state.editorText.replace(/\n/g, ""))}
+                />
         </InputGroup>
     }
 }
