@@ -33,9 +33,10 @@ class RetroBoardService {
     public async getRetroBoardById(retroBoardId: string): Promise<RetroBoard> {
 
         let snapshot = await Firebase.getInstance().getDatabase()
-            .ref(RetroBoardService.BOARDS + retroBoardId).once('value')
-        let retroBoard = JSON.parse(snapshot.val()) as RetroBoard
-
+            .ref(`${this._getRetroBoardDBPath()}/${retroBoardId}`).once('value')
+        let retroBoard = snapshot.val() as RetroBoard
+        
+        console.log("Retro Board: ", retroBoard)
         return retroBoard
     }
 

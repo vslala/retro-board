@@ -29,6 +29,7 @@ interface StateFromReduxStore {
 }
 
 interface DispatchProps {
+    createRetroBoard: (retroBoardId: string) => Promise<RetroBoardActionTypes>
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
     sortByVotes: (notes: Notes) => Promise<RetroBoardActionTypes>
 }
@@ -57,6 +58,7 @@ class RetroBoardPage extends React.Component<Props, State> {
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
 
         if (retroBoardId) {
+            this.props.createRetroBoard(retroBoardId)
             this.props.createRetroWalls(retroBoardId)
         }
 
@@ -158,7 +160,8 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
     return {
         createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
-        sortByVotes: async (notes: Notes) => dispatch(retroBoardActions.sortByVotes())
+        sortByVotes: async (notes: Notes) => dispatch(retroBoardActions.sortByVotes()),
+        createRetroBoard: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroBoard(await service.getRetroBoardById(retroBoardId)))
     }
 }
 
