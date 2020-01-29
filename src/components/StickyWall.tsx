@@ -4,7 +4,6 @@ import {StickyWallModel} from "../interfaces/StickyWallModel";
 import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
 import Note from "../models/Note";
-import Badge from "react-bootstrap/Badge";
 import Firebase from "../service/Firebase";
 import RetroWall from "../models/RetroWall";
 import {connect} from "react-redux";
@@ -95,7 +94,7 @@ class StickyWall extends Component<Props, State> {
         const {notes} = this.props
         
         let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
-            <ListGroupItem key={index} style={{padding: "0px", border: "none"}} 
+            <ListGroupItem key={index} style={{padding: "0px", border: "none", marginBottom: "2px"}} 
                 className={"text-left"}
                 id={`list_group_item_${index}`}
                 draggable={true}
@@ -103,8 +102,6 @@ class StickyWall extends Component<Props, State> {
                 onDragOver={this.handleDragOver}
                 onDrop={(e: React.DragEvent<HTMLAnchorElement>) => this.handleDrop(e, stickyNote)}
                 >
-                <Badge data-testid={`delete_badge_${index}`} variant={"light"} style={{cursor: "pointer"}}
-                       onClick={() => this.deleteNote(stickyNote)}>x</Badge>
                 <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService} sortBy={this.props.sortBy}/>
             </ListGroupItem>
 

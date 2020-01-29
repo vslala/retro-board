@@ -10,9 +10,11 @@ import {Dispatch} from "redux";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {connect} from "react-redux";
+import Badge from "react-bootstrap/Badge";
 
 interface DispatchProps {
     updateNote: (note: Note) => Promise<RetroBoardActionTypes>
+    deleteNote: (note: Note) => Promise<RetroBoardActionTypes>
     sortByVotes: () => Promise<RetroBoardActionTypes>
 }
 
@@ -33,7 +35,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
     componentDidMount(): void {
         let note = this.props.note
-        this.props.retroBoardService.getNoteWhenLiked(note, (note:Note) => {
+        this.props.retroBoardService.getNoteWhenLiked(note, (note: Note) => {
             if (note) // check is for delete case
                 this.props.updateNote(note)
         })
@@ -66,10 +68,10 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
             let note = this.props.note
             note.likedBy = users
-            
+
             this.props.updateNote(note).then(() => {
                 if (this.props.sortBy === SortType.SORT_BY_VOTES)
-                this.props.sortByVotes()
+                    this.props.sortByVotes()
             })
         }
 
@@ -77,18 +79,20 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
 
     render() {
-        
+
         let note = this.props.note
         let cardBodyContent: ReactNode = <p className={"card-text"}>{note.noteText}</p>
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
-                .map((noteText) => (<><span>{noteText}</span><hr/></>))
-            cardBodyContent = <p className={"card-text"}>{mergedNotes}</p>
+                .map((noteText, index) => (<div key={index}><p>{noteText}</p>
+                    <hr/>
+                </div>))
+            cardBodyContent = <div className={"card-text"}>{mergedNotes}</div>
         }
-        
+
         return (
-            <Card style={{backgroundColor: note.style?.backgroundColor || "white"}}>
-                <Card.Body>
+            <Card className={"z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
+                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500}}>
                     <div data-testid={"editor"} onClick={this.handleOnClick}
                          style={{color: note.style?.textColor || "black"}}>
                         {
@@ -101,11 +105,26 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                                 cardBodyContent
                         }
                     </div>
-                    <div style={{float: note.style?.likeBtnPosition || "right"}}>
-                        <Like key={`like_note.noteId`} handleUpVote={this.handleUpVote}
-                              likedBy={note.likedBy || []}
-                              stickyNoteId={note.noteId}/></div>
+                    <ul className={"list-inline pull-right"}>
+                        <li className="list-inline-item">
+                            <Like key={`like_note.noteId`} handleUpVote={this.handleUpVote}
+                                  likedBy={note.likedBy || []}
+                                  stickyNoteId={note.noteId}
+                            />
+                        </li>
+                        <li className={"list-inline-item"}>
+                            <Badge data-testid={`delete_badge_${note.noteId}`} variant={"danger"}
+                                   style={{cursor: "pointer", padding: "2px", margin: "0"}}
+                                   onClick={() => this.props.deleteNote(note)}><i
+                                className="fa fa-trash-o"></i></Badge>
+                        </li>
+                    </ul>
                 </Card.Body>
+                <Card.Footer style={{padding: "0", margin: "0"}}>
+                    
+
+
+                </Card.Footer>
             </Card>
         )
     }
@@ -116,6 +135,7 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     const retroBoardActions = new RetroBoardActions();
     return {
         updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note))),
+        deleteNote: async (note: Note) => dispatch(retroBoardActions.deleteNote(await service.deleteNote(note))),
         sortByVotes: async () => dispatch(retroBoardActions.sortByVotes())
     }
 }
