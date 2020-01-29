@@ -97,17 +97,6 @@ describe("StickyWall test suite", () => {
         expect(renderedPage.container.querySelectorAll("button").length).toBe(1)
     })
 
-    test("it should delete the note from the wall", async () => {
-        let renderedPage = buildStickyWall()
-        await wait(() => renderedPage.getByTestId("delete_badge_1"))
-        let deleteBadge = renderedPage.getByTestId("delete_badge_1")
-
-        expect(deleteBadge).toBeInTheDocument()
-
-        await fireEvent.click(deleteBadge)
-        expect(service.deleteNote).toBeCalledTimes(1)
-    })
-
     test("it should add new note to the wall", async () => {
         let renderedPage = buildStickyWall()
         let user = new User()
@@ -128,13 +117,6 @@ describe("StickyWall test suite", () => {
         await fireEvent.keyUp(textarea, {key: "Enter"})
 
         expect(service.addNewNote).toHaveBeenCalledTimes(1)
-    })
-
-    test("it should not delete the note if the user is not the creator of it", async () => {
-        let renderedPage = buildStickyWall()
-        let deleteBadge = renderedPage.getByTestId("delete_badge_1")
-        await fireEvent.click(deleteBadge)
-        expect(renderedPage.container.querySelectorAll(".sticky-wall")[0].querySelectorAll(".card").length).toBe(2)
     })
 
 })

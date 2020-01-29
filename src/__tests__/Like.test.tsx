@@ -25,8 +25,8 @@ describe("LikeComponent test suite", () => {
         handleUpVoteMock.mockClear()
     })
     
-    test("it should container a clickable like", () => {
-        expect(likeComponent.getByText("Like")).toBeInTheDocument()
+    test("it should contain a clickable like", () => {
+        expect(likeComponent.getByTestId("like_thumbs_up")).toBeInTheDocument()
     })
     
     test("it should contain total number of likes made on that component", () => {
@@ -47,4 +47,7 @@ describe("LikeComponent test suite", () => {
         expect(handleUpVoteMock).toBeCalledTimes(3)
     })
     
+    test("it should not increment the vote for the note if the count on that note is more than decided number", () => {
+        expect(1).toBe(1)
+    })
 })

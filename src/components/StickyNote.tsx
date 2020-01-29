@@ -85,7 +85,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
                 .map((noteText, index) => (<div key={index}><p>{noteText}</p>
-                    <hr/>
+                    <hr style={{borderTop: "1px dashed"}} />
                 </div>))
             cardBodyContent = <div className={"card-text"}>{mergedNotes}</div>
         }

@@ -17,6 +17,10 @@ describe('Component StickyNote Test', function () {
         return testNoteObj
     })
     
+    service.deleteNote = jest.fn().mockImplementation(async (note: Note) => {
+        return note
+    })
+    
     beforeEach(() => {
         stickyNote = render(<Provider store={store}><StickyNote 
             retroBoardService={service} 
@@ -52,5 +56,12 @@ describe('Component StickyNote Test', function () {
         await fireEvent.keyUp(editor, {key: "Enter"})
         
         expect(service.updateNote).toHaveBeenCalledTimes(1)
+    })
+    
+    test("it should delete the note", async () => {
+        let deleteBtn = stickyNote.getByTestId("delete_badge_" + testNoteObj.noteId)
+        await fireEvent.click(deleteBtn)
+        
+        expect(service.deleteNote).toBeCalledTimes(1)
     })
 });
