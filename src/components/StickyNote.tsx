@@ -11,6 +11,17 @@ import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {connect} from "react-redux";
 import Badge from "react-bootstrap/Badge";
+import RetroBoardState from "../redux/reducers/RetroBoardState";
+import RetroBoard from "../models/RetroBoard";
+import RetroWalls from "../models/RetroWalls";
+import Notes from "../models/Notes";
+import Toast from "react-bootstrap/Toast";
+
+interface StateFromReduxStore {
+    retroBoard: RetroBoard
+    retroWalls: RetroWalls
+    notes: Notes
+}
 
 interface DispatchProps {
     updateNote: (note: Note) => Promise<RetroBoardActionTypes>
@@ -18,7 +29,7 @@ interface DispatchProps {
     sortByVotes: () => Promise<RetroBoardActionTypes>
 }
 
-interface Props extends StickyNoteProps, DispatchProps {
+interface Props extends StickyNoteProps, DispatchProps, StateFromReduxStore {
     retroBoardService: RetroBoardService
     sortBy?: SortType
 }
@@ -42,6 +53,8 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     state: StickyNoteState = {
+        showToast: false,
+        toastMessage: "",
         stickyNoteId: this.props.note.noteId,
         showEditor: false,
         noteText: this.props.note.noteText,
@@ -57,14 +70,28 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
         this.setState({showEditor: false, noteText: modifiedNote.noteText})
         this.props.updateNote(modifiedNote)
     }
+    
+    _getTotalLikesForUser(user:User) {
+        let totalLikes = 0
+        this.props.notes.notes.forEach((note) => {
+            if (note.likedBy? note.likedBy.some(u => u.uid === user.uid) : false) {
+                totalLikes++
+            }
+        })
+        
+        return totalLikes
+    }
 
     handleUpVote(user: User) {
         let users = this.props.note?.likedBy || []
         let hasVotedBefore = users.filter((u) => u.email === user.email).length > 0
-        if (!hasVotedBefore) {
-            users.push(user as User)
-            let newUsersState = users
-            this.setState({likedBy: newUsersState})
+        let totalLikes = this._getTotalLikesForUser(user)
+        
+        let maxAllowedLikes = this.props.retroBoard.maxLikes
+        
+        if (!hasVotedBefore && totalLikes < maxAllowedLikes) {
+            users.push(user)
+            this.setState({likedBy: users})
 
             let note = this.props.note
             note.likedBy = users
@@ -73,6 +100,9 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                 if (this.props.sortBy === SortType.SORT_BY_VOTES)
                     this.props.sortByVotes()
             })
+        } else {
+            this.setState({showToast: true, toastMessage: "Like Count Limit Reached"})
+            setTimeout(() => {this.setState({showToast: false})}, 2000)
         }
 
     }
@@ -120,13 +150,20 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                         </li>
                     </ul>
                 </Card.Body>
-                <Card.Footer style={{padding: "0", margin: "0"}}>
-                    
-
-
-                </Card.Footer>
+                <Toast show={this.state.showToast} style={{position: 'absolute', left: '50%'}}>
+                    <Toast.Body>{this.state.toastMessage}</Toast.Body>
+                </Toast>
             </Card>
         )
+    }
+}
+
+const mapStateToProps = (state: RetroBoardState): RetroBoardState => {
+
+    return {
+        retroBoard: state.retroBoard,
+        retroWalls: state.retroWalls,
+        notes: state.notes
     }
 }
 
@@ -140,4 +177,4 @@ const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(StickyNote)
+export default connect(mapStateToProps, mapDispatchToProps)(StickyNote)
