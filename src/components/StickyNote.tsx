@@ -106,11 +106,8 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
         }
 
     }
-
-
-    render() {
-
-        let note = this.props.note
+    
+    _mergeNoteIfRequired(note:Note) {
         let cardBodyContent: ReactNode = <p className={"card-text"}>{note.noteText}</p>
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
@@ -119,6 +116,14 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                 </div>))
             cardBodyContent = <div className={"card-text"}>{mergedNotes}</div>
         }
+        
+        return cardBodyContent
+    }
+
+    render() {
+
+        let note = this.props.note
+        let cardBodyContent = this._mergeNoteIfRequired(note)
 
         return (
             <Card className={"z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
