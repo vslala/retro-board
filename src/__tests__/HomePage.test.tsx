@@ -9,13 +9,24 @@ import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoard from "../models/RetroBoard";
+import User from "../models/User";
 
-const path = `/route/:id`;
-const mockedMatch: match<{ id: string }> = {
+
+const testUser = new User()
+testUser.uid = "uid"
+testUser.username = "username"
+testUser.displayName = "Foo Bar"
+testUser.email = "test@example.com"
+testUser.idToken = "id_token"
+
+localStorage.setItem(User.USER_INFO, JSON.stringify(testUser))
+
+const path = `/route/:uid/:id`;
+const mockedMatch: match<{ uid:string, id: string }> = {
     isExact: false,
     path,
-    url: path.replace(':id', '1'),
-    params: { id: "1" }
+    url: path.replace(':id', '1').replace(":uid", "uid"),
+    params: { uid: "uid", id: "1" }
 };
 
 describe("HomePage tests", () => {
