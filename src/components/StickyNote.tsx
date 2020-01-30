@@ -155,7 +155,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                         </li>
                     </ul>
                 </Card.Body>
-                <Toast show={this.state.showToast} style={{position: 'absolute', left: '50%'}}>
+                <Toast data-testid={"toast"} show={this.state.showToast} style={{position: 'absolute', left: '50%'}}>
                     <Toast.Body>{this.state.toastMessage}</Toast.Body>
                 </Toast>
             </Card>

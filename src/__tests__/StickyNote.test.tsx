@@ -8,7 +8,6 @@ import store from "../redux/store/Store";
 import Note from "../models/Note";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import User from "../models/User";
-import Notes from "../models/Notes";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
@@ -95,5 +94,14 @@ describe('Component StickyNote Test', function () {
         
         let totalCount = stickyNote.getByTestId("total_votes")
         expect(totalCount.textContent).toBe("0")
+    })
+    
+    test("it should show a toast message if user like count exceeds", async () => {
+        let likeBtn = stickyNote.getByTestId("like_thumbs_up")
+        await fireEvent.click(likeBtn)
+        
+        let totalCount = stickyNote.getByTestId("total_votes")
+        expect(totalCount.textContent).toBe("0")
+        expect(stickyNote.getByTestId("toast")).toBeInTheDocument()
     })
 });
