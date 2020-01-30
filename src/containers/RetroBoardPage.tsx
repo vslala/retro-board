@@ -18,6 +18,7 @@ import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 
 interface PropsFromParent extends RouteComponentProps {
+    uid?: string
     retroBoardId?: string
     retroBoardService: RetroBoardService
 }
@@ -29,7 +30,7 @@ interface StateFromReduxStore {
 }
 
 interface DispatchProps {
-    createRetroBoard: (retroBoardId: string) => Promise<RetroBoardActionTypes>
+    createRetroBoard: (uid: string, retroBoardId: string) => Promise<RetroBoardActionTypes>
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
     sortByVotes: (notes: Notes) => Promise<RetroBoardActionTypes>
 }
@@ -54,11 +55,11 @@ class RetroBoardPage extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        const {retroBoardId} = this.props.match.params as PropsFromParent
+        const {retroBoardId, uid} = this.props.match.params as PropsFromParent
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
 
-        if (retroBoardId) {
-            this.props.createRetroBoard(retroBoardId)
+        if (retroBoardId && uid) {
+            this.props.createRetroBoard(uid, retroBoardId)
             this.props.createRetroWalls(retroBoardId)
         }
 
@@ -161,7 +162,7 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
     return {
         createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
         sortByVotes: async (notes: Notes) => dispatch(retroBoardActions.sortByVotes()),
-        createRetroBoard: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroBoard(await service.getRetroBoardById(retroBoardId)))
+        createRetroBoard: async (uid:string, retroBoardId: string) => dispatch(retroBoardActions.createRetroBoard(await service.getRetroBoardById(uid, retroBoardId)))
     }
 }
 

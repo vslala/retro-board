@@ -15,7 +15,7 @@ interface Props {
 const AUTH_ROUTES = <>
     <Route exact path={"/"} component={(props: RouteComponentProps) => <HomePage {...props}
                                                                                  retroBoardService={RetroBoardService.getInstance()}/>}/>
-    <Route exact path={"/retro-board/:retroBoardId"}
+    <Route exact path={"/retro-board/:uid/:retroBoardId"}
            component={(props: RouteComponentProps) => <RetroBoardPage {...props}
                                                                       retroBoardService={RetroBoardService.getInstance()}/>}/>
 </>

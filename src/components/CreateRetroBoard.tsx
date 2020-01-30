@@ -6,6 +6,7 @@ import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {useDispatch} from "react-redux";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {Redirect} from 'react-router-dom';
+import Firebase from "../service/Firebase";
 
 interface Props {
     retroBoardService: RetroBoardService
@@ -26,9 +27,10 @@ const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {
     const handleCreateRetroBoard = async () => {
         const retroBoardActions = new RetroBoardActions();
         let retroBoard = await retroBoardService.createNewRetroBoard(formInput)
+        let retroBoardCreatorId = Firebase.getInstance().getLoggedInUser()!.uid
         dispatch(retroBoardActions.createRetroBoard(retroBoard))
         handleClose()
-        setNavigate(`/retro-board/${retroBoard.id}`)
+        setNavigate(`/retro-board/${retroBoardCreatorId}/${retroBoard.id}`)
     }
     
     if (navigate !== "") {

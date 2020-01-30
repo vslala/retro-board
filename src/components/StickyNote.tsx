@@ -16,6 +16,7 @@ import RetroBoard from "../models/RetroBoard";
 import RetroWalls from "../models/RetroWalls";
 import Notes from "../models/Notes";
 import Toast from "react-bootstrap/Toast";
+import Firebase from "../service/Firebase";
 
 interface StateFromReduxStore {
     retroBoard: RetroBoard
@@ -62,23 +63,28 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     handleOnClick(): void {
-        let noteText = this.state.noteText
-        this.setState({showEditor: true, noteText: noteText})
+        // only allow edit if the note is created by the user
+        // do not allow people to edit others note
+        if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email)) {
+            let noteText = this.state.noteText
+            this.setState({showEditor: true, noteText: noteText})
+        }
+        
     }
 
     modifyStickyNote(modifiedNote: Note) {
         this.setState({showEditor: false, noteText: modifiedNote.noteText})
         this.props.updateNote(modifiedNote)
     }
-    
-    _getTotalLikesForUser(user:User) {
+
+    _getTotalLikesForUser(user: User) {
         let totalLikes = 0
         this.props.notes.notes.forEach((note) => {
-            if (note.likedBy? note.likedBy.some(u => u.uid === user.uid) : false) {
+            if (note.likedBy ? note.likedBy.some(u => u.uid === user.uid) : false) {
                 totalLikes++
             }
         })
-        
+
         return totalLikes
     }
 
@@ -86,9 +92,9 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
         let users = this.props.note?.likedBy || []
         let hasVotedBefore = users.filter((u) => u.email === user.email).length > 0
         let totalLikes = this._getTotalLikesForUser(user)
-        
+
         let maxAllowedLikes = this.props.retroBoard.maxLikes
-        
+
         if (!hasVotedBefore && totalLikes < maxAllowedLikes) {
             users.push(user)
             this.setState({likedBy: users})
@@ -102,21 +108,23 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
             })
         } else {
             this.setState({showToast: true, toastMessage: "Like Count Limit Reached"})
-            setTimeout(() => {this.setState({showToast: false})}, 2000)
+            setTimeout(() => {
+                this.setState({showToast: false})
+            }, 2000)
         }
 
     }
-    
-    _mergeNoteIfRequired(note:Note) {
+
+    _mergeNoteIfRequired(note: Note) {
         let cardBodyContent: ReactNode = <p className={"card-text"}>{note.noteText}</p>
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
                 .map((noteText, index) => (<div key={index}><p>{noteText}</p>
-                    <hr style={{borderTop: "1px dashed"}} />
+                    <hr style={{borderTop: "1px dashed"}}/>
                 </div>))
             cardBodyContent = <div className={"card-text"}>{mergedNotes}</div>
         }
-        
+
         return cardBodyContent
     }
 
@@ -127,8 +135,9 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
         return (
             <Card className={"z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
-                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500}}>
-                    <div data-testid={"editor"} onClick={this.handleOnClick}
+                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500}}
+                           onClick={this.handleOnClick}>
+                    <div data-testid={"editor"}
                          style={{color: note.style?.textColor || "black"}}>
                         {
                             this.state.showEditor ?

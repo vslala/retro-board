@@ -14,6 +14,8 @@ describe('Component StickyNote Test', function () {
     let service = RetroBoardService.getInstance();
     let testNoteObj = new Note("testId-1", "wallId", "FooBar",
         {backgroundColor: '', likeBtnPosition: "right", textColor: "red"});
+    testNoteObj.createdBy.push("test@example.com")
+    
     service.updateNote = jest.fn().mockImplementation(() => {
         testNoteObj.noteText = "Foo Bar Tar"
         return testNoteObj

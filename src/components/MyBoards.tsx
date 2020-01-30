@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import {Row} from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
+import Firebase from "../service/Firebase";
 
 interface Props {
     retroBoardService: RetroBoardService
@@ -34,7 +35,7 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
                             <h4>{board.name}</h4>
                         </Card.Body>
                         <Card.Footer>
-                            <Link to={`/retro-board/${board.id}`}>URL</Link>
+                            <Link to={`/retro-board/${Firebase.getInstance().getLoggedInUser()!.uid}/${board.id}`}>URL</Link>
                         </Card.Footer>
                     </Card>
                 </Col>
