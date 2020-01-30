@@ -6,6 +6,9 @@ import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import Note from "../models/Note";
+import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import User from "../models/User";
+import Notes from "../models/Notes";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
@@ -22,7 +25,28 @@ describe('Component StickyNote Test', function () {
     })
     
     beforeEach(() => {
-        stickyNote = render(<Provider store={store}><StickyNote 
+        let testUser = new User()
+        testUser.uid = "test-id"
+        testUser.email = "test@example.com"
+        testUser.idToken = "id-token"
+        testUser.username = "username"
+        testUser.displayName = "displayName"
+        
+        for (let i=0; i < 5; i++) {
+            let testNote = new Note("RetroBoardId", "WallId", "text" + i, {backgroundColor: "", likeBtnPosition: "right", textColor: ""})
+            testNote.likedBy.push(testUser)
+            store.dispatch(new RetroBoardActions().createNote(testNote))
+        }
+        
+        localStorage.setItem(User.USER_INFO, JSON.stringify(testUser))
+        store.dispatch(new RetroBoardActions().createRetroBoard({
+            maxLikes: 5,
+            name: "RetroBoard",
+            id: "RetroBoardId"
+        }));
+        
+        
+        stickyNote = render(<Provider store={store}><StickyNote
             retroBoardService={service} 
             note={testNoteObj}
         /></Provider>)
@@ -63,5 +87,13 @@ describe('Component StickyNote Test', function () {
         await fireEvent.click(deleteBtn)
         
         expect(service.deleteNote).toBeCalledTimes(1)
+    })
+    
+    test("user should not be able to like the note more than the maxlikes limit set to the board", async () => {
+        let likeBtn = stickyNote.getByTestId("like_thumbs_up")
+        await fireEvent.click(likeBtn)
+        
+        let totalCount = stickyNote.getByTestId("total_votes")
+        expect(totalCount.textContent).toBe("0")
     })
 });
