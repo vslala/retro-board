@@ -21,8 +21,7 @@ class App extends React.Component<Props, State> {
 
     render() {
         return <Provider store={store}><Router>
-            <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}/>
-            <LayoutAuthenticated/>
+            {this.state.isLoggedIn ? <LayoutAuthenticated /> : <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}/>}
         </Router></Provider>
 
     }

@@ -3,6 +3,7 @@ import {HomePageModel} from "../interfaces/HomePageModel"
 import {Col, Container, Row} from "react-bootstrap"
 import CreateRetroBoard from "../components/CreateRetroBoard";
 import MyBoards from "../components/MyBoards";
+import Firebase from "../service/Firebase";
 
 class HomePage extends React.Component<HomePageModel> {
 
@@ -16,7 +17,7 @@ class HomePage extends React.Component<HomePageModel> {
         const {history} = this.props
 
         let retroBoardId = String(Date.now())
-        history.push("/retro-board/" + retroBoardId)
+        history.push(`/retro-board/${Firebase.getInstance().getLoggedInUser()!.uid}/${retroBoardId}`)
     }
 
     render() {

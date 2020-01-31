@@ -26,18 +26,21 @@ class LoginPage extends React.Component<Props, State> {
         super(props)
         this.tryGoogleLogin = this.tryGoogleLogin.bind(this)
     }
+    
+    componentDidMount(): void {
+        this.props.history.push({pathname: "/login", state: {referrer: this.props.location.pathname}})
+    }
 
     tryGoogleLogin() {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {
                 this.props.success()
-                this.props.history.push("/")
+                this.props.history.push(this.props.location.state.referrer)
             })
         }
     }
 
     render(): JSX.Element {
-        
         return <Container>
             <Row>
                 <Col></Col>
