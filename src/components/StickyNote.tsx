@@ -116,13 +116,14 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     _mergeNoteIfRequired(note: Note) {
-        let cardBodyContent: ReactNode = <p className={"card-text"}>{note.noteText}</p>
+        let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%"}}><p>{note.noteText}</p>
+        </div>
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
                 .map((noteText, index) => (<div key={index}><p>{noteText}</p>
                     <hr style={{borderTop: "1px dashed"}}/>
                 </div>))
-            cardBodyContent = <div className={"card-text"}>{mergedNotes}</div>
+            cardBodyContent = <div className={"card-text"} style={{width: "80%"}}>{mergedNotes}</div>
         }
 
         return cardBodyContent
@@ -135,7 +136,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
         return (
             <Card className={"z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
-                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500}}
+                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500, minHeight: "50px"}}
                            onClick={this.handleOnClick}>
                     <div data-testid={"editor"}
                          style={{color: note.style?.textColor || "black"}}>
@@ -149,21 +150,21 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
                                 cardBodyContent
                         }
                     </div>
-                    <ul className={"list-inline pull-right"}>
-                        <li className="list-inline-item">
-                            <Like key={`like_note.noteId`} handleUpVote={this.handleUpVote}
-                                  likedBy={note.likedBy || []}
-                                  stickyNoteId={note.noteId}
-                            />
-                        </li>
-                        <li className={"list-inline-item"}>
-                            <Badge data-testid={`delete_badge_${note.noteId}`} variant={"danger"}
-                                   style={{cursor: "pointer", padding: "2px", margin: "0"}}
-                                   onClick={() => this.props.deleteNote(note)}><i
-                                className="fa fa-trash-o"></i></Badge>
-                        </li>
-                    </ul>
                 </Card.Body>
+                <ul className={"list-inline pull-right"} style={{position: 'absolute', right: "5px", bottom: "0px"}}>
+                    <li className="list-inline-item">
+                        <Like key={`like_note.noteId`} handleUpVote={this.handleUpVote}
+                              likedBy={note.likedBy || []}
+                              stickyNoteId={note.noteId}
+                        />
+                    </li>
+                    <li className={"list-inline-item"}>
+                        <Badge data-testid={`delete_badge_${note.noteId}`} variant={"danger"}
+                               style={{cursor: "pointer", padding: "2px", margin: "0"}}
+                               onClick={() => this.props.deleteNote(note)}><i
+                            className="fa fa-trash-o"></i></Badge>
+                    </li>
+                </ul>
                 <Toast data-testid={"toast"} show={this.state.showToast} style={{position: 'absolute', left: '50%'}}>
                     <Toast.Body>{this.state.toastMessage}</Toast.Body>
                 </Toast>

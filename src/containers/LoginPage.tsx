@@ -35,7 +35,7 @@ class LoginPage extends React.Component<Props, State> {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {
                 this.props.success()
-                this.props.history.push(this.props.location.state.referrer)
+                this.props.history.push((this.props.location.state! as {referrer: string}).referrer)
             })
         }
     }
