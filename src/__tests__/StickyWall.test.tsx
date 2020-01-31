@@ -1,6 +1,6 @@
 import React from 'react'
 import '../setupTests'
-import {fireEvent, render, RenderResult, wait} from "@testing-library/react";
+import {fireEvent, render, RenderResult} from "@testing-library/react";
 import StickyWall from "../components/StickyWall";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import Note from "../models/Note";

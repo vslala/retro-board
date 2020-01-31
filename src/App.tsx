@@ -5,6 +5,7 @@ import LayoutAuthenticated from "./components/LayoutAuthenticated";
 import LayoutUnauthenticated from "./components/LayoutUnauthenticated";
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
+import Firebase from "./service/Firebase";
 
 interface Props {
 }
@@ -20,8 +21,13 @@ class App extends React.Component<Props, State> {
     }
 
     render() {
+        console.log("User is logged in = ", this.state.isLoggedIn)
         return <Provider store={store}><Router>
-            {this.state.isLoggedIn ? <LayoutAuthenticated /> : <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}/>}
+            {
+                Firebase.getInstance().getLoggedInUser() ?
+                    <LayoutAuthenticated/> :
+                    <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}/>
+            }
         </Router></Provider>
 
     }
