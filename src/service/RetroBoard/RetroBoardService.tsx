@@ -66,6 +66,13 @@ class RetroBoardService {
 
         throw new Error("Cannot retrieve RetroBoardId from the firebase!")
     }
+    
+    public async updateRetroBoard(retroBoard:RetroBoard): Promise<RetroBoard> {
+        Firebase.getInstance().getDatabase().ref(`${this._getRetroBoardDBPath()}/${retroBoard.id}`)
+            .update(retroBoard)
+            
+        return retroBoard
+    }
 
     private _getRetroBoardDBPath() {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()!

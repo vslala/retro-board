@@ -2,18 +2,15 @@ import React, {useState} from 'react'
 import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
 import RetroWalls from "../models/RetroWalls";
-import {connect, useDispatch} from 'react-redux'
+import {connect, useDispatch, useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
 import RetroBoardState from "../redux/reducers/RetroBoardState";
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
-import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
-import Button from "react-bootstrap/Button";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 
@@ -44,15 +41,15 @@ const SortSelect: React.FunctionComponent = () => {
     const retroBoardActions = new RetroBoardActions()
     const dispatch = useDispatch()
     const [sortSelectValue, setSortSelectValue] = useState(SortType.NONE)
-    
-    const handleSort = function(e: React.ChangeEvent<HTMLSelectElement>): void {
+
+    const handleSort = function (e: React.ChangeEvent<HTMLSelectElement>): void {
         let sortBy = e.target.value
         if (sortBy === String(SortType.SORT_BY_VOTES)) {
             dispatch(retroBoardActions.sortByVotes())
             setSortSelectValue(SortType.SORT_BY_VOTES)
         }
     }
-    
+
     return <Form>
         <Form.Group>
             <Form.Label>Sort cards: </Form.Label>
@@ -65,6 +62,34 @@ const SortSelect: React.FunctionComponent = () => {
             </FormControl>
         </Form.Group>
     </Form>
+}
+
+const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
+    const useSelector: TypedUseSelectorHook<RetroBoardState> = useReduxSelector
+    const retroBoardState = useSelector(state => state)
+    const retroBoardActions = new RetroBoardActions()
+    const dispatch = useDispatch()
+    const [blur, setBlur] = useState(retroBoardState.retroBoard.blur)
+    
+    const handleChange = async (val: "on" | "off") => {
+        console.log("Value: ", val)
+        setBlur(val)
+        
+        let retroBoard: RetroBoard = {...retroBoardState.retroBoard}
+        retroBoard.blur = val
+        dispatch(retroBoardActions.createRetroBoard(await props.retroBoardService.updateRetroBoard(retroBoard)))
+    }
+
+    return <InputGroup className={"pull-right"}>
+        <InputGroup.Prepend>
+            <InputGroup.Radio name="group1" value={blur} onChange={() => handleChange("on")}/>
+            <InputGroup.Text>Blur On</InputGroup.Text>
+        </InputGroup.Prepend>
+        <InputGroup.Prepend>
+            <InputGroup.Radio name="group1" value={blur} onChange={() => handleChange("off")}/>
+            <InputGroup.Text>Blur Off</InputGroup.Text>
+        </InputGroup.Prepend>
+    </InputGroup>
 }
 
 class RetroBoardPage extends React.Component<Props, State> {
@@ -131,9 +156,11 @@ class RetroBoardPage extends React.Component<Props, State> {
             <div style={{padding: "50px"}}>
                 <Row>
                     <Col>
-                        <SortSelect />
+                        <SortSelect/>
                     </Col>
-                    <Col></Col>
+                    <Col className={"align-self-center"}>
+                        <BlurToggle {...this.props} />
+                    </Col>
                     <Col className={"align-self-center"}>
                         <Button className={"pull-right"} variant={"info"}>
                             <CSVLink {...this.convertJsonToCsv()} target={"_blank"}

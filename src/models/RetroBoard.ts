@@ -35,11 +35,13 @@ class RetroBoard implements RetroBoardModel {
     id: string
     name: string
     maxLikes:number
+    blur: "on" | "off"
 
     constructor(id:string, name:string) {
         this.id = id
         this.name = name
         this.maxLikes = 5
+        this.blur = "off"
     }
     
     public static toJSON(retroBoard: RetroBoard) {

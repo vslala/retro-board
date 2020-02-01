@@ -116,14 +116,18 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     _mergeNoteIfRequired(note: Note) {
-        let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%"}}><p>{note.noteText}</p>
+        let blur = this.props.retroBoard.blur === "on"
+        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email) ? "blur(3px)" : "blur(0px)"
+
+        let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%", filter: blur}}>
+            <p>{note.noteText}</p>
         </div>
         if (note.noteText.includes("<MERGE_NOTE>")) {
             let mergedNotes = note.noteText.split("<MERGE_NOTE>")
                 .map((noteText, index) => (<div key={index}><p>{noteText}</p>
                     <hr style={{borderTop: "1px dashed"}}/>
                 </div>))
-            cardBodyContent = <div className={"card-text"} style={{width: "80%"}}>{mergedNotes}</div>
+            cardBodyContent = <div className={"card-text"} style={{width: "95%", filter: blur}}>{mergedNotes}</div>
         }
 
         return cardBodyContent

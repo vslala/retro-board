@@ -21,7 +21,6 @@ class App extends React.Component<Props, State> {
     }
 
     render() {
-        console.log("User is logged in = ", this.state.isLoggedIn)
         return <Provider store={store}><Router>
             {
                 Firebase.getInstance().getLoggedInUser() ?
