@@ -63,12 +63,6 @@ class StickyWall extends Component<Props, State> {
             this.props.sortByVotes()
         })
     }
-
-    deleteNote(note: Note) {
-        if (!note.createdBy?.includes(Firebase.getInstance().getLoggedInUser()!.email))
-            return
-        this.props.deleteNote(note)
-    }
     
     handleDrop(e: React.DragEvent<HTMLAnchorElement>, droppedOnNote: Note) {
         const draggedNote = JSON.parse(e.dataTransfer.getData("text/plain")) as Note
@@ -77,7 +71,7 @@ class StickyWall extends Component<Props, State> {
             
         droppedOnNote.noteText += "<MERGE_NOTE>" + draggedNote.noteText
         this.props.updateNote({...droppedOnNote}).then(() => {
-            this.deleteNote(draggedNote)
+            this.props.deleteNote(draggedNote)
         })
     } 
     
