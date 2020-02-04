@@ -6,7 +6,7 @@ import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
 import RetroWalls from "../models/RetroWalls";
-import {connect, useDispatch, useSelector as useReduxSelector, TypedUseSelectorHook} from 'react-redux'
+import {connect, TypedUseSelectorHook, useDispatch, useSelector as useReduxSelector} from 'react-redux'
 import RetroBoardState from "../redux/reducers/RetroBoardState";
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
@@ -27,7 +27,7 @@ interface StateFromReduxStore {
 }
 
 interface DispatchProps {
-    createRetroBoard: (uid: string, retroBoardId: string) => Promise<RetroBoardActionTypes>
+    createRetroBoard: (retroBoard: RetroBoard) => Promise<RetroBoardActionTypes>
     createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
 }
 
@@ -69,11 +69,9 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
     const retroBoardState = useSelector(state => state)
     const retroBoardActions = new RetroBoardActions()
     const dispatch = useDispatch()
-    const [blur, setBlur] = useState(retroBoardState.retroBoard.blur)
     
     const handleChange = async (val: "on" | "off") => {
         console.log("Value: ", val)
-        setBlur(val)
         
         let retroBoard: RetroBoard = {...retroBoardState.retroBoard}
         retroBoard.blur = val
@@ -82,11 +80,11 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
 
     return <InputGroup className={"pull-right"}>
         <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={blur} onChange={() => handleChange("on")}/>
+            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("on")}/>
             <InputGroup.Text>Blur On</InputGroup.Text>
         </InputGroup.Prepend>
         <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={blur} onChange={() => handleChange("off")}/>
+            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("off")}/>
             <InputGroup.Text>Blur Off</InputGroup.Text>
         </InputGroup.Prepend>
     </InputGroup>
@@ -108,7 +106,9 @@ class RetroBoardPage extends React.Component<Props, State> {
         localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
 
         if (retroBoardId && uid) {
-            this.props.createRetroBoard(uid, retroBoardId)
+            this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+                this.props.createRetroBoard(retroBoard)
+            }))
             this.props.createRetroWalls(retroBoardId)
         }
 
@@ -195,7 +195,7 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
     return {
         createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
-        createRetroBoard: async (uid: string, retroBoardId: string) => dispatch(retroBoardActions.createRetroBoard(await service.getRetroBoardById(uid, retroBoardId)))
+        createRetroBoard: async (retroBoard: RetroBoard) => dispatch(retroBoardActions.createRetroBoard(retroBoard))
     }
 }
 

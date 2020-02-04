@@ -121,6 +121,15 @@ class RetroBoardService {
             .update(modifiedNote)
         return modifiedNote
     }
+    
+    public async getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void) {
+        console.log(`uid: ${uid}, retroBoardId: ${retroBoardId}`);
+        let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${uid}`).child(retroBoardId)
+        ref.on('value', (snapshot) => {
+            console.log("Retro Board changed!")
+            callback(snapshot.val() as RetroBoard)
+        })
+    }
 
     public async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}`).child(retroBoardId)
