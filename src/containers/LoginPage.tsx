@@ -32,11 +32,15 @@ class LoginPage extends React.Component<Props, State> {
         this.props.history.push({pathname: "/login", state: {referrer: this.props.location.pathname}})
     }
 
+    getReferrerUrl = () =>
+         (this.props.location.state ? this.props.location.state : {referrer: "/"} as {referrer: string}).referrer
+
+
     tryGoogleLogin() {
         if (!this.state.firebase.isUserAuthenticated()) {
             this.state.firebase.authenticateUser().then(() => {
                 this.props.success()
-                this.props.history.push((this.props.location.state! as {referrer: string}).referrer)
+                this.props.history.push(this.getReferrerUrl())
             })
         }
     }
@@ -46,7 +50,7 @@ class LoginPage extends React.Component<Props, State> {
             this.state.firebase.authenticateAnonymousUser().then(() => {
                 console.log(this.props.location.state)
                 this.props.success()
-                this.props.history.push((this.props.location.state! as {referrer: string}).referrer)
+                this.props.history.push(this.getReferrerUrl())
             })
         }
     }

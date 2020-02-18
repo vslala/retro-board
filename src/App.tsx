@@ -6,6 +6,12 @@ import LayoutUnauthenticated from "./components/LayoutUnauthenticated";
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
 import Firebase from "./service/Firebase";
+import {Route, RouteComponentProps} from "react-router";
+import HomePage from "./containers/HomePage";
+import RetroBoardService from "./service/RetroBoard/RetroBoardService";
+import RetroBoardPage from "./containers/RetroBoardPage";
+import LoginPage from "./containers/LoginPage";
+import Logout from "./components/Logout";
 
 interface Props {
 }
@@ -21,13 +27,32 @@ class App extends React.Component<Props, State> {
     }
 
     render() {
-        return <Provider store={store}><Router>
-            {
-                Firebase.getInstance().getLoggedInUser() ?
-                    <LayoutAuthenticated/> :
-                    <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}/>
-            }
-        </Router></Provider>
+        return <Provider store={store}>
+            <Router>
+                <Route exact path={"/login"} component={(props: RouteComponentProps) =>
+                    <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}>
+                        <LoginPage
+                            success={() => this.setState({isLoggedIn: true})}/>
+                    </LayoutUnauthenticated>}/>
+
+                <Route exact path={"/"} component={(props: RouteComponentProps) =>
+                    <LayoutAuthenticated>
+                        <HomePage {...props}
+                                  retroBoardService={RetroBoardService.getInstance()}/>
+                    </LayoutAuthenticated>}/>
+
+                <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
+                    <LayoutAuthenticated>
+                        <RetroBoardPage {...props}
+                                        retroBoardService={RetroBoardService.getInstance()}/>
+                    </LayoutAuthenticated>}/>
+
+                    <Route exact path={"/logout"} component={(props: RouteComponentProps) =>
+                    <LayoutAuthenticated>
+                        <Logout service={Firebase.getInstance()} />
+                    </LayoutAuthenticated>}/>
+            </Router>
+        </Provider>
 
     }
 }

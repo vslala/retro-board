@@ -82,6 +82,10 @@ class Firebase {
         let userCredentials = await this.auth.signInAnonymously()
         await this.persistLoggedInUserInfo(userCredentials)
     }
+
+    logout() {
+        localStorage.clear()
+    }
 }
 
 
