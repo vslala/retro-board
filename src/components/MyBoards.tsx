@@ -2,7 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react'
 import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoard from "../models/RetroBoard";
 import Card from "react-bootstrap/Card";
-import {Row} from 'react-bootstrap';
+import {Row, Spinner} from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
 import Firebase from "../service/Firebase";
@@ -15,6 +15,7 @@ interface Props {
 const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
 
     const [boards, setBoards] = useState<RetroBoard[]>([])
+    const [loader, setLoader] = useState<boolean>(false)
 
 
     useEffect(() => {
@@ -27,13 +28,16 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
     }, [retroBoardService])
 
     const handleDelete = (board: RetroBoard) => {
+        setLoader(true)
         retroBoardService.deleteBoard(board).then(boardId => {
+            setLoader(false)
             setBoards(boards.filter(board => board.id !== boardId))
-        }).catch(e => console.log("Error deleting board! ", e))
+        }).catch(e => {console.log("Error deleting board! ", e); setLoader(false)})
     }
 
     return <>
         <Row>
+            {loader? <Spinner animation="grow" variant={"danger"} style={{position: "absolute", top: "50%", left: "50%"}} />:<></>}
             {boards.map((board, index) =>
 
                 <Col lg={"4"} key={index}>
