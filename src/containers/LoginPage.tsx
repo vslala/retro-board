@@ -27,10 +27,6 @@ class LoginPage extends React.Component<Props, State> {
         this.tryGoogleLogin = this.tryGoogleLogin.bind(this)
         this.tryAnonymousLogin = this.tryAnonymousLogin.bind(this)
     }
-    
-    componentDidMount(): void {
-        this.props.history.push({pathname: "/login", state: {referrer: this.props.location.pathname}})
-    }
 
     getReferrerUrl = () => {
         if (this.props.location.state) {
