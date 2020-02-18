@@ -25,6 +25,7 @@ class LoginPage extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props)
         this.tryGoogleLogin = this.tryGoogleLogin.bind(this)
+        this.tryAnonymousLogin = this.tryAnonymousLogin.bind(this)
     }
     
     componentDidMount(): void {
@@ -40,6 +41,16 @@ class LoginPage extends React.Component<Props, State> {
         }
     }
 
+    tryAnonymousLogin() {
+        if (!this.state.firebase.isUserAuthenticated()) {
+            this.state.firebase.authenticateAnonymousUser().then(() => {
+                console.log(this.props.location.state)
+                this.props.success()
+                this.props.history.push((this.props.location.state! as {referrer: string}).referrer)
+            })
+        }
+    }
+
     render(): JSX.Element {
         return <Container>
             <Row>
@@ -49,6 +60,10 @@ class LoginPage extends React.Component<Props, State> {
                     <Button className="btn btn-block btn-social btn-google" onClick={this.tryGoogleLogin}>
                         <span className="fa fa-google"></span>
                         Sign in with Google
+                    </Button>
+                    <Button className="btn btn-block btn-social" onClick={this.tryAnonymousLogin}>
+                        <span className="fa fa-user"></span>
+                        Sign in as Anonymous User
                     </Button>
                 </Col>
                 <Col></Col>

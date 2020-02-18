@@ -43,10 +43,14 @@ class Firebase {
 
     public async authenticateUser(): Promise<void> {
         let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
+        await this.persistLoggedInUserInfo(userCredentials);
+    }
+
+    private async persistLoggedInUserInfo(userCredentials: firebase.auth.UserCredential) {
         let idToken = await userCredentials.user!.getIdToken()
-        
+
         console.log("Logged In User: ", userCredentials)
-        
+
         this.loggedInUser = new User()
         this.loggedInUser.displayName = userCredentials.user?.displayName || ""
         this.loggedInUser.idToken = idToken
@@ -72,6 +76,11 @@ class Firebase {
 
     public getIdToken(): string {
         return this.authenticatedUser!.credential!.providerId
+    }
+
+    public async authenticateAnonymousUser(): Promise<void> {
+        let userCredentials = await this.auth.signInAnonymously()
+        await this.persistLoggedInUserInfo(userCredentials)
     }
 }
 

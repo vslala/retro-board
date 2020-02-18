@@ -174,7 +174,7 @@ class RetroBoardService {
         if (loggedInUser) {
             snapshot = await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${loggedInUser.uid}`)
                 .once('value')
-            return Object.values(snapshot.val())
+            return snapshot.val() ? Object.values(snapshot.val()) : []
         }
         return []
     }
