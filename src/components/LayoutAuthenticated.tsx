@@ -1,8 +1,4 @@
 import React from 'react'
-import {Route, RouteComponentProps} from "react-router";
-import HomePage from "../containers/HomePage";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
-import RetroBoardPage from "../containers/RetroBoardPage";
 import {Redirect} from "react-router-dom";
 import Firebase from "../service/Firebase";
 import Container from "react-bootstrap/Container";

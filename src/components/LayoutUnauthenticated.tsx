@@ -1,6 +1,5 @@
 import React from 'react'
 import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
-import LoginPage from "../containers/LoginPage";
 import Firebase from "../service/Firebase";
 import Container from "react-bootstrap/Container";
 import PageFooter from "./PageFooter";
