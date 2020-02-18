@@ -139,7 +139,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
         let cardBodyContent = this._mergeNoteIfRequired(note)
 
         return (
-            <Card className={"z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
+            <Card className={"sticky-note z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
                 <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500, minHeight: "50px"}}
                            onClick={this.handleOnClick}>
                     <div data-testid={"editor"}

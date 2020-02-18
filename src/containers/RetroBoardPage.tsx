@@ -53,7 +53,7 @@ const SortSelect: React.FunctionComponent = () => {
     return <Form>
         <Form.Group>
             <Form.Label>Sort cards: </Form.Label>
-            <FormControl as={"select"} onChange={handleSort}
+            <FormControl as={"select"} onChange={handleSort} data-testid={"sort_select"}
                          value={String(sortSelectValue)}>
                 <option defaultValue={String(SortType.NONE)}>select...</option>
                 <option defaultValue={String(SortType.SORT_BY_VOTES)}
