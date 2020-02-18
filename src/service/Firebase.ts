@@ -47,14 +47,25 @@ class Firebase {
     }
 
     private async persistLoggedInUserInfo(userCredentials: firebase.auth.UserCredential) {
+
+        function generateRandomText(length: number) {
+            let result           = '';
+            let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let charactersLength = characters.length;
+            for ( let i = 0; i < length; i++ ) {
+                result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            }
+            return result;
+        }
+
         let idToken = await userCredentials.user!.getIdToken()
 
         console.log("Logged In User: ", userCredentials)
 
         this.loggedInUser = new User()
-        this.loggedInUser.displayName = userCredentials.user?.displayName || ""
+        this.loggedInUser.displayName = userCredentials.user?.displayName || `${generateRandomText(5)}`
         this.loggedInUser.idToken = idToken
-        this.loggedInUser.email = userCredentials.user?.email || ""
+        this.loggedInUser.email = userCredentials.user?.email || `${generateRandomText(5)}@retro.com`
         this.loggedInUser.uid = userCredentials.user?.uid || ""
 
         localStorage.setItem("credentials", JSON.stringify(userCredentials))
