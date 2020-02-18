@@ -6,6 +6,7 @@ import {Row} from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
 import Firebase from "../service/Firebase";
+import Button from "react-bootstrap/Button";
 
 interface Props {
     retroBoardService: RetroBoardService
@@ -25,6 +26,12 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
         _getMyBoards().catch((e) => console.log("User not logged In!", e));
     }, [retroBoardService])
 
+    const handleDelete = (board: RetroBoard) => {
+        retroBoardService.deleteBoard(board).then(boardId => {
+            setBoards(boards.filter(board => board.id !== boardId))
+        }).catch(e => console.log("Error deleting board! ", e))
+    }
+
     return <>
         <Row>
             {boards.map((board, index) =>
@@ -36,6 +43,9 @@ const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
                         </Card.Body>
                         <Card.Footer>
                             <Link to={`/retro-board/${Firebase.getInstance().getLoggedInUser()!.uid}/${board.id}`}>URL</Link>
+                            <Button variant={"link"} className={"pull-right"} onClick={() => handleDelete(board)}>
+                                <i className={"fa fa-trash-o fa-lg"} style={{color: "red"}} />
+                            </Button>
                         </Card.Footer>
                     </Card>
                 </Col>

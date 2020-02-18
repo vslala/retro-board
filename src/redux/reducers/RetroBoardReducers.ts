@@ -6,7 +6,7 @@ import {ActionTypes, RetroBoardActionTypes, SortType} from "../types/RetroBoardA
 import Note from "../../models/Note";
 
 export const initialState: RetroBoardState = {
-    retroBoard: new RetroBoard("", ""),
+    retroBoard: new RetroBoard("", "", ""),
     retroWalls: new RetroWalls([]),
     notes: new Notes([])
 }

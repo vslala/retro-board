@@ -36,12 +36,14 @@ class RetroBoard implements RetroBoardModel {
     name: string
     maxLikes:number
     blur: "on" | "off"
+    userId: string
 
-    constructor(id:string, name:string) {
+    constructor(id:string, name:string, userId: string) {
         this.id = id
         this.name = name
         this.maxLikes = 5
         this.blur = "off"
+        this.userId = userId
     }
     
     public static toJSON(retroBoard: RetroBoard) {

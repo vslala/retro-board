@@ -54,7 +54,8 @@ class RetroBoardService {
         let retroBoardId = ref.key
 
         if (retroBoardId) {
-            const retroBoard = new RetroBoard(retroBoardId, title);
+            let loggedInUser = Firebase.getInstance().getLoggedInUser()
+            const retroBoard = new RetroBoard(retroBoardId, title, loggedInUser?.uid!);
             retroBoard.maxLikes = maxLikes
             await Firebase.getInstance().getDatabase()
                 .ref(`${retroBoardDBPath}/${retroBoardId}`)
@@ -191,6 +192,17 @@ class RetroBoardService {
 
             return 0 - (itemOneLikesCount > itemTwoLikesCount ? 1 : -1)
         }))
+    }
+
+    public async deleteBoard(board: RetroBoard): Promise<string> {
+        let loggedInUser = Firebase.getInstance().getLoggedInUser()
+        if (loggedInUser) {
+            await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${board.userId}`).remove()
+            await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.WALLS}/${board.id}`).remove()
+            await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${board.id}`).remove()
+            return board.id
+        }
+        return ""
     }
 }
 
