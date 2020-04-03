@@ -28,6 +28,8 @@ class AddNewNote extends React.Component<Props, State> {
     }
     
     handleEnter(note: string) {
+        if ("" === note)
+            return ;
         this.props.addNote(note)
         this.setState({showEditor: false})
     }
