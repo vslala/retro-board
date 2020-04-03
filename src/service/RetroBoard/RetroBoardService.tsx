@@ -197,7 +197,7 @@ class RetroBoardService {
     public async deleteBoard(board: RetroBoard): Promise<string> {
         let loggedInUser = Firebase.getInstance().getLoggedInUser()
         if (loggedInUser) {
-            await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${board.userId}`).remove()
+            await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.BOARDS}/${board.userId}/${board.id}`).remove()
             await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.WALLS}/${board.id}`).remove()
             await Firebase.getInstance().getDatabase().ref(`${RetroBoardService.NOTES}/${board.id}`).remove()
             return board.id
