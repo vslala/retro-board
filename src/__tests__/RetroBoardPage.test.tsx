@@ -1,18 +1,16 @@
 import React from 'react'
 import '../setupTests'
 import RetroBoardPage from "../containers/RetroBoardPage";
-import {render, RenderResult, fireEvent} from '@testing-library/react';
+import {fireEvent, render, RenderResult} from '@testing-library/react';
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
-import HomePage from "../containers/HomePage";
 import {MemoryRouter} from "react-router-dom";
-import {dummyRetroWalls, mocks} from "../setupTests";
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
+import {mocks} from "../setupTests";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
-import RetroWalls from "../models/RetroWalls";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 function getRetroBoardService() {
-    const retroBoardService = RetroBoardServiceV1.getInstance()
+    const retroBoardService = RetroBoardServiceFactory.getInstance()
     retroBoardService.getDataOnUpdate = jest.fn().mockImplementation((boardId:string, wallId:string, callBack: () => void) => {
 
     })

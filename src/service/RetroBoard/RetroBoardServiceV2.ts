@@ -4,26 +4,23 @@ import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import Firebase from "../Firebase";
-import CreateResponse from "../../models/CreateResponse";
 import RetroWall from "../../models/RetroWall";
 
-const serviceUrl = "//:localhost:8082/retro-board"
+const serviceUrl = "http://localhost:8082"
 class RetroBoardServiceV2 implements RetroBoardService {
 
     private static retroBoardService: RetroBoardService;
 
     async addNewNote(newNote: Note): Promise<Note> {
-        let response = await fetch(`${serviceUrl}/note`, {
+        let response = await fetch(`${serviceUrl}/retro-board/note`, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: Note.toJSON(newNote)
         });
 
         if (201 === response.status) {
-            let data = await response.json();
-            let createResponse = CreateResponse.fromJSON(data);
             // request the new retro-board from the url and return the data
-            let newNoteData = await fetch(createResponse.resourceUrl);
+            let newNoteData = await fetch(response.headers.get("Location")!);
             let note = Note.fromJSON(await newNoteData.json());
             return note;
         }
@@ -42,10 +39,8 @@ class RetroBoardServiceV2 implements RetroBoardService {
         });
 
         if (201 == response.status) {
-            let data = await response.json();
-            let createResponse = CreateResponse.fromJSON(data);
             // request the new retro-board from the url and return the data
-            let retroBoardData = await fetch(createResponse.resourceUrl);
+            let retroBoardData = await fetch(response.headers.get("Location")!);
             let retroBoard = RetroBoard.fromJSON(await retroBoardData.json());
             return retroBoard;
         }
@@ -69,8 +64,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
 
         if (201 === response.status) {
             // it should return the url for walls
-            let data = CreateResponse.fromJSON(await response.json());
-            let retroWallsResponse = await fetch(data.resourceUrl);
+            let retroWallsResponse = await fetch(response.headers.get("Location")!);
             let retroWalls = await (retroWallsResponse).json();
             return RetroWalls.fromJSON(retroWalls);
         }
@@ -134,8 +128,10 @@ class RetroBoardServiceV2 implements RetroBoardService {
         throw "Error encountered while fetching retro board from the server";
     }
 
-    getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void> {
-        throw "Requires Implementation";
+    async getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void> {
+        let retroBoard = await this.getRetroBoardById("", retroBoardId);
+        callback(retroBoard);
+        // throw "Requires Implementation";
     }
 
     async getRetroWalls(retroBoardId: string): Promise<RetroWalls> {

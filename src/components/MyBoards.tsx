@@ -1,5 +1,4 @@
 import React, {FunctionComponent, useEffect, useState} from 'react'
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import RetroBoard from "../models/RetroBoard";
 import Card from "react-bootstrap/Card";
 import {Row, Spinner} from 'react-bootstrap';
@@ -7,9 +6,10 @@ import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
 import Firebase from "../service/Firebase";
 import Button from "react-bootstrap/Button";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 
 interface Props {
-    retroBoardService: RetroBoardServiceV1
+    retroBoardService: RetroBoardService
 }
 
 const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {

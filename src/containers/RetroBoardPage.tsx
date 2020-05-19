@@ -13,11 +13,13 @@ import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 interface PropsFromParent extends RouteComponentProps {
     uid?: string
     retroBoardId?: string
-    retroBoardService: RetroBoardServiceV1
+    retroBoardService: RetroBoardService
 }
 
 interface StateFromReduxStore {
@@ -189,7 +191,7 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
-    let service = RetroBoardServiceV1.getInstance()
+    let service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
 
 

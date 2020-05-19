@@ -1,5 +1,4 @@
 import {WallStyle} from "../interfaces/StickyWallModel";
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 
 class RetroWall {

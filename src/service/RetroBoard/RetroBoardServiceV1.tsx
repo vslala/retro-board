@@ -5,6 +5,7 @@ import Note from "../../models/Note";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import {RetroBoardService} from "./RetroBoardService";
+import RetroBoardServiceFactory from "./RetroBoardServiceFactory";
 
 class RetroBoardServiceV1 implements RetroBoardService {
 
@@ -91,9 +92,9 @@ class RetroBoardServiceV1 implements RetroBoardService {
         }
 
         retroWalls = new RetroWalls([
-            RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV1.getInstance()),
-            RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV1.getInstance()),
-            RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV1.getInstance()),
+            RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceFactory.getInstance()),
+            RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceFactory.getInstance()),
+            RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceFactory.getInstance()),
         ])
 
         Firebase.getInstance().getDatabase()

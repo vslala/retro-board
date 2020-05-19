@@ -1,7 +1,6 @@
 import RetroBoardServiceV2 from "../service/RetroBoard/RetroBoardServiceV2";
 import Note from "../models/Note";
 import {globalAny} from "../setupTests";
-import CreateResponse from "../models/CreateResponse";
 import RetroBoard from "../models/RetroBoard";
 import Firebase from "../service/Firebase";
 import User from "../models/User";

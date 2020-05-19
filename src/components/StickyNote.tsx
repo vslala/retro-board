@@ -7,7 +7,6 @@ import User from "../models/User";
 import Note from "../models/Note";
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import {Dispatch} from "redux";
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {connect} from "react-redux";
 import Badge from "react-bootstrap/Badge";
@@ -17,6 +16,8 @@ import RetroWalls from "../models/RetroWalls";
 import Notes from "../models/Notes";
 import Toast from "react-bootstrap/Toast";
 import Firebase from "../service/Firebase";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 interface StateFromReduxStore {
     retroBoard: RetroBoard
@@ -31,7 +32,7 @@ interface DispatchProps {
 }
 
 interface Props extends StickyNoteProps, DispatchProps, StateFromReduxStore {
-    retroBoardService: RetroBoardServiceV1
+    retroBoardService: RetroBoardService
     sortBy?: SortType
 }
 
@@ -187,7 +188,7 @@ const mapStateToProps = (state: RetroBoardState): RetroBoardState => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
-    const service = RetroBoardServiceV1.getInstance()
+    const service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
     return {
         updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note))),

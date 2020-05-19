@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import {Dispatch} from 'redux'
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 interface State {
     notes: Note[]
@@ -114,7 +114,7 @@ class StickyWall extends Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
-    const service = RetroBoardServiceV1.getInstance()
+    const service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
     
     return {

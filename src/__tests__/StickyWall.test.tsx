@@ -11,10 +11,11 @@ import store from "../redux/store/Store";
 import RetroWall from "../models/RetroWall";
 import Notes from "../models/Notes";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 describe("StickyWall test suite", () => {
 
-    let service: RetroBoardServiceV1
+    let service: RetroBoardService
 
     function note1() {
         let note1 = new Note("retroBoard", "Whatwentwell", "Foo",
@@ -33,7 +34,7 @@ describe("StickyWall test suite", () => {
     }
 
     function mockRetroBoardServiceMethods(): RetroBoardService {
-        service = RetroBoardServiceV1.getInstance()
+        service = RetroBoardServiceFactory.getInstance()
         service.deleteNote = jest.fn().mockImplementation((note: Note) => {
             
             return note
