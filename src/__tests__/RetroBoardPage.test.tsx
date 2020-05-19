@@ -7,12 +7,12 @@ import store from "../redux/store/Store";
 import HomePage from "../containers/HomePage";
 import {MemoryRouter} from "react-router-dom";
 import {dummyRetroWalls, mocks} from "../setupTests";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import RetroWalls from "../models/RetroWalls";
 
 function getRetroBoardService() {
-    const retroBoardService = RetroBoardService.getInstance()
+    const retroBoardService = RetroBoardServiceV1.getInstance()
     retroBoardService.getDataOnUpdate = jest.fn().mockImplementation((boardId:string, wallId:string, callBack: () => void) => {
 
     })
@@ -92,6 +92,7 @@ test("it should render 3 sticky walls", async () => {
 test("two notes should be added to the wall with id ToImprove", async () => {
     let dom = renderPage()
     await store.dispatch(new RetroBoardActions().createRetroBoard({
+        userId: "123",
         "blur": "off",
         "id": "-Lz2GmX4YfBJRvYseleR",
         "maxLikes": 5,
@@ -211,6 +212,7 @@ test("two notes should be added to the wall with id ToImprove", async () => {
 test("it should be able to sort the notes by votes when sort by votes is selected", async () => {
     let dom = renderPage()
     await store.dispatch(new RetroBoardActions().createRetroBoard({
+        userId: "123",
         "blur": "off",
         "id": "-Lz2GmX4YfBJRvYseleR",
         "maxLikes": 5,

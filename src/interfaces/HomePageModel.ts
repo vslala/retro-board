@@ -1,8 +1,8 @@
 import {RouteComponentProps} from "react-router-dom";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 
 export interface HomePageModel extends RouteComponentProps {
     linkText?: string
     linkUrl?: string
-    retroBoardService: RetroBoardService
+    retroBoardService: RetroBoardServiceV1
 }

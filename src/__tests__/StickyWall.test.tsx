@@ -2,7 +2,7 @@ import React from 'react'
 import '../setupTests'
 import {fireEvent, render, RenderResult} from "@testing-library/react";
 import StickyWall from "../components/StickyWall";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import Note from "../models/Note";
 import User from "../models/User";
 import Firebase from "../service/Firebase";
@@ -10,10 +10,11 @@ import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import RetroWall from "../models/RetroWall";
 import Notes from "../models/Notes";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 
 describe("StickyWall test suite", () => {
 
-    let service: RetroBoardService
+    let service: RetroBoardServiceV1
 
     function note1() {
         let note1 = new Note("retroBoard", "Whatwentwell", "Foo",
@@ -32,7 +33,7 @@ describe("StickyWall test suite", () => {
     }
 
     function mockRetroBoardServiceMethods(): RetroBoardService {
-        service = RetroBoardService.getInstance()
+        service = RetroBoardServiceV1.getInstance()
         service.deleteNote = jest.fn().mockImplementation((note: Note) => {
             
             return note

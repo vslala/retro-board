@@ -2,14 +2,14 @@ import React, {FunctionComponent, useState} from 'react'
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {useDispatch} from "react-redux";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {Redirect} from 'react-router-dom';
 import Firebase from "../service/Firebase";
 
 interface Props {
-    retroBoardService: RetroBoardService
+    retroBoardService: RetroBoardServiceV1
 }
 
 const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {

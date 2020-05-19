@@ -7,7 +7,7 @@ import {createLocation, createMemoryHistory} from 'history'
 import {match} from 'react-router'
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import RetroBoard from "../models/RetroBoard";
 import User from "../models/User";
 
@@ -39,7 +39,7 @@ describe("HomePage tests", () => {
     }
 
     beforeEach(() => {
-        let retroBoardMockService = RetroBoardService.getInstance()
+        let retroBoardMockService = RetroBoardServiceV1.getInstance()
         retroBoardMockService.getMyBoards = async () => {
             return [new RetroBoard("testId", "Name")]
         }

@@ -6,7 +6,9 @@ import '@testing-library/jest-dom/extend-expect';
 import {RenderResult} from "@testing-library/react";
 import {createLocation, createMemoryHistory} from "history";
 import {match} from "react-router";
-import RetroBoardService from "./service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "./service/RetroBoard/RetroBoardServiceV1";
+
+export const globalAny:any = global;
 
 let localStorageMock = (function() {
   let store = new Map()
@@ -50,7 +52,7 @@ export const mocks = {
   }
 }
 
-export const dummyRetroWalls = (retroBoardService: RetroBoardService) => ({
+export const dummyRetroWalls = (retroBoardService: RetroBoardServiceV1) => ({
   "walls": [
     {
       "retroBoardId": "-Lz2GmX4YfBJRvYseleR",
@@ -96,3 +98,4 @@ export const dummyRetroWalls = (retroBoardService: RetroBoardService) => ({
     }
   ]
 })
+

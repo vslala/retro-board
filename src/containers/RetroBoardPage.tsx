@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
@@ -17,7 +17,7 @@ import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 interface PropsFromParent extends RouteComponentProps {
     uid?: string
     retroBoardId?: string
-    retroBoardService: RetroBoardService
+    retroBoardService: RetroBoardServiceV1
 }
 
 interface StateFromReduxStore {
@@ -103,7 +103,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     componentDidMount(): void {
         const {retroBoardId, uid} = this.props.match.params as PropsFromParent
-        localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
+        localStorage.setItem(RetroBoardServiceV1.RETRO_BOARD_ID, retroBoardId!)
 
         if (retroBoardId && uid) {
             this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
@@ -189,7 +189,7 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
-    let service = RetroBoardService.getInstance()
+    let service = RetroBoardServiceV1.getInstance()
     const retroBoardActions = new RetroBoardActions();
 
 

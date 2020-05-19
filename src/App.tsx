@@ -8,7 +8,7 @@ import store from "./redux/store/Store";
 import Firebase from "./service/Firebase";
 import {Route, RouteComponentProps} from "react-router";
 import HomePage from "./containers/HomePage";
-import RetroBoardService from "./service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "./service/RetroBoard/RetroBoardServiceV1";
 import RetroBoardPage from "./containers/RetroBoardPage";
 import LoginPage from "./containers/LoginPage";
 import Logout from "./components/Logout";
@@ -38,13 +38,13 @@ class App extends React.Component<Props, State> {
                 <Route exact path={"/"} component={(props: RouteComponentProps) =>
                     <LayoutAuthenticated>
                         <HomePage {...props}
-                                  retroBoardService={RetroBoardService.getInstance()}/>
+                                  retroBoardService={RetroBoardServiceV1.getInstance()}/>
                     </LayoutAuthenticated>}/>
 
                 <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
                     <LayoutAuthenticated>
                         <RetroBoardPage {...props}
-                                        retroBoardService={RetroBoardService.getInstance()}/>
+                                        retroBoardService={RetroBoardServiceV1.getInstance()}/>
                     </LayoutAuthenticated>}/>
 
                     <Route exact path={"/logout"} component={(props: RouteComponentProps) =>

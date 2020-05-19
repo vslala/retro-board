@@ -2,7 +2,7 @@ import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react';
 import StickyNote from "../components/StickyNote";
 import '../setupTests'
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import Note from "../models/Note";
@@ -11,7 +11,7 @@ import User from "../models/User";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
-    let service = RetroBoardService.getInstance();
+    let service = RetroBoardServiceV1.getInstance();
     let testNoteObj = new Note("testId-1", "wallId", "FooBar",
         {backgroundColor: '', likeBtnPosition: "right", textColor: "red"});
     testNoteObj.createdBy.push("test@example.com")
