@@ -37,12 +37,22 @@ class LoginPage extends React.Component<Props, State> {
 
 
     tryGoogleLogin() {
-        if (!this.state.firebase.isUserAuthenticated()) {
-            this.state.firebase.authenticateUser().then(() => {
-                this.props.success()
-                this.props.history.push(this.getReferrerUrl())
-            })
-        }
+        this.state.firebase.isUserAuthenticated()
+            .then(isAuth => {
+                if (!isAuth) {
+                    this.state.firebase.authenticateUser().then(() => {
+                        this.props.success()
+                        this.props.history.push(this.getReferrerUrl())
+                    })
+                }
+            });
+
+        // if (this.state.firebase.isUserAuthenticated()) {
+        //     this.state.firebase.authenticateUser().then(() => {
+        //         this.props.success()
+        //         this.props.history.push(this.getReferrerUrl())
+        //     })
+        // }
     }
 
     tryAnonymousLogin() {
