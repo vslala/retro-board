@@ -26,20 +26,13 @@ class RetroBoardServiceV2 implements RetroBoardService {
     private static retroBoardService: RetroBoardService;
 
     async addNewNote(newNote: Note): Promise<Note> {
-        let response = await fetch(`${SERVICE_URL}/retro-board/note`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem(User.ID_TOKEN)!
-            },
-            body: Note.toJSON(newNote)
-        });
+        let response = await request.post("/retro-board/walls/notes", newNote);
 
         if (201 === response.status) {
             // request the new retro-board from the url and return the data
-            let newNoteData = await fetch(response.headers.get("Location")!);
-            let note = Note.fromJSON(await newNoteData.json());
-            return note;
+            // let newNoteData = await request.get(response.headers.location!);
+            // let note = await newNoteData.data as Note;
+            return newNote;
         }
 
         throw Error("Error creating note in the backend!");
@@ -111,7 +104,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
         let response = await request.get(`/retro-board/walls/notes`, {
             params: {
                 retroBoardId: retroBoardId,
-                retroWallId: retroWallId,
+                wallId: retroWallId,
             }
         });
 
@@ -132,13 +125,15 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     getNoteWhenLiked(note: Note, callback: (note: Note) => void): Promise<void> {
-        throw Error("Requires Implementation");
+        // TODO: Requires implementation
+        return Promise.resolve();
     }
 
+
     async getNotes(retroBoardId: string, wallId: string): Promise<Notes> {
-        let response = await request.get(`/retro-board/note/${retroBoardId}/${wallId}`);
+        let response = await request.get(`/retro-board/walls/notes/${retroBoardId}`);
         if (200 === response.status) {
-            let notesData = Notes.fromJSON(await response.data);
+            let notesData = await response.data as Notes;
             return notesData;
         }
         throw Error(`Encountered Error while trying to fetch notes for ${retroBoardId} > ${wallId}`);
