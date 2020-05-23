@@ -30,7 +30,7 @@ interface StateFromReduxStore {
 
 interface DispatchProps {
     createRetroBoard: (retroBoard: RetroBoard) => Promise<RetroBoardActionTypes>
-    createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
+    createRetroWalls: (retroWalls: RetroWalls) => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
@@ -105,13 +105,19 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     componentDidMount(): void {
         const {retroBoardId, uid} = this.props.match.params as PropsFromParent
-        localStorage.setItem(RetroBoardServiceV1.RETRO_BOARD_ID, retroBoardId!)
+        localStorage.setItem("retroBoardId", retroBoardId!)
 
         if (retroBoardId && uid) {
-            this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
-                this.props.createRetroBoard(retroBoard)
-            }))
-            this.props.createRetroWalls(retroBoardId)
+            this.props.retroBoardService.getRetroBoardById(uid, retroBoardId)
+                .then(retroBoard => {
+                    document.title = retroBoard.name;
+                    this.props.createRetroBoard(retroBoard);
+                    this.props.retroBoardService.createRetroWalls(retroBoardId)
+                        .then(retroWalls => this.props.createRetroWalls(retroWalls));
+                });
+            // this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+            //     this.props.createRetroBoard(retroBoard)
+            // }))
         }
 
     }
@@ -196,7 +202,7 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
 
     return {
-        createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
+        createRetroWalls: async (retroWalls: RetroWalls) => dispatch(retroBoardActions.createRetroWalls(retroWalls)),
         createRetroBoard: async (retroBoard: RetroBoard) => dispatch(retroBoardActions.createRetroBoard(retroBoard))
     }
 }

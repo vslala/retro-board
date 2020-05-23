@@ -15,7 +15,8 @@ const request = axios.create({
 request.interceptors.request.use((config) => {
     config.headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem(User.ID_TOKEN)!}`
+        'Authorization': `Bearer ${localStorage.getItem(User.ID_TOKEN)!}`,
+        'Accept': '*/*'
     }
     return config;
 })
@@ -45,22 +46,18 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async createNewRetroBoard({title, maxLikes}: { title: string; maxLikes: number }): Promise<RetroBoard> {
-        let loggedInUser = Firebase.getInstance().getLoggedInUser();
+        let loggedInUser = await Firebase.getInstance().isUserAuthenticated();
         if (!loggedInUser) throw Error("Authentication Exception! User is not logged in.");
 
-        let response = await fetch(`${SERVICE_URL}/retro-board`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem(User.ID_TOKEN)!
-            },
-            body: RetroBoard.toJSON(new RetroBoard("", title, loggedInUser.uid))
-        });
+        let response = await request.post("/retro-board",
+            {name: title, maxLikes: maxLikes});
 
         if (201 === response.status) {
+            console.log(response);
+            console.log(response.headers.location);
             // request the new retro-board from the url and return the data
-            let retroBoardData = await fetch(response.headers.get("Location")!);
-            let retroBoard = RetroBoard.fromJSON(await retroBoardData.json());
+            let retroBoardResponse = await request.get(response.headers.location!);
+            let retroBoard = await retroBoardResponse.data as RetroBoard;
             return retroBoard;
         }
 
@@ -68,41 +65,34 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async createRetroWalls(retroBoardId: string): Promise<any | RetroWalls> {
-        // it should create three walls for the given retro board
-        let retroWalls = new RetroWalls([
-            RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()),
-            RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()),
-            RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()),
-        ]);
+        try {
+            let retroWallsResponse = await request.get(`/retro-board/walls/${retroBoardId}`);
+            if (retroWallsResponse.status === 200)
+                return await retroWallsResponse.data as RetroWalls;
+        } catch (e) {
+            console.log("Creating Retro Walls!");
+            // it should create three walls for the given retro board
+            let retroWalls = new RetroWalls([
+                RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()),
+                RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()),
+                RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()),
+            ]);
+            retroWalls.retroBoardId = retroBoardId;
 
-        let response = await fetch(`${SERVICE_URL}/retro-board/walls`, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem(User.ID_TOKEN)!
-            },
-            body: JSON.stringify(retroWalls)
-        });
+            let response = await request.post(`/retro-board/walls`, retroWalls);
 
-        if (201 === response.status) {
-            // it should return the url for walls
-            let retroWallsResponse = await fetch(response.headers.get("Location")!);
-            let retroWalls = await (retroWallsResponse).json();
-            return RetroWalls.fromJSON(retroWalls);
+            if (201 === response.status) {
+                // it should return the url for walls
+                let retroWallsResponse = await request.get(response.headers.location!);
+                return await retroWallsResponse.data as RetroWall;
+            }
         }
 
-        throw Error("Error creating retro walls for the retro board");
     }
 
     async deleteBoard(board: RetroBoard): Promise<string> {
         // it should cascade delete board, walls and notes
-        let response = await fetch(`${SERVICE_URL}/retro-board/${board.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem(User.ID_TOKEN)!
-            }
-        })
+        let response = await request.delete(`${SERVICE_URL}/retro-board/${board.id}`);
         if (204 === response.status)
             return board.id;
 
@@ -111,14 +101,21 @@ class RetroBoardServiceV2 implements RetroBoardService {
 
     async deleteNote(note: Note): Promise<Note> {
         // it should delete the individual note by id
-        let response = await axios.delete(`/retro-board/note/${note.noteId}`);
+        let response = await request.delete(`/retro-board/note/${note.noteId}`);
         if (204 === response.status) return note;
 
         throw Error("Error deleting note at the backend!");
     }
 
-    getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
-        throw Error("Requires Implementation");
+    async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
+        let response = await request.get(`/retro-board/walls/notes`, {
+            params: {
+                retroBoardId: retroBoardId,
+                retroWallId: retroWallId,
+            }
+        });
+
+        callback(await response.data as Notes);
     }
 
 
@@ -139,7 +136,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getNotes(retroBoardId: string, wallId: string): Promise<Notes> {
-        let response = await axios.get(`/retro-board/note/${retroBoardId}/${wallId}`);
+        let response = await request.get(`/retro-board/note/${retroBoardId}/${wallId}`);
         if (200 === response.status) {
             let notesData = Notes.fromJSON(await response.data);
             return notesData;
@@ -148,9 +145,9 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getRetroBoardById(uid: string, retroBoardId: string): Promise<RetroBoard> {
-        let response = await axios.get(`/retro-board/${retroBoardId}`);
+        let response = await request.get(`/retro-board/${retroBoardId}`);
         if (200 === response.status) {
-            let retroBoard = RetroBoard.fromJSON(await response.data);
+            let retroBoard = await response.data as RetroBoard;
             return retroBoard;
         }
 
@@ -164,9 +161,9 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getRetroWalls(retroBoardId: string): Promise<RetroWalls> {
-        let response = await axios.get(`/retro-board/walls/${retroBoardId}`);
+        let response = await request.get(`/retro-board/walls/${retroBoardId}`);
         if (200 === response.status) {
-            let retroWalls = RetroWalls.fromJSON(await response.data);
+            let retroWalls = await response.data as RetroWalls;
             return retroWalls;
         }
 
@@ -179,14 +176,14 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async updateNote(modifiedNote: Note): Promise<Note> {
-        let response = await axios.put("/retro-board/note", Note.toJSON(modifiedNote));
+        let response = await request.put("/retro-board/note", Note.toJSON(modifiedNote));
         if (204 === response.status) return modifiedNote;
 
         throw Error("Error encountered while updating note in the backend.");
     }
 
     async updateRetroBoard(retroBoard: RetroBoard): Promise<RetroBoard> {
-        let response = await axios.put("/retro-board", RetroBoard.toJSON(retroBoard));
+        let response = await request.put("/retro-board", RetroBoard.toJSON(retroBoard));
         if (204 === response.status) return retroBoard;
 
         throw Error("Error encountered while updating note in the backend.");

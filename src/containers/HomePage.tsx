@@ -38,14 +38,6 @@ class HomePage extends React.Component<HomePageModel> {
                         <MyBoards retroBoardService={this.props.retroBoardService} />
                     </Col>
                 </Row>
-                <Row>
-                    <Col>
-                        <div className={"pb-2 mt-4 mb-2 border-bottom"}>
-                            <h3>Discussion Track</h3>
-                        </div>
-                        <MyBoards retroBoardService={this.props.retroBoardService} />
-                    </Col>
-                </Row>
         </Container>
     }
 }
