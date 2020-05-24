@@ -108,7 +108,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
 
     async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
         // This code will only execute whenever a new note is created for the board
-        let duplex = new DuplexCommunication();
+        let duplex = DuplexCommunication.getInstance();
         duplex.subscribe(`/topic/notes/${retroBoardId}`, async (uri:string) => {
             let response = await request.get(`/retro-board/walls/notes`, {
                 params: {
@@ -169,9 +169,15 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void> {
-        let retroBoard = await this.getRetroBoardById("", retroBoardId);
-        callback(retroBoard);
-        // throw "Requires Implementation";
+        // This code will only execute whenever a change is made to the retro board
+        let duplex = new DuplexCommunication();
+        duplex.subscribe(`/topic/retro-board/${retroBoardId}`, async (uri:any) => {
+            console.log("URI : ", uri);
+            let response = await request.get(uri.body);
+            if (response.status === 200) {
+                callback(await response.data as RetroBoard);
+            }
+        });
     }
 
     async getRetroWalls(retroBoardId: string): Promise<RetroWalls> {
@@ -197,7 +203,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async updateRetroBoard(retroBoard: RetroBoard): Promise<RetroBoard> {
-        let response = await request.put("/retro-board", RetroBoard.toJSON(retroBoard));
+        let response = await request.put("/retro-board", retroBoard);
         if (204 === response.status) return retroBoard;
 
         throw Error("Error encountered while updating note in the backend.");

@@ -80,15 +80,16 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
         dispatch(retroBoardActions.createRetroBoard(await props.retroBoardService.updateRetroBoard(retroBoard)))
     }
 
+    let isChecked = props.retroBoard.blur === "on" ? true : false;
+
     return <InputGroup className={"pull-right"}>
-        <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("on")}/>
-            <InputGroup.Text>Blur On</InputGroup.Text>
-        </InputGroup.Prepend>
-        <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("off")}/>
-            <InputGroup.Text>Blur Off</InputGroup.Text>
-        </InputGroup.Prepend>
+        <Form.Check
+            checked={isChecked}
+            type={"switch"}
+            id={"switch_on"}
+            label={"Blur On"}
+            onChange={() => handleChange(isChecked ? "off" : "on")}
+        />
     </InputGroup>
 }
 
@@ -115,9 +116,11 @@ class RetroBoardPage extends React.Component<Props, State> {
                     this.props.retroBoardService.createRetroWalls(retroBoardId)
                         .then(retroWalls => this.props.createRetroWalls(retroWalls));
                 });
-            // this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
-            //     this.props.createRetroBoard(retroBoard)
-            // }))
+
+            this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+                console.log("RetroBoard: ", retroBoard);
+                this.props.createRetroBoard(retroBoard)
+            }))
         }
 
     }

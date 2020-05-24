@@ -5,10 +5,20 @@ import Stomp from 'stompjs';
 
 class DuplexCommunication {
 
+    private static instance: DuplexCommunication;
+
     static socket: any;
     static stomp: any;
 
-    public connect() {
+    public static getInstance() {
+        if (! DuplexCommunication.instance)
+            DuplexCommunication.instance = new DuplexCommunication();
+        if (! DuplexCommunication.instance.isConnected())
+            DuplexCommunication.instance.connect();
+        return DuplexCommunication.instance;
+    }
+
+    private connect() {
 
         if (this.isConnected()) return;
 
