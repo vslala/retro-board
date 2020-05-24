@@ -14,6 +14,8 @@ test:
       - node_modules/
 
   stage: test
+  only:
+    - master
   script:
     - echo "Setting up test env"
     - echo $ENV | base64 -d > .env
@@ -25,6 +27,8 @@ test:
 build:
   image: node:10
   stage: build
+  only:
+    - master
   script:
     - echo "Building the app"
     - echo $ENV | base64 -d > .env
@@ -40,6 +44,8 @@ docker-build:
   services:
     - docker:dind
   stage: package
+  only:
+    - master
   script:
     - docker build -t $REGISTRY_IMAGE .
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -59,6 +65,8 @@ deploy:
   services:
     - docker:dind
   stage: deploy
+  only:
+    - master
   when: manual
   script:
     - echo "Deploying Docker Image To The Server"
