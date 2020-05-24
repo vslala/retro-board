@@ -7,6 +7,7 @@ import Firebase from "../Firebase";
 import RetroWall from "../../models/RetroWall";
 import User from "../../models/User";
 import axios from 'axios';
+import DuplexCommunication from "../WebSocket/DuplexCommunication";
 
 const request = axios.create({
     baseURL: SERVICE_URL
@@ -101,6 +102,19 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
+        // This code will only execute whenever a new note is created for the board
+        let duplex = new DuplexCommunication();
+        duplex.connect(`/topic/notes/${retroBoardId}`, async (uri:string) => {
+            let response = await request.get(`/retro-board/walls/notes`, {
+                params: {
+                    retroBoardId: retroBoardId,
+                    wallId: retroWallId,
+                }
+            });
+            console.log("Websocket Data: ", uri);
+            callback(await response.data as Notes);
+        });
+
         let response = await request.get(`/retro-board/walls/notes`, {
             params: {
                 retroBoardId: retroBoardId,
