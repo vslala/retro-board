@@ -5,14 +5,34 @@ import Stomp from 'stompjs';
 
 class DuplexCommunication {
 
-    public connect(topic:string, callback: (data:any) => void) {
-        let socket = new SockJS("http://localhost:8082/retro-websocket");
-        let stomp = Stomp.over(socket);
-        stomp.connect({}, (frame) => {
-            stomp.subscribe(topic, (data) => {
-                callback(data);
-            });
-        });
+    static socket: any;
+    static stomp: any;
+
+    public connect() {
+        if (DuplexCommunication.socket && DuplexCommunication.stomp)
+            return;
+        DuplexCommunication.socket = new SockJS("http://localhost:8082/retro-websocket");
+        DuplexCommunication.stomp = Stomp.over(DuplexCommunication.socket);
+        if (DuplexCommunication.stomp.status !== "CONNECTED") {
+            DuplexCommunication.stomp.connect();
+        }
+    }
+
+    public subscribe(topic: string, callback: (data: any) => void) {
+
+        if (!DuplexCommunication.stomp)
+            this.connect()
+
+        // wait until the websocket connection has been established
+        let subscribeInterval = setInterval(() => {
+            if (DuplexCommunication.stomp.connected) {
+                window.clearInterval(subscribeInterval);
+                DuplexCommunication.stomp.subscribe(topic, (data: any) => {
+                    callback(data);
+                });
+            }
+        }, 1000);
+
     }
 }
 
