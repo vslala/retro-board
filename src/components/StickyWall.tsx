@@ -59,7 +59,7 @@ class StickyWall extends Component<Props, State> {
             textColor: this.retroWall.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
         })
-        newNote.createdBy.push(Firebase.getInstance().getLoggedInUser()!.email)
+        newNote.createdBy = Firebase.getInstance().getLoggedInUser()!.email;
         this.props.addNewNote(newNote).then(() => {
             this.props.sortByVotes()
         })

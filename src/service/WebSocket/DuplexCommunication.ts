@@ -9,17 +9,30 @@ class DuplexCommunication {
     static stomp: any;
 
     public connect() {
-        if (DuplexCommunication.socket && DuplexCommunication.stomp)
-            return;
+
+        if (this.isConnected()) return;
+
         DuplexCommunication.socket = new SockJS("http://localhost:8082/retro-websocket");
         DuplexCommunication.stomp = Stomp.over(DuplexCommunication.socket);
-        if (DuplexCommunication.stomp.status !== "CONNECTED") {
-            DuplexCommunication.stomp.connect();
+        if (! this.isConnected()) {
+            DuplexCommunication.stomp.connect({},
+                (frame:any) => {},
+                (success:any) => { console.log("Connected!"); },
+                (error:any) => {
+                    alert("Connection lost!!! Reload the page...");
+                    window.location.reload();
+                }
+            );
         }
+    }
+
+    private isConnected() {
+        return DuplexCommunication.socket && DuplexCommunication.stomp && DuplexCommunication.stomp.connected;
     }
 
     public subscribe(topic: string, callback: (data: any) => void) {
 
+        console.log("trying subscribing to topic...")
         if (!DuplexCommunication.stomp)
             this.connect()
 

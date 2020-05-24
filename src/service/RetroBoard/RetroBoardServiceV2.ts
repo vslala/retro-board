@@ -95,7 +95,12 @@ class RetroBoardServiceV2 implements RetroBoardService {
 
     async deleteNote(note: Note): Promise<Note> {
         // it should delete the individual note by id
-        let response = await request.delete(`/retro-board/note/${note.noteId}`);
+        let response = await request.delete(`/retro-board/walls/notes`, {
+            params: {
+                noteId: note.noteId,
+                retroBoardId: note.retroBoardId
+            }
+        });
         if (204 === response.status) return note;
 
         throw Error("Error deleting note at the backend!");
@@ -111,7 +116,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
                     wallId: retroWallId,
                 }
             });
-            console.log("Websocket Data: ", uri);
+
             callback(await response.data as Notes);
         });
 
