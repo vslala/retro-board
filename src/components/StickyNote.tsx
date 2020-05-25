@@ -118,7 +118,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
     _mergeNoteIfRequired(note: Note) {
         let blur = this.props.retroBoard.blur === "on"
-        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email) ? "blur(3px)" : "blur(0px)"
+        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid) ? "blur(3px)" : "blur(0px)"
 
         let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%", filter: blur}}>
             <p>{note.noteText}</p>
