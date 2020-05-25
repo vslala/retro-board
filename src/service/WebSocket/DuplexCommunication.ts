@@ -2,6 +2,7 @@
 import SockJS from "sockjs-client";
 // @ts-ignore
 import Stomp from 'stompjs';
+import User from "../../models/User";
 
 class DuplexCommunication {
 
@@ -25,12 +26,15 @@ class DuplexCommunication {
         DuplexCommunication.socket = new SockJS("http://localhost:8082/retro-websocket");
         DuplexCommunication.stomp = Stomp.over(DuplexCommunication.socket);
         if (! this.isConnected()) {
-            DuplexCommunication.stomp.connect({},
-                (frame:any) => {},
+            let accessToken = localStorage.getItem(User.ID_TOKEN);
+            DuplexCommunication.stomp.connect({
+                        "Authorization": "Bearer " + accessToken
+                },
                 (success:any) => { console.log("Connected!"); },
                 (error:any) => {
-                    alert("Connection lost!!! Reload the page...");
-                    window.location.reload();
+
+                    console.log("Connection lost!!! Reload the page...", error);
+                    // window.location.reload();
                 }
             );
         }
