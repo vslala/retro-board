@@ -15,6 +15,7 @@ import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
+import Firebase from "../service/Firebase";
 
 interface PropsFromParent extends RouteComponentProps {
     uid?: string
@@ -71,7 +72,13 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
     const retroBoardState = useSelector(state => state)
     const retroBoardActions = new RetroBoardActions()
     const dispatch = useDispatch()
-    
+
+    // if the board is not created by the logged in user
+    // then do not show the blur feature
+    if (props.retroBoard.userId !== Firebase.getInstance().getLoggedInUser()!.uid) {
+        return <></>
+    }
+
     const handleChange = async (val: "on" | "off") => {
         console.log("Value: ", val)
         

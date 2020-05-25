@@ -66,7 +66,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     handleOnClick(): void {
         // only allow edit if the note is created by the user
         // do not allow people to edit others note
-        if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email)) {
+        if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid)) {
             let noteText = this.state.noteText
             this.setState({showEditor: true, noteText: noteText})
         }
