@@ -67,9 +67,9 @@ class RetroBoardServiceV2 implements RetroBoardService {
             console.log("Creating Retro Walls!");
             // it should create three walls for the given retro board
             let retroWalls = new RetroWalls([
-                RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()),
-                RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()),
-                RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()),
+                RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()).setWallOrder(1),
+                RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()).setWallOrder(2),
+                RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()).setWallOrder(3),
             ]);
             retroWalls.retroBoardId = retroBoardId;
 
