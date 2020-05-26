@@ -20,7 +20,7 @@ class Editor extends React.Component<Props, EditorModel> {
         editorText: this.props.noteText ? this.props.noteText : ""
     }
     
-    handleKeyboardKeyPress = (e: React.KeyboardEvent<FormControl>) => {
+    handleKeyboardKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Escape') {
             this.props.handleEnter(this.state.editorText.replace(/\n/g, ""))
         }
