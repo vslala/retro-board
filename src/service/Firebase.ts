@@ -1,6 +1,7 @@
 import React from 'react'
 import firebase from "firebase";
 import User from "../models/User";
+import {SERVICE_URL} from "./RetroBoard/RetroBoardService";
 
 export const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -9,6 +10,16 @@ export const config = {
     projectId: process.env.REACT_APP_PROJECT_ID,
     storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+}
+
+export interface RefreshTokenResponse {
+    access_token: string
+    expires_in: number
+    token_type: string,
+    refresh_token: string,
+    id_token: string,
+    user_id: string,
+    project_id: string
 }
 
 export const FirebaseContext = React.createContext(null)
@@ -62,15 +73,19 @@ class Firebase {
 
         console.log("Logged In User: ", userCredentials)
 
-        this.loggedInUser = new User()
-        this.loggedInUser.displayName = userCredentials.user?.displayName || `${generateRandomText(5)}`
-        this.loggedInUser.idToken = idToken
-        this.loggedInUser.email = userCredentials.user?.email || `${generateRandomText(5)}@retro.com`
-        this.loggedInUser.uid = userCredentials.user?.uid || ""
+        if (userCredentials.user) {
+            this.loggedInUser = new User()
+            this.loggedInUser.displayName = userCredentials.user.displayName || `${generateRandomText(5)}`
+            this.loggedInUser.idToken = idToken
+            this.loggedInUser.email = userCredentials.user.email || `${generateRandomText(5)}@retro.com`
+            this.loggedInUser.uid = userCredentials.user.uid || ""
 
-        localStorage.setItem("credentials", JSON.stringify(userCredentials))
-        localStorage.setItem("idToken", idToken)
-        localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
+            localStorage.setItem(User.ID_TOKEN, idToken);
+            localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
+            localStorage.setItem(User.REFRESH_TOKEN, userCredentials.user.refreshToken)
+        }
+
+
     }
 
     public getLoggedInUser(): User | undefined {
@@ -79,14 +94,40 @@ class Firebase {
             return JSON.parse(loggedInUserJson) as User
     }
 
-    public isUserAuthenticated() {
-        let isAuthenticated = localStorage.getItem(User.ID_TOKEN) !== null
-        
-        return isAuthenticated
+    public async isUserAuthenticated(): Promise<boolean> {
+        let refreshToken = localStorage.getItem(User.REFRESH_TOKEN);
+        let idToken = localStorage.getItem(User.ID_TOKEN);
+
+
+        if (refreshToken) {
+            if (idToken) {
+                let response = await fetch(`${SERVICE_URL}/token/verify?id_token=${idToken}`)
+                if (200 === response.status) {
+                    return true;
+                } else {
+                    let newIdToken = await fetch(`https://securetoken.googleapis.com/v1/token?key=${config.apiKey}`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            grant_type: "refresh_token",
+                            refresh_token: refreshToken
+                        })
+                    });
+                    let data = (await newIdToken.json()) as RefreshTokenResponse;
+                    localStorage.setItem(User.ID_TOKEN, data.id_token);
+                    localStorage.setItem(User.REFRESH_TOKEN, data.refresh_token);
+                }
+            }
+
+            console.log("User is authenticated!");
+            return true;
+        }
+
+        console.log("User is not authenticated!");
+        return false;
     }
 
     public getIdToken(): string {
-        return this.authenticatedUser!.credential!.providerId
+        return localStorage.getItem(User.ID_TOKEN)!;
     }
 
     public async authenticateAnonymousUser(): Promise<void> {

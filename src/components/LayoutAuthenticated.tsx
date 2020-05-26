@@ -4,21 +4,39 @@ import Firebase from "../service/Firebase";
 import Container from "react-bootstrap/Container";
 import PageFooter from "./PageFooter";
 import PageHeader from "./PageHeader";
+import {Spinner} from "react-bootstrap";
 
 interface Props extends RouteComponentProps {
 }
 
-class LayoutAuthenticated extends React.Component<Props> {
+interface State {
+    isUserAuthenticated: boolean
+    isLoading: boolean
+}
+
+class LayoutAuthenticated extends React.Component<Props, State> {
+
+    state: State = {
+        isUserAuthenticated: false,
+        isLoading: true
+    };
+
+    componentDidMount(): void {
+        Firebase.getInstance().isUserAuthenticated().then(response => {
+            this.setState({isUserAuthenticated: response, isLoading: false});
+        });
+    }
 
     render(): JSX.Element {
-        if (Firebase.getInstance().isUserAuthenticated())
+        if (this.state.isLoading) return <Spinner animation={"border"} />;
+        else if (this.state.isUserAuthenticated)
             return <Container fluid={true} className={"d-flex w-100 h-100 p-3 mx-auto flex-column"}>
                 <PageHeader/>
                 {this.props.children}
-                <PageFooter />
+                <PageFooter/>
             </Container>
-
-        return <Redirect to={{pathname: "/login", state: {referrer: this.props.location.pathname}}}/>
+        else
+            return <Redirect to={{pathname: "/login", state: {referrer: this.props.location.pathname}}}/>
     }
 }
 

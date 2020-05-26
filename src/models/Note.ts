@@ -8,7 +8,7 @@ class Note {
     noteText: string
     style: StickyNoteStyle
     likedBy: User[]
-    createdBy: string[]
+    createdBy: string
     
     constructor(retroBoardId: string, wallId: string, noteText:string, style:StickyNoteStyle) {
         this.retroBoardId = retroBoardId
@@ -17,7 +17,7 @@ class Note {
         this.noteText = noteText
         this.style = style
         this.likedBy = []
-        this.createdBy = []
+        this.createdBy = ""
     }
 
     public static toJSON(note:Note): string {

@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
@@ -13,6 +13,9 @@ import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
+import Firebase from "../service/Firebase";
 
 interface PropsFromParent extends RouteComponentProps {
     uid?: string
@@ -28,7 +31,7 @@ interface StateFromReduxStore {
 
 interface DispatchProps {
     createRetroBoard: (retroBoard: RetroBoard) => Promise<RetroBoardActionTypes>
-    createRetroWalls: (retroBoardId: string) => Promise<RetroBoardActionTypes>
+    createRetroWalls: (retroWalls: RetroWalls) => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
@@ -69,7 +72,13 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
     const retroBoardState = useSelector(state => state)
     const retroBoardActions = new RetroBoardActions()
     const dispatch = useDispatch()
-    
+
+    // if the board is not created by the logged in user
+    // then do not show the blur feature
+    if (props.retroBoard.userId !== Firebase.getInstance().getLoggedInUser()!.uid) {
+        return <></>
+    }
+
     const handleChange = async (val: "on" | "off") => {
         console.log("Value: ", val)
         
@@ -78,15 +87,16 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
         dispatch(retroBoardActions.createRetroBoard(await props.retroBoardService.updateRetroBoard(retroBoard)))
     }
 
+    let isChecked = props.retroBoard.blur === "on" ? true : false;
+
     return <InputGroup className={"pull-right"}>
-        <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("on")}/>
-            <InputGroup.Text>Blur On</InputGroup.Text>
-        </InputGroup.Prepend>
-        <InputGroup.Prepend>
-            <InputGroup.Radio name="group1" value={props.retroBoard.blur} onChange={() => handleChange("off")}/>
-            <InputGroup.Text>Blur Off</InputGroup.Text>
-        </InputGroup.Prepend>
+        <Form.Check
+            checked={isChecked}
+            type={"switch"}
+            id={"switch_on"}
+            label={"Blur On"}
+            onChange={() => handleChange(isChecked ? "off" : "on")}
+        />
     </InputGroup>
 }
 
@@ -103,13 +113,21 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     componentDidMount(): void {
         const {retroBoardId, uid} = this.props.match.params as PropsFromParent
-        localStorage.setItem(RetroBoardService.RETRO_BOARD_ID, retroBoardId!)
+        localStorage.setItem("retroBoardId", retroBoardId!)
 
         if (retroBoardId && uid) {
+            this.props.retroBoardService.getRetroBoardById(uid, retroBoardId)
+                .then(retroBoard => {
+                    document.title = retroBoard.name;
+                    this.props.createRetroBoard(retroBoard);
+                    this.props.retroBoardService.createRetroWalls(retroBoardId)
+                        .then(retroWalls => this.props.createRetroWalls(retroWalls));
+                });
+
             this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+                console.log("RetroBoard: ", retroBoard);
                 this.props.createRetroBoard(retroBoard)
             }))
-            this.props.createRetroWalls(retroBoardId)
         }
 
     }
@@ -189,12 +207,12 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
-    let service = RetroBoardService.getInstance()
+    let service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
 
 
     return {
-        createRetroWalls: async (retroBoardId: string) => dispatch(retroBoardActions.createRetroWalls(await service.createRetroWalls(retroBoardId))),
+        createRetroWalls: async (retroWalls: RetroWalls) => dispatch(retroBoardActions.createRetroWalls(retroWalls)),
         createRetroBoard: async (retroBoard: RetroBoard) => dispatch(retroBoardActions.createRetroBoard(retroBoard))
     }
 }

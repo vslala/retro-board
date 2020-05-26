@@ -1,6 +1,7 @@
 import RetroWall from "./RetroWall";
 
 class RetroWalls {
+    retroBoardId: string = ""
     walls: RetroWall[]
     
     constructor(retroWalls: RetroWall[]) {

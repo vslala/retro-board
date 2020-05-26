@@ -2,16 +2,16 @@ import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react';
 import StickyNote from "../components/StickyNote";
 import '../setupTests'
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import Note from "../models/Note";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import User from "../models/User";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 describe('Component StickyNote Test', function () {
     let stickyNote: RenderResult
-    let service = RetroBoardService.getInstance();
+    let service = RetroBoardServiceFactory.getInstance();
     let testNoteObj = new Note("testId-1", "wallId", "FooBar",
         {backgroundColor: '', likeBtnPosition: "right", textColor: "red"});
     testNoteObj.createdBy.push("test@example.com")
@@ -43,7 +43,9 @@ describe('Component StickyNote Test', function () {
         store.dispatch(new RetroBoardActions().createRetroBoard({
             maxLikes: 5,
             name: "RetroBoard",
-            id: "RetroBoardId"
+            id: "RetroBoardId",
+            userId: "vslala",
+            blur: "off"
         }));
         
         

@@ -7,7 +7,6 @@ import User from "../models/User";
 import Note from "../models/Note";
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import {Dispatch} from "redux";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import {connect} from "react-redux";
 import Badge from "react-bootstrap/Badge";
@@ -17,6 +16,8 @@ import RetroWalls from "../models/RetroWalls";
 import Notes from "../models/Notes";
 import Toast from "react-bootstrap/Toast";
 import Firebase from "../service/Firebase";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 interface StateFromReduxStore {
     retroBoard: RetroBoard
@@ -65,7 +66,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     handleOnClick(): void {
         // only allow edit if the note is created by the user
         // do not allow people to edit others note
-        if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email)) {
+        if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid)) {
             let noteText = this.state.noteText
             this.setState({showEditor: true, noteText: noteText})
         }
@@ -117,7 +118,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
     _mergeNoteIfRequired(note: Note) {
         let blur = this.props.retroBoard.blur === "on"
-        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.email) ? "blur(3px)" : "blur(0px)"
+        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid) ? "blur(3px)" : "blur(0px)"
 
         let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%", filter: blur}}>
             <p>{note.noteText}</p>
@@ -187,7 +188,7 @@ const mapStateToProps = (state: RetroBoardState): RetroBoardState => {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
-    const service = RetroBoardService.getInstance()
+    const service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
     return {
         updateNote: async (note: Note) => dispatch(retroBoardActions.updateNote(await service.updateNote(note))),

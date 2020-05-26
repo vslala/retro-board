@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import {Dispatch} from 'redux'
 import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
 import RetroBoardActions from "../redux/actions/RetroBoardActions";
-import RetroBoardService from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 interface State {
     notes: Note[]
@@ -46,6 +46,7 @@ class StickyWall extends Component<Props, State> {
     }
 
     componentDidMount(): void {
+        this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId);
         this.props.retroWall.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
             console.log("Data Changed!")
             this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
@@ -58,7 +59,7 @@ class StickyWall extends Component<Props, State> {
             textColor: this.retroWall.style?.stickyNote?.textColor || "black",
             likeBtnPosition: this.retroWall.style?.stickyNote?.likeBtnPosition || "right"
         })
-        newNote.createdBy.push(Firebase.getInstance().getLoggedInUser()!.email)
+        newNote.createdBy = Firebase.getInstance().getLoggedInUser()!.email;
         this.props.addNewNote(newNote).then(() => {
             this.props.sortByVotes()
         })
@@ -114,7 +115,7 @@ class StickyWall extends Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<RetroBoardActionTypes>) => {
-    const service = RetroBoardService.getInstance()
+    const service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
     
     return {
