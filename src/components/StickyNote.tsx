@@ -64,6 +64,8 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
     }
 
     handleOnClick(): void {
+        console.log("Condition: ", this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid));
+        console.log(`${this.props.note.createdBy} === ${Firebase.getInstance().getLoggedInUser()!.uid}`);
         // only allow edit if the note is created by the user
         // do not allow people to edit others note
         if (this.props.note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid)) {
@@ -141,7 +143,7 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
         return (
             <Card className={"sticky-note z-depth-5"} style={{backgroundColor: note.style?.backgroundColor || "white"}}>
-                <Card.Body style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500, minHeight: "50px"}}
+                <Card.Body data-testid={"card_body"} style={{padding: "5px", fontFamily: "sans-serif", fontWeight: 500, minHeight: "50px"}}
                            onClick={this.handleOnClick}>
                     <div data-testid={"editor"}
                          style={{color: note.style?.textColor || "black"}}>

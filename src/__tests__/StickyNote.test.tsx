@@ -10,11 +10,12 @@ import User from "../models/User";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 
 describe('Component StickyNote Test', function () {
+
     let stickyNote: RenderResult
     let service = RetroBoardServiceFactory.getInstance();
     let testNoteObj = new Note("testId-1", "wallId", "FooBar",
         {backgroundColor: '', likeBtnPosition: "right", textColor: "red"});
-    testNoteObj.createdBy.push("test@example.com")
+    testNoteObj.createdBy = ("test-id")
     
     service.updateNote = jest.fn().mockImplementation(() => {
         testNoteObj.noteText = "Foo Bar Tar"
@@ -26,6 +27,7 @@ describe('Component StickyNote Test', function () {
     })
     
     beforeEach(() => {
+
         let testUser = new User()
         testUser.uid = "test-id"
         testUser.email = "test@example.com"
@@ -60,7 +62,7 @@ describe('Component StickyNote Test', function () {
     })
     
     test("it should show textarea when clicked", () => {
-        fireEvent.click(stickyNote.getByTestId("editor"))
+        fireEvent.click(stickyNote.getByTestId("card_body"))
         // fireEvent.click(stickyNote.container.querySelector(".card")!)
         expect(stickyNote.container.querySelector("textarea")).toBeInTheDocument()
     })
