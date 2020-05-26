@@ -21,7 +21,7 @@ describe("StickyWall test suite", () => {
         let note1 = new Note("retroBoard", "Whatwentwell", "Foo",
             {textColor: "black", likeBtnPosition: "right", backgroundColor: "white"})
         note1.noteId = "note_1"
-        note1.createdBy.push("varun@gmail.com")
+        note1.createdBy = ("varun@gmail.com")
         return note1;
     }
 
@@ -29,7 +29,7 @@ describe("StickyWall test suite", () => {
         let note2 = new Note("retroBoard", "Whatwentwell", "Bar",
             {textColor: "black", likeBtnPosition: "right", backgroundColor: "white"})
         note2.noteId = "note_2"
-        note2.createdBy.push("varun@gmail.com")
+        note2.createdBy = ("varun@gmail.com")
         return note2;
     }
 
@@ -84,7 +84,7 @@ describe("StickyWall test suite", () => {
     })
 
     test("it should contain the wall title", () => {
-        let renderedPage = buildStickyWall()
+        let renderedPage = buildStickyWall();
         expect(renderedPage.getByText("What went well")).toBeInTheDocument()
     })
 
