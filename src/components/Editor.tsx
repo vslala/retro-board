@@ -30,7 +30,7 @@ class Editor extends React.Component<Props, EditorModel> {
         }
     }
     
-    handleChange(e: React.FormEvent<HTMLInputElement>) {
+    handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         let editorText = e.currentTarget.value
         this.setState({editorText: editorText})
     }
