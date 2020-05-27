@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import {Dispatch} from 'redux'
 import StickyWall from "../components/StickyWall";
-import RetroBoardServiceV1 from "../service/RetroBoard/RetroBoardServiceV1";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";

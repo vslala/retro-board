@@ -1,7 +1,7 @@
 import React from 'react'
 import '../setupTests'
 import RetroBoardPage from "../containers/RetroBoardPage";
-import {fireEvent, render, RenderResult} from '@testing-library/react';
+import {render, RenderResult} from '@testing-library/react';
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";
 import {MemoryRouter} from "react-router-dom";

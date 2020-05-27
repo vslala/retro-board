@@ -7,7 +7,6 @@ import {Link} from "react-router-dom";
 import Firebase from "../service/Firebase";
 import Button from "react-bootstrap/Button";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
-import Notes from "../models/Notes";
 
 interface Props {
     retroBoardService: RetroBoardService
