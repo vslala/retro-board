@@ -3,7 +3,7 @@ import SockJS from "sockjs-client";
 // @ts-ignore
 import Stomp from 'stompjs';
 import User from "../../models/User";
-import {getServiceUrl} from "../RetroBoard/RetroBoardService";
+import {SERVICE_URL} from "../../env-config";
 
 class DuplexCommunication {
 
@@ -24,7 +24,7 @@ class DuplexCommunication {
 
         if (this.isConnected()) return;
 
-        DuplexCommunication.socket = new SockJS(`${getServiceUrl()}/retro-websocket`);
+        DuplexCommunication.socket = new SockJS(`${SERVICE_URL}/retro-websocket`);
         DuplexCommunication.stomp = Stomp.over(DuplexCommunication.socket);
         if (! this.isConnected()) {
             let accessToken = localStorage.getItem(User.ID_TOKEN);
