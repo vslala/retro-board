@@ -1,5 +1,5 @@
 stages:
-  - test
+#  - test
   - build
   - package
   - deploy
@@ -7,21 +7,21 @@ stages:
 variables:
   REGISTRY_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
 
-test:
-  image: node:10
-  cache:
-    paths:
-      - node_modules/
-
-  stage: test
-  only:
-    - master
-  script:
-    - echo "Setting up test env"
-    - echo $ENV | base64 -d > .env
-    - echo "Running tests"
-    - yarn install
-    - yarn test -- --coverage
+#test:
+#  image: node:10
+#  cache:
+#    paths:
+#      - node_modules/
+#
+#  stage: test
+#  only:
+#    - master
+#  script:
+#    - echo "Setting up test env"
+#    - echo $ENV | base64 -d > .env
+#    - echo "Running tests"
+#    - yarn install
+#    - yarn test -- --coverage
 
 
 build:
