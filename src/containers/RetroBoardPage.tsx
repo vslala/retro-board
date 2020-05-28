@@ -13,7 +13,6 @@ import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
-import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 import Firebase from "../service/Firebase";
 
 interface PropsFromParent extends RouteComponentProps {
