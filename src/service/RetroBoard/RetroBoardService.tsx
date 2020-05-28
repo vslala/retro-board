@@ -3,7 +3,7 @@ import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
 import Notes from "../../models/Notes";
 
-export const SERVICE_URL = "http://localhost:8082";
+export const SERVICE_URL = "http://139.59.25.205:8082";
 export interface RetroBoardService {
 
     getRetroBoardById(uid: string, retroBoardId: string): Promise<RetroBoard>;
