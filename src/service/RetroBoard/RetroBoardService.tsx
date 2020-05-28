@@ -3,7 +3,14 @@ import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
 import Notes from "../../models/Notes";
 
-export const SERVICE_URL = "http://139.59.25.205:8082";
+
+export function getServiceUrl() {
+    if (process.env.DEPLOY_ENV === "dev") {
+        return "http://localhost:8082";
+    } else if (process.env.DEPLOY_ENV === "stage") {
+        return "http://139.59.205:8082";
+    }
+}
 export interface RetroBoardService {
 
     getRetroBoardById(uid: string, retroBoardId: string): Promise<RetroBoard>;

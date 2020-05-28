@@ -1,7 +1,7 @@
 import React from 'react'
 import firebase from "firebase";
 import User from "../models/User";
-import {SERVICE_URL} from "./RetroBoard/RetroBoardService";
+import {getServiceUrl} from "./RetroBoard/RetroBoardService";
 
 export const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -101,7 +101,7 @@ class Firebase {
 
         if (refreshToken) {
             if (idToken) {
-                let response = await fetch(`${SERVICE_URL}/token/verify?id_token=${idToken}`)
+                let response = await fetch(`${getServiceUrl()}/token/verify?id_token=${idToken}`)
                 if (200 === response.status) {
                     return true;
                 } else {

@@ -1,4 +1,4 @@
-import {RetroBoardService, SERVICE_URL} from "./RetroBoardService";
+import {getServiceUrl, RetroBoardService} from "./RetroBoardService";
 import Note from "../../models/Note";
 import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
@@ -10,7 +10,7 @@ import axios from 'axios';
 import DuplexCommunication from "../WebSocket/DuplexCommunication";
 
 const request = axios.create({
-    baseURL: SERVICE_URL
+    baseURL: getServiceUrl()
 });
 
 request.interceptors.request.use((config) => {
@@ -86,7 +86,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
 
     async deleteBoard(board: RetroBoard): Promise<string> {
         // it should cascade delete board, walls and notes
-        let response = await request.delete(`${SERVICE_URL}/retro-board/${board.id}`);
+        let response = await request.delete(`${getServiceUrl()}/retro-board/${board.id}`);
         if (204 === response.status)
             return board.id;
 
