@@ -206,7 +206,6 @@ function mapStateToProps(state: RetroBoardState): RetroBoardState {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
-    let service = RetroBoardServiceFactory.getInstance()
     const retroBoardActions = new RetroBoardActions();
 
 
