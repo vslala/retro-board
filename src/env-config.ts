@@ -13,8 +13,9 @@ const HOST_NAMES = {
 };
 
 let host = window.location.host;
-let port = "";
-if (window.location.port)
-    port = ":" + window.location.port
+let port = window.location.port;
+let suffix = ":";
+if (port)
+    suffix = ":" + window.location.port
 // @ts-ignore
-export const SERVICE_URL = HOST_NAMES[host + port];
+export const SERVICE_URL = HOST_NAMES[host + suffix]; // hostname:port
