@@ -1,8 +1,8 @@
 import React from 'react';
 import {HashRouter as Router} from 'react-router-dom'
 import './App.css';
-import LayoutAuthenticated from "./components/LayoutAuthenticated";
-import LayoutUnauthenticated from "./components/LayoutUnauthenticated";
+import LayoutAuthenticated from "./components/retro-board/LayoutAuthenticated";
+import LayoutUnauthenticated from "./components/retro-board/LayoutUnauthenticated";
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
 import Firebase from "./service/Firebase";
@@ -10,8 +10,10 @@ import {Route, RouteComponentProps} from "react-router";
 import HomePage from "./containers/HomePage";
 import RetroBoardPage from "./containers/RetroBoardPage";
 import LoginPage from "./containers/LoginPage";
-import Logout from "./components/Logout";
+import Logout from "./components/retro-board/Logout";
 import RetroBoardServiceFactory from "./service/RetroBoard/RetroBoardServiceFactory";
+import TeamsPage from "./containers/TeamsPage";
+import TeamsServiceV1 from "./service/Teams/TeamsServiceV1";
 
 interface Props {
 }
@@ -41,10 +43,17 @@ class App extends React.Component<Props, State> {
                                   retroBoardService={RetroBoardServiceFactory.getInstance()}/>
                     </LayoutAuthenticated>}/>
 
+                <Route exact path={"/teams"} component={(props: RouteComponentProps) =>
+                    <LayoutAuthenticated>
+                        <TeamsPage {...props}
+                                  teamsService={TeamsServiceV1.getInstance()}/>
+                    </LayoutAuthenticated>}/>
+
                 <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
                     <LayoutAuthenticated>
                         <RetroBoardPage {...props}
-                                        retroBoardService={RetroBoardServiceFactory.getInstance()}/>
+                                        retroBoardService={RetroBoardServiceFactory.getInstance()}
+                                        teamsService={TeamsServiceV1.getInstance()}/>
                     </LayoutAuthenticated>}/>
 
                     <Route exact path={"/logout"} component={(props: RouteComponentProps) =>

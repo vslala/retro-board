@@ -1,6 +1,6 @@
 import React from 'react'
 import {fireEvent, render, RenderResult} from "@testing-library/react";
-import Editor from "../components/Editor";
+import Editor from "../components/retro-board/Editor";
 import "../setupTests"
 
 describe("EditorTestSuite", () => {

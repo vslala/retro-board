@@ -1,7 +1,7 @@
 import React from 'react'
 import firebase from "firebase";
 import User from "../models/User";
-import {SERVICE_URL} from "../env-config";
+import {request, SERVICE_URL} from "../env-config";
 
 export const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -80,9 +80,12 @@ class Firebase {
             this.loggedInUser.email = userCredentials.user.email || `${generateRandomText(5)}@retro.com`
             this.loggedInUser.uid = userCredentials.user.uid || ""
 
-            localStorage.setItem(User.ID_TOKEN, idToken);
-            localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
-            localStorage.setItem(User.REFRESH_TOKEN, userCredentials.user.refreshToken)
+            let response = await request.post("/login", userCredentials.user);
+            if (response.status === 200) {
+                localStorage.setItem(User.ID_TOKEN, idToken);
+                localStorage.setItem(User.USER_INFO, JSON.stringify(this.loggedInUser))
+                localStorage.setItem(User.REFRESH_TOKEN, userCredentials.user.refreshToken)
+            }
         }
 
 

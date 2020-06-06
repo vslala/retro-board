@@ -5,23 +5,10 @@ import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import Firebase from "../Firebase";
 import RetroWall from "../../models/RetroWall";
-import User from "../../models/User";
-import axios from 'axios';
 import DuplexCommunication from "../WebSocket/DuplexCommunication";
-import {SERVICE_URL} from "../../env-config";
-
-const request = axios.create({
-    baseURL: SERVICE_URL
-});
-
-request.interceptors.request.use((config) => {
-    config.headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem(User.ID_TOKEN)!}`,
-        'Accept': '*/*'
-    }
-    return config;
-})
+import {request} from "../../env-config";
+import {ITeam} from "../../models/Team";
+import UnauthorizedException from "../UnauthorizedException";
 
 class RetroBoardServiceV2 implements RetroBoardService {
 
@@ -164,6 +151,8 @@ class RetroBoardServiceV2 implements RetroBoardService {
         if (200 === response.status) {
             let retroBoard = await response.data as RetroBoard;
             return retroBoard;
+        } else if (401 === response.status) {
+            throw new UnauthorizedException("Unauthorized", "User is not authorized to view the contents of this board.", 401);
         }
 
         throw Error("Error encountered while fetching retro board from the server");
@@ -214,6 +203,13 @@ class RetroBoardServiceV2 implements RetroBoardService {
         if (!this.retroBoardService)
             this.retroBoardService = new RetroBoardServiceV2();
         return this.retroBoardService;
+    }
+
+    async shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean> {
+        let response = await request.post("/share", {itemId: retroBoardId, teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)});
+        if (response.status === 201)
+            return true;
+        return false;
     }
 }
 

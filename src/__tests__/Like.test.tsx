@@ -1,6 +1,6 @@
 import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react'
-import Like from "../components/Like";
+import Like from "../components/retro-board/Like";
 import '../setupTests'
 import User from "../models/User";
 
