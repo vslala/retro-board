@@ -3,10 +3,10 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import {useDispatch} from "react-redux";
-import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import RetroBoardActions from "../../redux/actions/RetroBoardActions";
 import {Redirect} from 'react-router-dom';
-import Firebase from "../service/Firebase";
-import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import Firebase from "../../service/Firebase";
+import {RetroBoardService} from "../../service/RetroBoard/RetroBoardService";
 
 interface Props {
     retroBoardService: RetroBoardService

@@ -2,6 +2,7 @@ import RetroBoard from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
 import Notes from "../../models/Notes";
+import {ITeam} from "../../models/Team";
 
 export interface RetroBoardService {
 
@@ -35,4 +36,6 @@ export interface RetroBoardService {
     sortByVotes(notes: Notes): Promise<Notes>;
 
     deleteBoard(board: RetroBoard): Promise<string>;
+
+    shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean>
 }

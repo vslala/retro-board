@@ -1,6 +1,6 @@
 import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react';
-import StickyNote from "../components/StickyNote";
+import StickyNote from "../components/retro-board/StickyNote";
 import '../setupTests'
 import {Provider} from "react-redux";
 import store from "../redux/store/Store";

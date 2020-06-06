@@ -1,16 +1,16 @@
 import React, {Component} from 'react'
 import StickyNote from "./StickyNote";
-import {StickyWallModel} from "../interfaces/StickyWallModel";
+import {StickyWallModel} from "../../interfaces/StickyWallModel";
 import AddNewNote from "./AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
-import Note from "../models/Note";
-import Firebase from "../service/Firebase";
-import RetroWall from "../models/RetroWall";
+import Note from "../../models/Note";
+import Firebase from "../../service/Firebase";
+import RetroWall from "../../models/RetroWall";
 import {connect} from "react-redux";
 import {Dispatch} from 'redux'
-import {RetroBoardActionTypes, SortType} from "../redux/types/RetroBoardActionTypes";
-import RetroBoardActions from "../redux/actions/RetroBoardActions";
-import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
+import {RetroBoardActionTypes, SortType} from "../../redux/types/RetroBoardActionTypes";
+import RetroBoardActions from "../../redux/actions/RetroBoardActions";
+import RetroBoardServiceFactory from "../../service/RetroBoard/RetroBoardServiceFactory";
 
 interface State {
     notes: Note[]

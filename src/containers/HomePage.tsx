@@ -1,8 +1,8 @@
 import React from 'react';
 import {HomePageModel} from "../interfaces/HomePageModel"
 import {Col, Container, Row} from "react-bootstrap"
-import CreateRetroBoard from "../components/CreateRetroBoard";
-import MyBoards from "../components/MyBoards";
+import CreateRetroBoard from "../components/retro-board/CreateRetroBoard";
+import MyBoards from "../components/retro-board/MyBoards";
 import Firebase from "../service/Firebase";
 
 class HomePage extends React.Component<HomePageModel> {
@@ -10,6 +10,10 @@ class HomePage extends React.Component<HomePageModel> {
     constructor(props: HomePageModel) {
         super(props)
         this.createNewRetroBoard = this.createNewRetroBoard.bind(this)
+    }
+
+    componentDidMount(): void {
+        document.title = "Home";
     }
 
     createNewRetroBoard(e: React.MouseEvent<HTMLElement>) {
