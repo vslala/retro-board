@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {FunctionComponent, useState} from 'react';
 import {Badge, Button, FormControl, Modal} from "react-bootstrap";
-import Firebase from "../../service/Firebase";
+import Firebase from "../../../service/Firebase";
 
 interface Props {
     teamName: string

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Dispatch} from 'redux'
-import StickyWall from "../components/retro-board/StickyWall";
+import StickyWall from "../components/smart/boards/StickyWall";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {RouteComponentProps} from "react-router";
 import RetroBoard from "../models/RetroBoard";
@@ -14,12 +14,12 @@ import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 import Firebase from "../service/Firebase";
-import ShareBoard from "../components/retro-board/ShareBoard";
+import ShareBoard from "../components/dumb/ShareBoard";
 import TeamsServiceV1 from "../service/Teams/TeamsServiceV1";
 import {ITeam} from "../models/Team";
 import UnauthorizedException from "../service/UnauthorizedException";
 
-interface PropsFromParent extends RouteComponentProps {
+interface PropsFromParent extends RouteComponentProps<{}, any, { walls: RetroWalls } | any> {
     uid?: string
     retroBoardId?: string
     retroBoardService: RetroBoardService
@@ -86,7 +86,7 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
 
     const handleChange = async (val: "on" | "off") => {
         console.log("Value: ", val)
-        
+
         let retroBoard: RetroBoard = {...retroBoardState.retroBoard}
         retroBoard.blur = val
         dispatch(retroBoardActions.createRetroBoard(await props.retroBoardService.updateRetroBoard(retroBoard)))
@@ -142,8 +142,8 @@ class RetroBoardPage extends React.Component<Props, State> {
             document.title = retroBoard.name;
             await this.props.createRetroBoard(retroBoard);
 
-            let retroWalls = await this.props.retroBoardService.createRetroWalls(retroBoardId)
-            await this.props.createRetroWalls(retroWalls);
+            let boardWalls = await this.props.retroBoardService.getRetroWalls(retroBoardId);
+            await this.props.createRetroWalls(boardWalls);
 
             // open duplex connection
             this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
@@ -181,7 +181,7 @@ class RetroBoardPage extends React.Component<Props, State> {
         return {data: data, headers: headers}
     }
 
-    private async shareBoardWith(selectedTeams: Array<ITeam>):Promise<boolean> {
+    private async shareBoardWith(selectedTeams: Array<ITeam>): Promise<boolean> {
         try {
             return await this.props.retroBoardService.shareBoard(this.state.retroBoardId, selectedTeams);
         } catch (e) {
@@ -193,10 +193,10 @@ class RetroBoardPage extends React.Component<Props, State> {
     render() {
         let {retroBoardId} = this.props.match.params as PropsFromParent
         let walls = this.props.retroWalls.walls.map((wall, index) => {
-            wall.retroBoardService = this.props.retroBoardService
             wall.retroBoardId = retroBoardId!
-            return <Col md={4} key={index}>
-                <StickyWall retroWall={wall}
+            return <Col key={index}>
+                <StickyWall retroBoardService={this.props.retroBoardService}
+                            retroWall={wall}
                             notes={this.props.notes.notes}
                             sortBy={this.state.sortSelectValue}
                 />
@@ -213,7 +213,7 @@ class RetroBoardPage extends React.Component<Props, State> {
                     </Col>
                     <Col className={"align-self-center"}>
                         <div className="pull-right">
-                            <ShareBoard teams={this.state.teams} shareWith={this.shareBoardWith} />
+                            <ShareBoard teams={this.state.teams} shareWith={this.shareBoardWith}/>
                         </div>
 
                         <Button className={"pull-right"} style={{border: "1px solid black"}} variant={"light"}>

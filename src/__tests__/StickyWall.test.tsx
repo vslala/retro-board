@@ -1,7 +1,7 @@
 import React from 'react'
 import '../setupTests'
 import {fireEvent, render, RenderResult} from "@testing-library/react";
-import StickyWall from "../components/retro-board/StickyWall";
+import StickyWall from "../components/smart/boards/StickyWall";
 import Note from "../models/Note";
 import User from "../models/User";
 import Firebase from "../service/Firebase";

@@ -1,6 +1,6 @@
 import {RetroBoardService} from "./RetroBoardService";
 import Note from "../../models/Note";
-import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
+import RetroBoard from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import Firebase from "../Firebase";
@@ -46,7 +46,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
         throw Error("Error creating RetroBoard in the backend!");
     }
 
-    async createRetroWalls(retroBoardId: string): Promise<any | RetroWalls> {
+    async createRetroWalls(retroBoardId: string, retroWalls: RetroWalls): Promise<any | RetroWalls> {
         try {
             let retroWallsResponse = await request.get(`/retro-board/walls/${retroBoardId}`);
             if (retroWallsResponse.status === 200)
@@ -54,11 +54,11 @@ class RetroBoardServiceV2 implements RetroBoardService {
         } catch (e) {
             console.log("Creating Retro Walls!");
             // it should create three walls for the given retro board
-            let retroWalls = new RetroWalls([
-                RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()).setWallOrder(1),
-                RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()).setWallOrder(2),
-                RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()).setWallOrder(3),
-            ]);
+            // let retroWalls = new RetroWalls([
+            //     RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceV2.getInstance()).setWallOrder(1),
+            //     RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceV2.getInstance()).setWallOrder(2),
+            //     RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceV2.getInstance()).setWallOrder(3),
+            // ]);
             retroWalls.retroBoardId = retroBoardId;
 
             let response = await request.post(`/retro-board/walls`, retroWalls);

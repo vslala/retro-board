@@ -1,26 +1,11 @@
 import * as React from 'react';
 import {RouteComponentProps, withRouter} from 'react-router-dom';
 import {Col, Row} from "react-bootstrap";
-import TeamCard from "../components/teams/TeamCard";
+import TeamCard from "../components/dumb/teams/TeamCard";
 import User from "../models/User";
 import Team, {ITeam} from "../models/Team";
-import CreateNewTeam from "../components/teams/CreateNewTeam";
+import CreateNewTeam from "../components/dumb/teams/CreateNewTeam";
 import TeamsServiceV1 from "../service/Teams/TeamsServiceV1";
-
-const teams: Array<ITeam> = [
-    {
-        teamName: "Cloud Journey",
-        // @ts-ignore
-        teamMembers: [{uid: "vslala", email: "vslala@thoughtworks.com", displayName: "Varun Shrivastava"}],
-        createdBy: "vslala"
-    },
-    {
-        teamName: "Team Otto",
-        // @ts-ignore
-        teamMembers: [{uid: "lyadav", email: "lyadav@thoughtworks.com", displayName: "Lavish Yadav"}],
-        createdBy: "lyadav"
-    }
-]
 
 interface Props extends RouteComponentProps {
     teamsService: TeamsServiceV1;
@@ -31,7 +16,7 @@ interface State {
 
 class TeamsPage extends React.Component<Props, State> {
 
-    state: State = {teams: teams};
+    state: State = {teams: []};
 
     componentDidMount(): void {
         document.title = "Teams";

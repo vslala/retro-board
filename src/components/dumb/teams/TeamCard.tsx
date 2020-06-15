@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {FunctionComponent, useState} from 'react';
 import {Badge, Button, Card, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
-import {ITeam} from "../../models/Team";
-import User from "../../models/User";
+import {ITeam} from "../../../models/Team";
+import User from "../../../models/User";
 import AddNewTeamMember from "./AddNewTeamMember";
-import Firebase from "../../service/Firebase";
+import Firebase from "../../../service/Firebase";
 
 interface Props {
     team: ITeam

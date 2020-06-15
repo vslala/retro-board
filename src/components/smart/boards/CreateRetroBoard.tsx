@@ -2,19 +2,13 @@ import React, {FunctionComponent, useState} from 'react'
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import {useDispatch} from "react-redux";
-import RetroBoardActions from "../../redux/actions/RetroBoardActions";
-import {Redirect} from 'react-router-dom';
-import Firebase from "../../service/Firebase";
-import {RetroBoardService} from "../../service/RetroBoard/RetroBoardService";
 
 interface Props {
-    retroBoardService: RetroBoardService
+    title:string
+    onCreateRetroBoard: (retroBoard:{title:string,maxLikes:number}) => void
 }
 
-const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {
-    const dispatch = useDispatch()
-    const [navigate, setNavigate] = useState("")
+const CreateRetroBoard: FunctionComponent<Props> = ({onCreateRetroBoard, title}) => {
     const [show, setShow] = useState(false)
     const [formInput, setFormInput] = useState({title: "", maxLikes: 5})
 
@@ -25,26 +19,18 @@ const CreateRetroBoard: FunctionComponent<Props> = ({retroBoardService}) => {
         setFormInput({...formInput, [name]: value})
     }
     const handleCreateRetroBoard = async () => {
-        const retroBoardActions = new RetroBoardActions();
-        let retroBoard = await retroBoardService.createNewRetroBoard(formInput)
-        let retroBoardCreatorId = Firebase.getInstance().getLoggedInUser()!.uid
-        dispatch(retroBoardActions.createRetroBoard(retroBoard))
-        handleClose()
-        setNavigate(`/retro-board/${retroBoardCreatorId}/${retroBoard.id}`)
+        onCreateRetroBoard(formInput);
+        handleClose();
     }
     
-    if (navigate !== "") {
-        return <Redirect to={navigate} />
-    }
-
     return <>
-        <Button variant="primary" onClick={handleShow}>
-            Create Retro Board
+        <Button variant="outline-primary" onClick={handleShow}>
+            {title}
         </Button>
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Create Retro Board</Modal.Title>
+                <Modal.Title>{title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>

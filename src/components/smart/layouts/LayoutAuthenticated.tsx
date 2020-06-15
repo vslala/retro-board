@@ -1,9 +1,9 @@
 import React from 'react'
 import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
-import Firebase from "../../service/Firebase";
+import Firebase from "../../../service/Firebase";
 import Container from "react-bootstrap/Container";
-import PageFooter from "./PageFooter";
-import PageHeader from "./PageHeader";
+import PageFooter from "../PageFooter";
+import PageHeader from "../PageHeader";
 import {Spinner} from "react-bootstrap";
 
 interface Props extends RouteComponentProps {
