@@ -33,7 +33,7 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
             .then(boardTemplates => {
                 setTemplates(boardTemplates.templates);
             });
-    }, []);
+    }, [props.templateService]);
 
     return <>
         <Row>
