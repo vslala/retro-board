@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {Button, Col, Form, FormGroup, Modal, Row} from "react-bootstrap";
 import {RETRO_BOARD_STYLES} from "../../../models/RetroBoard";
 import './style.css';
