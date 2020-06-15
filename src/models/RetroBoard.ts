@@ -45,7 +45,11 @@ class RetroBoard implements RetroBoardModel {
         this.blur = "off"
         this.userId = userId
     }
-    
+
+    public static newInstance(id:string, name:string, userId: string) {
+        return  new RetroBoard(id, name, userId);
+    }
+
     public static toJSON(retroBoard: RetroBoard) {
         return JSON.stringify(retroBoard)
     }

@@ -15,7 +15,7 @@ export interface RetroBoardService {
 
     updateRetroBoard(retroBoard: RetroBoard): Promise<RetroBoard>;
 
-    createRetroWalls(retroBoardId: string): Promise<any | RetroWalls>;
+    createRetroWalls(retroBoardId: string, retroWalls: RetroWalls): Promise<any | RetroWalls>;
 
     addNewNote(newNote: Note): Promise<Note>;
 

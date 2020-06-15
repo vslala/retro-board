@@ -1,23 +1,23 @@
 import React, {ReactNode} from 'react'
-import {StickyNoteProps, StickyNoteState} from "../../interfaces/StickyNoteModel";
+import {StickyNoteProps, StickyNoteState} from "../../../interfaces/StickyNoteModel";
 import Card from "react-bootstrap/Card";
-import Editor from "./Editor";
-import Like from "./Like";
-import User from "../../models/User";
-import Note from "../../models/Note";
-import {RetroBoardActionTypes, SortType} from "../../redux/types/RetroBoardActionTypes";
+import Editor from "../../dumb/boards/Editor";
+import Like from "../../dumb/boards/Like";
+import User from "../../../models/User";
+import Note from "../../../models/Note";
+import {RetroBoardActionTypes, SortType} from "../../../redux/types/RetroBoardActionTypes";
 import {Dispatch} from "redux";
-import RetroBoardActions from "../../redux/actions/RetroBoardActions";
+import RetroBoardActions from "../../../redux/actions/RetroBoardActions";
 import {connect} from "react-redux";
 import Badge from "react-bootstrap/Badge";
-import RetroBoardState from "../../redux/reducers/RetroBoardState";
-import RetroBoard from "../../models/RetroBoard";
-import RetroWalls from "../../models/RetroWalls";
-import Notes from "../../models/Notes";
+import RetroBoardState from "../../../redux/reducers/RetroBoardState";
+import RetroBoard from "../../../models/RetroBoard";
+import RetroWalls from "../../../models/RetroWalls";
+import Notes from "../../../models/Notes";
 import Toast from "react-bootstrap/Toast";
-import Firebase from "../../service/Firebase";
-import {RetroBoardService} from "../../service/RetroBoard/RetroBoardService";
-import RetroBoardServiceFactory from "../../service/RetroBoard/RetroBoardServiceFactory";
+import Firebase from "../../../service/Firebase";
+import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
 
 interface StateFromReduxStore {
     retroBoard: RetroBoard

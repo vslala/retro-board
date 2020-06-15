@@ -1,11 +1,9 @@
-import RetroBoard, {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
-import RetroWall from "../../models/RetroWall";
+import RetroBoard from "../../models/RetroBoard";
 import Firebase from "../Firebase";
 import Note from "../../models/Note";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import {RetroBoardService} from "./RetroBoardService";
-import RetroBoardServiceFactory from "./RetroBoardServiceFactory";
 import {ITeam} from "../../models/Team";
 
 class RetroBoardServiceV1 implements RetroBoardService {
@@ -89,18 +87,17 @@ class RetroBoardServiceV1 implements RetroBoardService {
         return retroBoardPath
     }
 
-    async createRetroWalls(retroBoardId: string) {
-        let retroWalls = await this._getData(`${RetroBoardServiceV1.WALLS}/${retroBoardId}`)
-        if (retroWalls) {
-
-            return RetroWalls.fromJSON(retroWalls)
+    async createRetroWalls(retroBoardId: string, retroWalls: RetroWalls) {
+        let walls = await this._getData(`${RetroBoardServiceV1.WALLS}/${retroBoardId}`)
+        if (walls) {
+            return RetroWalls.fromJSON(walls)
         }
 
-        retroWalls = new RetroWalls([
-            RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceFactory.getInstance()),
-            RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceFactory.getInstance()),
-            RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceFactory.getInstance()),
-        ])
+        // retroWalls = new RetroWalls([
+        //     RetroWall.newInstance(retroBoardId, "Went Well", RETRO_BOARD_STYLES.wentWell, RetroBoardServiceFactory.getInstance()),
+        //     RetroWall.newInstance(retroBoardId, "To Improve", RETRO_BOARD_STYLES.toImprove, RetroBoardServiceFactory.getInstance()),
+        //     RetroWall.newInstance(retroBoardId, "Action Items", RETRO_BOARD_STYLES.actionItems, RetroBoardServiceFactory.getInstance()),
+        // ])
 
         Firebase.getInstance().getDatabase()
             .ref(`${RetroBoardServiceV1.WALLS}/${retroBoardId}`)

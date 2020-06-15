@@ -1,47 +1,50 @@
 import React from 'react';
 import {HomePageModel} from "../interfaces/HomePageModel"
 import {Col, Container, Row} from "react-bootstrap"
-import CreateRetroBoard from "../components/retro-board/CreateRetroBoard";
-import MyBoards from "../components/retro-board/MyBoards";
-import Firebase from "../service/Firebase";
+import MyBoards from "../components/smart/boards/MyBoards";
+import TemplateManager from "../components/smart/templates/TemplateManager";
+import {RETRO_BOARD_STYLES} from "../models/RetroBoard";
+import CreateRetroBoardManager from "../components/smart/boards/CreateRetroBoardManager";
 
 class HomePage extends React.Component<HomePageModel> {
-
-    constructor(props: HomePageModel) {
-        super(props)
-        this.createNewRetroBoard = this.createNewRetroBoard.bind(this)
-    }
 
     componentDidMount(): void {
         document.title = "Home";
     }
 
-    createNewRetroBoard(e: React.MouseEvent<HTMLElement>) {
-        e.preventDefault()
-        const {history} = this.props
-
-        let retroBoardId = String(Date.now())
-        history.push(`/retro-board/${Firebase.getInstance().getLoggedInUser()!.uid}/${retroBoardId}`)
-    }
-
     render() {
+
         return <Container>
-                <Row>
-                    <Col>
-                        <div className={"pb-2 mt-4 mb-2 border-bottom"}>
-                            <h3>Create Boards</h3>
-                        </div>
-                        <CreateRetroBoard retroBoardService={this.props.retroBoardService}/>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <div className={"pb-2 mt-4 mb-2 border-bottom"}>
-                            <h3>My Boards</h3>
-                        </div>
-                        <MyBoards retroBoardService={this.props.retroBoardService} />
-                    </Col>
-                </Row>
+            <Row>
+                <Col>
+                    <div className={"pb-2 mt-4 mb-2 border-bottom"}>
+                        <h3>Pre-built Templates</h3>
+                    </div>
+                    <CreateRetroBoardManager title={"Create Retro Board"}
+                                             retroBoardService={this.props.retroBoardService} templateWalls={[
+                        {wallTitle: "Went Well", wallStyle: RETRO_BOARD_STYLES.wentWell, wallOrder: 1, notes: []},
+                        {wallTitle: "To Improve", wallStyle: RETRO_BOARD_STYLES.toImprove, wallOrder: 2, notes: []},
+                        {wallTitle: "Action Items", wallStyle: RETRO_BOARD_STYLES.actionItems, wallOrder: 3, notes: []}
+                    ]}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <div className={"pb-2 mt-4 mb-2 border-bottom"}>
+                        <h3>My Templates</h3>
+                    </div>
+                    <TemplateManager retroBoardService={this.props.retroBoardService}
+                                     templateService={this.props.templateService}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <div className={"pb-2 mt-4 mb-2 border-bottom"}>
+                        <h3>My Boards</h3>
+                    </div>
+                    <MyBoards retroBoardService={this.props.retroBoardService}/>
+                </Col>
+            </Row>
         </Container>
     }
 }

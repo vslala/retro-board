@@ -1,12 +1,12 @@
 import React, {FunctionComponent, useEffect, useState} from 'react'
-import RetroBoard from "../../models/RetroBoard";
+import RetroBoard from "../../../models/RetroBoard";
 import Card from "react-bootstrap/Card";
 import {Row, Spinner} from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
-import Firebase from "../../service/Firebase";
+import Firebase from "../../../service/Firebase";
 import Button from "react-bootstrap/Button";
-import {RetroBoardService} from "../../service/RetroBoard/RetroBoardService";
+import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
 
 interface Props {
     retroBoardService: RetroBoardService

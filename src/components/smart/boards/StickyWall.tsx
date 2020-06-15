@@ -1,16 +1,17 @@
 import React, {Component} from 'react'
 import StickyNote from "./StickyNote";
-import {StickyWallModel} from "../../interfaces/StickyWallModel";
-import AddNewNote from "./AddNewNote";
+import {StickyWallModel} from "../../../interfaces/StickyWallModel";
+import AddNewNote from "../../dumb/boards/AddNewNote";
 import {ListGroup, ListGroupItem} from "react-bootstrap";
-import Note from "../../models/Note";
-import Firebase from "../../service/Firebase";
-import RetroWall from "../../models/RetroWall";
+import Note from "../../../models/Note";
+import Firebase from "../../../service/Firebase";
+import RetroWall from "../../../models/RetroWall";
 import {connect} from "react-redux";
 import {Dispatch} from 'redux'
-import {RetroBoardActionTypes, SortType} from "../../redux/types/RetroBoardActionTypes";
-import RetroBoardActions from "../../redux/actions/RetroBoardActions";
-import RetroBoardServiceFactory from "../../service/RetroBoard/RetroBoardServiceFactory";
+import {RetroBoardActionTypes, SortType} from "../../../redux/types/RetroBoardActionTypes";
+import RetroBoardActions from "../../../redux/actions/RetroBoardActions";
+import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
+import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
 
 interface State {
     notes: Note[]
@@ -26,6 +27,7 @@ interface DispatchProps {
 
 interface Props extends StickyWallModel, State, DispatchProps {
     sortBy?: SortType
+    retroBoardService: RetroBoardService
 }
 
 class StickyWall extends Component<Props, State> {
@@ -47,7 +49,7 @@ class StickyWall extends Component<Props, State> {
 
     componentDidMount(): void {
         this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId);
-        this.props.retroWall.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
+        this.props.retroBoardService.getDataOnUpdate(this.retroWall.retroBoardId, this.retroWall.wallId, () => {
             console.log("Data Changed!")
             this.props.getNotes(this.retroWall.retroBoardId, this.retroWall.wallId)
         })
@@ -97,7 +99,7 @@ class StickyWall extends Component<Props, State> {
                 onDragOver={this.handleDragOver}
                 onDrop={(e: React.DragEvent<HTMLAnchorElement>) => this.handleDrop(e, stickyNote)}
                 >
-                <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.retroWall.retroBoardService} sortBy={this.props.sortBy}/>
+                <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={this.props.retroBoardService} sortBy={this.props.sortBy}/>
             </ListGroupItem>
 
         ))
