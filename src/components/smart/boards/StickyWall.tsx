@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import StickyNote from "./StickyNote";
 import {StickyWallModel} from "../../../interfaces/StickyWallModel";
 import AddNewNote from "../../dumb/boards/AddNewNote";
-import {ListGroup, ListGroupItem} from "react-bootstrap";
+import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import Note from "../../../models/Note";
 import Firebase from "../../../service/Firebase";
 import RetroWall from "../../../models/RetroWall";
@@ -12,6 +12,7 @@ import {RetroBoardActionTypes, SortType} from "../../../redux/types/RetroBoardAc
 import RetroBoardActions from "../../../redux/actions/RetroBoardActions";
 import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
 import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
+import CarouselView from "../../CarouselView";
 
 interface State {
     notes: Note[]
@@ -89,8 +90,9 @@ class StickyWall extends Component<Props, State> {
 
     render() {
         const {notes} = this.props
-        
-        let stickers = notes.filter((note) => note.wallId === this.retroWall.wallId).map((stickyNote: Note, index: number) => (
+
+        let wallNotes = notes.filter((note) => note.wallId === this.retroWall.wallId);
+        let stickers = wallNotes.map((stickyNote: Note, index: number) => (
             <ListGroupItem key={index} style={{padding: "0px", border: "none", marginBottom: "2px"}} 
                 className={"text-left"}
                 id={`list_group_item_${index}`}
@@ -104,9 +106,15 @@ class StickyWall extends Component<Props, State> {
 
         ))
 
+
         return (
             <section className="sticky-wall text-center">
-                <h3>{this.retroWall.title}</h3>
+                <h3>{this.retroWall.title} </h3>
+                <Row>
+                    <Col>
+                        <CarouselView items={wallNotes.map(note => note.noteText)} style={{textColor: wallNotes[0]?.style.textColor, backgroundColor: wallNotes[0]?.style.backgroundColor}} />
+                    </Col>
+                </Row>
                 <AddNewNote addNote={this.addNote}/>
                 <ListGroup>
                     {stickers}

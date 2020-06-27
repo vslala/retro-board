@@ -41,7 +41,9 @@ class AddNewNote extends React.Component<Props, State> {
             </div>
         }
         return <div style={{margin: "5px"}}>
-            <Button data-testid={"add_new_note_btn"} variant={"dark"} onClick={this.showEditor}>Add New Note</Button>
+            <Button title={"Add new note"} data-testid={"add_new_note_btn"} variant={"dark"} onClick={this.showEditor}>
+                <i className={"fa fa-lg fa-plus"}></i>
+            </Button>
         </div>
     }
 }
