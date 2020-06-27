@@ -35,6 +35,7 @@ interface StateFromReduxStore {
 interface DispatchProps {
     createRetroBoard: (retroBoard: RetroBoard) => Promise<RetroBoardActionTypes>
     createRetroWalls: (retroWalls: RetroWalls) => Promise<RetroBoardActionTypes>
+    refreshRetroWalls: () => Promise<RetroBoardActionTypes>
 }
 
 type Props = PropsFromParent & StateFromReduxStore & DispatchProps
@@ -131,6 +132,9 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     private async initRetroBoard(retroBoardId: string, uid: string) {
         try {
+            // refresh retro walls in redux
+            await this.props.refreshRetroWalls();
+
             // set retro board id to state
             this.setState({retroBoardId: retroBoardId});
 
@@ -248,7 +252,8 @@ function mapDispatchToProps(dispatch: Dispatch<RetroBoardActionTypes>) {
 
     return {
         createRetroWalls: async (retroWalls: RetroWalls) => dispatch(retroBoardActions.createRetroWalls(retroWalls)),
-        createRetroBoard: async (retroBoard: RetroBoard) => dispatch(retroBoardActions.createRetroBoard(retroBoard))
+        createRetroBoard: async (retroBoard: RetroBoard) => dispatch(retroBoardActions.createRetroBoard(retroBoard)),
+        refreshRetroWalls: async () => dispatch(retroBoardActions.refreshRetroWalls())
     }
 }
 

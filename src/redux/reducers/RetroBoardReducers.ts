@@ -94,6 +94,13 @@ export function retroBoardReducer(state = initialState, action: RetroBoardAction
                     return state
             }
 
+        case ActionTypes.REFRESH_WALLS:
+            return {
+                ...state,
+                retroWalls: action.payload,
+                notes: new Notes([])
+            }
+
 
     }
     return initialState

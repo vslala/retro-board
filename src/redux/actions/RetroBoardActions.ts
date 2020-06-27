@@ -61,6 +61,13 @@ class RetroBoardActions {
             payload: SortType.SORT_BY_TIMESTAMP
         };
     }
+
+    public refreshRetroWalls(): RetroBoardActionTypes {
+        return {
+            type: ActionTypes.REFRESH_WALLS,
+            payload: new RetroWalls([])
+        }
+    }
 }
 
 export default RetroBoardActions

@@ -11,7 +11,8 @@ export enum ActionTypes {
     DELETE_NOTE,
     CREATE_NOTE,
     CREATE_RETRO_WALLS,
-    CREATE_RETRO_BOARD
+    CREATE_RETRO_BOARD,
+    REFRESH_WALLS
 }
 
 export enum SortType {
@@ -55,5 +56,10 @@ interface Sort {
     payload: SortType
 }
 
+interface RefreshWalls {
+    type: typeof ActionTypes.REFRESH_WALLS
+    payload: RetroWalls
+}
+
 export type RetroBoardActionTypes = CreateRetroBoardAction | CreateRetroWallsAction | CreateNoteAction |
-    UpdateNoteAction | DeleteNoteAction | GetNotesAction | Sort
+    UpdateNoteAction | DeleteNoteAction | GetNotesAction | Sort | RefreshWalls
