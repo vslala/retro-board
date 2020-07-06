@@ -12,7 +12,7 @@ import {RetroBoardActionTypes, SortType} from "../../../redux/types/RetroBoardAc
 import RetroBoardActions from "../../../redux/actions/RetroBoardActions";
 import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
 import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
-import CarouselView from "../../CarouselView";
+import CarouselView from "../../dumb/CarouselView";
 
 interface State {
     notes: Note[]

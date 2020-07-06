@@ -20,22 +20,22 @@ interface Props {
 }
 
 interface State {
-    isLoggedIn: boolean
+    isLogInFlowExecuted: boolean
 }
 
 class App extends React.Component<Props, State> {
 
     state: State = {
-        isLoggedIn: false
+        isLogInFlowExecuted: false
     }
 
     render() {
         return <Provider store={store}>
             <Router>
                 <Route exact path={"/login"} component={(props: RouteComponentProps) =>
-                    <LayoutUnauthenticated success={() => this.setState({isLoggedIn: true})}>
+                    <LayoutUnauthenticated success={() => this.setState({isLogInFlowExecuted: true})}>
                         <LoginPage
-                            success={() => this.setState({isLoggedIn: true})}/>
+                            success={() => this.setState({isLogInFlowExecuted: true})}/>
                     </LayoutUnauthenticated>}/>
 
                 <Route exact path={"/"} component={(props: RouteComponentProps) =>

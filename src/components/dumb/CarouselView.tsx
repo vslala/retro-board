@@ -18,6 +18,20 @@ const CarouselView: React.FunctionComponent<Props> = (props: Props) => {
 
     const hideCarouselView = () => setCarouselView(false);
 
+    const formatText = (text: string) => {
+        if (! text.includes("<MERGE_NOTE>")) {
+            return <span>{text}</span>
+        }
+
+        return text.split("<MERGE_NOTE>")
+            .map((noteText, index) => (
+                <span key={index}>
+                        {noteText}
+                    <br/>
+                        <hr style={{borderTop: "1px dashed"}}/>
+                </span>));
+    }
+
     return <>
         <div style={{margin: "5px"}}>
             <Button title={"Retrospect"} variant={"link"} onClick={showCarouselView}>
@@ -34,7 +48,7 @@ const CarouselView: React.FunctionComponent<Props> = (props: Props) => {
                                 <div style={{height: "400px"}}>
                                     <Carousel.Caption style={{color: props.style.textColor}}>
                                         <div style={{height: "200px", overflowY: "scroll"}}>
-                                            <h3 style={{overflowY: "scroll"}}>{text}</h3>
+                                            <h3 style={{overflowY: "scroll"}}>{formatText(text)}</h3>
                                         </div>
                                     </Carousel.Caption>
                                 </div>
