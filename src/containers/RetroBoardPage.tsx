@@ -132,8 +132,6 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     private async initRetroBoard(retroBoardId: string, uid: string) {
         try {
-            // refresh retro walls in redux
-            await this.props.refreshRetroWalls();
 
             // set retro board id to state
             this.setState({retroBoardId: retroBoardId});

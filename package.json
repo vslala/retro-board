@@ -29,6 +29,7 @@
     "react-color": "^2.18.1",
     "react-csv": "^1.1.2",
     "react-dom": "^16.12.0",
+    "react-markdown": "^4.3.1",
     "react-redux": "^7.1.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.0",
@@ -38,6 +39,7 @@
     "redux-promise": "^0.6.0",
     "sockjs-client": "^1.4.0",
     "stompjs": "^2.3.3",
+    "typed-react-markdown": "^0.1.0",
     "typescript": "^3.7.3"
   },
   "scripts": {

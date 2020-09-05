@@ -18,6 +18,8 @@ import Toast from "react-bootstrap/Toast";
 import Firebase from "../../../service/Firebase";
 import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
 import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
+import ReactMarkdown from 'react-markdown';
+import './sticky-note.css'
 
 interface StateFromReduxStore {
     retroBoard: RetroBoard
@@ -118,17 +120,18 @@ class StickyNote extends React.Component<Props, StickyNoteState> {
 
     }
 
-    _mergeNoteIfRequired(note: Note) {
+    _mergeNoteIfRequired(note: Note) : string | any {
         let blur = this.props.retroBoard.blur === "on"
         && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid) ? "blur(3px)" : "blur(0px)"
 
         let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%", filter: blur}}>
-            <p>{note.noteText}</p>
+            <ReactMarkdown source={note.noteText} escapeHtml={true} />
         </div>
-        if (note.noteText.includes("<MERGE_NOTE>")) {
-            let mergedNotes = note.noteText.split("<MERGE_NOTE>")
-                .map((noteText, index) => (<div key={index}><p>{noteText}</p>
-                    <hr style={{borderTop: "1px dashed"}}/>
+        if (note.noteText.includes("  ")) {
+            let mergedNotes = note.noteText.split("  ")
+                .map((noteText, index) => (<div key={index}>
+                    <ReactMarkdown source={noteText} escapeHtml={true} />
+                    <hr />
                 </div>))
             cardBodyContent = <div className={"card-text"} style={{width: "95%", filter: blur}}>{mergedNotes}</div>
         }

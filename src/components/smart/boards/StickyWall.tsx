@@ -73,7 +73,7 @@ class StickyWall extends Component<Props, State> {
         if (draggedNote.noteId === droppedOnNote.noteId)
             return
             
-        droppedOnNote.noteText += "<MERGE_NOTE>" + draggedNote.noteText
+        droppedOnNote.noteText += "  " + draggedNote.noteText; // markdown for line-break
         this.props.updateNote({...droppedOnNote}).then(() => {
             this.props.deleteNote(draggedNote)
         })
