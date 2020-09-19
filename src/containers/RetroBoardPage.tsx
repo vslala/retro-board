@@ -44,6 +44,7 @@ interface State {
     retroBoardId: string
     sortSelectValue: SortType
     teams: Array<ITeam>
+    retroWalls: RetroWalls
 }
 
 const SortSelect: React.FunctionComponent = () => {
@@ -111,7 +112,8 @@ class RetroBoardPage extends React.Component<Props, State> {
     state: State = {
         retroBoardId: "",
         sortSelectValue: SortType.NONE,
-        teams: []
+        teams: [],
+        retroWalls: new RetroWalls([])
     }
 
     constructor(props: Props) {
@@ -133,31 +135,26 @@ class RetroBoardPage extends React.Component<Props, State> {
     private async initRetroBoard(retroBoardId: string, uid: string) {
         try {
 
-            // set retro board id to state
-            this.setState({retroBoardId: retroBoardId});
-
-            // fetch the current user teams
-            this.setState({teams: await this.props.teamsService.getMyTeams()});
-
-            // get retro board data
             let retroBoard = await this.props.retroBoardService.getRetroBoardById(uid, retroBoardId);
             document.title = retroBoard.name;
-            await this.props.createRetroBoard(retroBoard);
 
-            let boardWalls = await this.props.retroBoardService.getRetroWalls(retroBoardId);
-            await this.props.createRetroWalls(boardWalls);
+            let teams = this.props.teamsService.getMyTeams();
 
             // open duplex connection
-            this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+            // this method is only called when there is some update in the backend
+            await this.props.retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
                 console.log("RetroBoard: ", retroBoard);
-                this.props.createRetroBoard(retroBoard)
-            }))
+            }));
+
+            await this.props.createRetroBoard(retroBoard);
+            let retroWalls = await this.props.retroBoardService.getRetroWalls(retroBoardId);
+
+            this.setState({retroBoardId: retroBoardId, teams: await teams, retroWalls: retroWalls});
         } catch (e) {
             if (e instanceof UnauthorizedException) {
                 this.props.history.push("/unauthorized");
             }
         }
-
     }
 
     convertJsonToCsv(): { data: Data, headers: LabelKeyObject[] } {
@@ -194,7 +191,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     render() {
         let {retroBoardId} = this.props.match.params as PropsFromParent
-        let walls = this.props.retroWalls.walls.map((wall, index) => {
+        let walls = this.state.retroWalls.walls.map((wall, index) => {
             wall.retroBoardId = retroBoardId!
             return <Col key={index}>
                 <StickyWall retroBoardService={this.props.retroBoardService}
@@ -203,7 +200,7 @@ class RetroBoardPage extends React.Component<Props, State> {
                             sortBy={this.state.sortSelectValue}
                 />
             </Col>
-        })
+        });
         return (
             <div style={{padding: "50px"}}>
                 <Row>
@@ -220,8 +217,9 @@ class RetroBoardPage extends React.Component<Props, State> {
 
                         <Button className={"pull-right"} style={{border: "1px solid black"}} variant={"light"}>
                             <CSVLink {...this.convertJsonToCsv()} target={"_blank"}
-                                     filename={this.props.retroBoard.name}><i className="fa fa-file-excel-o"
-                                                                              style={{color: "blue"}}></i></CSVLink>
+                                     filename={this.props.retroBoard.name}>
+                                <i className="fa fa-file-excel-o" style={{color: "blue"}}/>
+                            </CSVLink>
                         </Button>
                     </Col>
                 </Row>
