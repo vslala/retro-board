@@ -1,6 +1,7 @@
 {
   "name": "retro-board",
   "version": "0.1.0",
+  "homepage": "http://vslala.github.io/retro-board",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -47,7 +48,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "coverage": "cross-env CI=false react-scripts test --coverage"
+    "coverage": "cross-env CI=false react-scripts test --coverage",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -71,6 +74,7 @@
     "@types/reactstrap": "^8.2.0",
     "bootstrap": "^4.4.1",
     "eslint-config-typescript": "^3.0.0",
+    "gh-pages": "^3.1.0",
     "react-bootstrap": "^1.0.0-beta.16"
   },
   "jest": {
