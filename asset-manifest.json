@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/retro-board/static/css/main.487eb362.chunk.css",
+    "main.js": "/retro-board/static/js/main.bd589c5e.chunk.js",
+    "main.js.map": "/retro-board/static/js/main.bd589c5e.chunk.js.map",
+    "runtime-main.js": "/retro-board/static/js/runtime-main.262c44d2.js",
+    "runtime-main.js.map": "/retro-board/static/js/runtime-main.262c44d2.js.map",
+    "static/css/2.3679ec75.chunk.css": "/retro-board/static/css/2.3679ec75.chunk.css",
+    "static/js/2.9b9fe6cd.chunk.js": "/retro-board/static/js/2.9b9fe6cd.chunk.js",
+    "static/js/2.9b9fe6cd.chunk.js.map": "/retro-board/static/js/2.9b9fe6cd.chunk.js.map",
+    "index.html": "/retro-board/index.html",
+    "precache-manifest.0191c02a285731efe47979b76e0755c1.js": "/retro-board/precache-manifest.0191c02a285731efe47979b76e0755c1.js",
+    "service-worker.js": "/retro-board/service-worker.js",
+    "static/css/2.3679ec75.chunk.css.map": "/retro-board/static/css/2.3679ec75.chunk.css.map",
+    "static/css/main.487eb362.chunk.css.map": "/retro-board/static/css/main.487eb362.chunk.css.map",
+    "static/js/2.9b9fe6cd.chunk.js.LICENSE.txt": "/retro-board/static/js/2.9b9fe6cd.chunk.js.LICENSE.txt",
+    "static/media/bootstrap-social.png": "/retro-board/static/media/bootstrap-social.2f75564a.png",
+    "static/media/font-awesome.css": "/retro-board/static/media/fontawesome-webfont.e6cf7c6e.woff2"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.262c44d2.js",
+    "static/css/2.3679ec75.chunk.css",
+    "static/js/2.9b9fe6cd.chunk.js",
+    "static/css/main.487eb362.chunk.css",
+    "static/js/main.bd589c5e.chunk.js"
+  ]
+}
