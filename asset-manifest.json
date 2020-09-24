@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/retro-board/static/css/main.487eb362.chunk.css",
-    "main.js": "/retro-board/static/js/main.6524213d.chunk.js",
-    "main.js.map": "/retro-board/static/js/main.6524213d.chunk.js.map",
+    "main.js": "/retro-board/static/js/main.26cde904.chunk.js",
+    "main.js.map": "/retro-board/static/js/main.26cde904.chunk.js.map",
     "runtime-main.js": "/retro-board/static/js/runtime-main.262c44d2.js",
     "runtime-main.js.map": "/retro-board/static/js/runtime-main.262c44d2.js.map",
     "static/css/2.3679ec75.chunk.css": "/retro-board/static/css/2.3679ec75.chunk.css",
     "static/js/2.9b9fe6cd.chunk.js": "/retro-board/static/js/2.9b9fe6cd.chunk.js",
     "static/js/2.9b9fe6cd.chunk.js.map": "/retro-board/static/js/2.9b9fe6cd.chunk.js.map",
     "index.html": "/retro-board/index.html",
-    "precache-manifest.bc6d42efaca6ca569a81d58874ba74b8.js": "/retro-board/precache-manifest.bc6d42efaca6ca569a81d58874ba74b8.js",
+    "precache-manifest.b45afa7922a8966e839665586454d48c.js": "/retro-board/precache-manifest.b45afa7922a8966e839665586454d48c.js",
     "service-worker.js": "/retro-board/service-worker.js",
     "static/css/2.3679ec75.chunk.css.map": "/retro-board/static/css/2.3679ec75.chunk.css.map",
     "static/css/main.487eb362.chunk.css.map": "/retro-board/static/css/main.487eb362.chunk.css.map",
@@ -22,6 +22,6 @@
     "static/css/2.3679ec75.chunk.css",
     "static/js/2.9b9fe6cd.chunk.js",
     "static/css/main.487eb362.chunk.css",
-    "static/js/main.6524213d.chunk.js"
+    "static/js/main.26cde904.chunk.js"
   ]
 }

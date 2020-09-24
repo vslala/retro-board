@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "953a44c204c1e9934fa4e745b72e6db8",
+    "revision": "4cea5149e3779b64cb7b7f42440993f6",
     "url": "/retro-board/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/retro-board/static/css/2.3679ec75.chunk.css"
   },
   {
-    "revision": "6311402b1c2fe9f1aa00",
+    "revision": "1d2f6b4313e93b3be874",
     "url": "/retro-board/static/css/main.487eb362.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/retro-board/static/js/2.9b9fe6cd.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6311402b1c2fe9f1aa00",
-    "url": "/retro-board/static/js/main.6524213d.chunk.js"
+    "revision": "1d2f6b4313e93b3be874",
+    "url": "/retro-board/static/js/main.26cde904.chunk.js"
   },
   {
     "revision": "2733266c25ff9c60d3bc",
