@@ -8,6 +8,7 @@ class User {
     public username: string | undefined
     public displayName: string = ""
     public email: string = ""
+    public isEmailVerified: boolean = false;
 }
 
 export default User

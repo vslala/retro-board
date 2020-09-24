@@ -79,6 +79,7 @@ class Firebase {
             this.loggedInUser.idToken = idToken
             this.loggedInUser.email = userCredentials.user.email || `${generateRandomText(5)}@retro.com`
             this.loggedInUser.uid = userCredentials.user.uid || ""
+            this.loggedInUser.isEmailVerified = !userCredentials.user.isAnonymous;
 
             let response = await request.post("/login", userCredentials.user);
             if (response.status === 200) {
