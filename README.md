@@ -1,44 +1,62 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Retro Board Frontend
 
-## Available Scripts
+It is a platform for creating fast and easy
+boards with colorful walls. This platform allows
+building new boards using the cutom/pre-built template
+for running meetings like retrospective, brainstorming, 
+debate, points making etc etc...
 
-In the project directory, you can run:
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Google Login
+- Anonymous Login
+- Create teams
+- Add members to your team that will have private access to the boards
+- Create Private boards and share with your team
+- Create board templates for later use
+- Create boards from the template
+- Real time updates on the boards that can support large group of people seamlessly
+- Voting 
+- Sorting on the basis of votes so that most important points can be talked first
+- Blur Feature - Blur the
+text for other team members until they have put down their thoughts.
+This feature could be useful in a way that others won't be influenced by your thoughts.
+After everyone adds their thoughts, it can be un-blurred.
+- Slideshow view to take up each individual's thought at a time
+- Export your board into a CSV file
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Screenshots
 
-### `npm test`
+![dashboard](docs/images/dashboard.png)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![create retro board](docs/images/create-retro-board.png)
 
-### `npm run build`
+![retro board](docs/images/pre-built-retro-board.png)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![custom template creator](docs/images/create-custom-template.png)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+![retro board wall](docs/images/retro-board-wall.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![slideshow view](docs/images/slideshow-view.png)
 
-### `npm run eject`
+## Design & Architecture
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+coming soon...
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Developer
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+![Varun Shrivastava](docs/images/VarunShrivastava_LinkedIn.jpeg)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+**Varun Shrivastava**
 
-## Learn More
+### About
+I have 4 years of experience in building enterprise 
+software systems in finance and retail domain. 
+Experienced in design, development, and deployment of 
+scalable software. Highly dependable and enthusiastic 
+team player who loves contributing to open source 
+and developing software with best practices.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+
