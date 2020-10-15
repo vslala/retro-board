@@ -18,7 +18,7 @@ const PageHeader: React.FunctionComponent<Props> = (props:Props) => {
     let loggedInUser = Firebase.getInstance().getLoggedInUser()!;
 
     return <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/#/">Retro Board</Navbar.Brand>
+        <Link to={"/"} className={"navbar-brand"}>Retro Board</Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav"/>
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="mr-auto">
