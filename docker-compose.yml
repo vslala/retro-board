@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  web:
+    image: registry.gitlab.com/projects2020/retro-board:027e7d1a617db13dca5e4b9355147c6f674da720
+    ports:
+      - "3000:80"
