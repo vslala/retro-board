@@ -15,6 +15,7 @@ import RetroBoardServiceFactory from "./service/RetroBoard/RetroBoardServiceFact
 import TeamsPage from "./containers/TeamsPage";
 import TeamsServiceV1 from "./service/Teams/TeamsServiceV1";
 import TemplateService from "./service/Templates/TemplateService";
+import './App.css';
 
 interface Props {
 }

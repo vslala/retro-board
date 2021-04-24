@@ -4,9 +4,9 @@ const PageFooter: FunctionComponent = () => {
 
     return <footer className="mt-auto font-small blue pt-sm-3">
         <div className="footer-copyright text-center py-1">
-            <p><a href="https://www.bemyaficionado.com"> a <strong>Varun Shrivastava</strong> production</a>
+            <p><a href="https://www.bemyaficionado.com">Made by <strong>Varun Shrivastava</strong></a>
             </p>
-            <p><strong>TheRetroBoard©2020</strong></p>
+            <p><strong>TheRetroBoard©2021</strong></p>
         </div>
     </footer>
 } 

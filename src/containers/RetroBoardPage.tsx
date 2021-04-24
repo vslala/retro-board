@@ -42,6 +42,7 @@ type Props = PropsFromParent & StateFromReduxStore & DispatchProps
 
 interface State {
     retroBoardId: string
+    retroBoardTitle: string
     sortSelectValue: SortType
     teams: Array<ITeam>
     retroWalls: RetroWalls
@@ -111,6 +112,7 @@ class RetroBoardPage extends React.Component<Props, State> {
 
     state: State = {
         retroBoardId: "",
+        retroBoardTitle: "",
         sortSelectValue: SortType.NONE,
         teams: [],
         retroWalls: new RetroWalls([])
@@ -149,7 +151,7 @@ class RetroBoardPage extends React.Component<Props, State> {
             await this.props.createRetroBoard(retroBoard);
             let retroWalls = await this.props.retroBoardService.getRetroWalls(retroBoardId);
 
-            this.setState({retroBoardId: retroBoardId, teams: await teams, retroWalls: retroWalls});
+            this.setState({retroBoardId: retroBoardId, retroBoardTitle: retroBoard.name, teams: await teams, retroWalls: retroWalls});
         } catch (e) {
             if (e instanceof UnauthorizedException) {
                 this.props.history.push("/unauthorized");
@@ -203,6 +205,9 @@ class RetroBoardPage extends React.Component<Props, State> {
         });
         return (
             <div style={{padding: "50px"}}>
+                <Row>
+                    <h2 style={{borderBottom: "2px solid black"}}>{this.state.retroBoardTitle}</h2>
+                </Row>
                 <Row>
                     <Col>
                         <SortSelect/>
