@@ -9,7 +9,7 @@ import Firebase from "./service/Firebase";
 import {Route, RouteComponentProps} from "react-router";
 import HomePage from "./containers/HomePage";
 import RetroBoardPage from "./containers/RetroBoardPage";
-import LoginPage from "./containers/LoginPage";
+import LoginPage from "./containers/LandingPage";
 import Logout from "./components/smart/Logout";
 import RetroBoardServiceFactory from "./service/RetroBoard/RetroBoardServiceFactory";
 import TeamsPage from "./containers/TeamsPage";

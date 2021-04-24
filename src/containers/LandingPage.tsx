@@ -5,10 +5,15 @@ import Col from "react-bootstrap/Col";
 import Firebase from "../service/Firebase";
 import Button from "react-bootstrap/Button";
 import {RouteComponentProps, withRouter} from 'react-router-dom';
+// @ts-ignore
 import logo from '../logo.svg';
+// @ts-ignore
 import headerImg from '../img/retro-board-lp-header.svg';
+// @ts-ignore
 import retroBoardImg from '../img/retro-board-design.png';
+// @ts-ignore
 import retroBoardDashboardImg from '../img/retro-board-dashboard.png';
+// @ts-ignore
 import retroBoardTemplateImg from '../img/retro-board-create-template.png';
 import PageFooter from "../components/smart/PageFooter";
 import {Image} from "react-bootstrap";
@@ -24,7 +29,7 @@ interface State {
     idToken: string
 }
 
-class LoginPage extends React.Component<Props, State> {
+class LandingPage extends React.Component<Props, State> {
 
     state: State = {
         firebase: Firebase.getInstance(),
@@ -189,4 +194,4 @@ class LoginPage extends React.Component<Props, State> {
     }
 }
 
-export default withRouter(LoginPage)
+export default withRouter(LandingPage)
