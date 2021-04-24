@@ -19,7 +19,7 @@ const HomePage:React.FunctionComponent<HomePageModel> = (props:HomePageModel) =>
                     <h3>Pre-built Templates</h3>
                 </div>
                 <CreateRetroBoardManager title={"Create Retro Board"}
-                                         retroBoardService={props.retroBoardService} templateWalls={[
+                                         templateWalls={[
                     {wallTitle: "Went Well", wallStyle: RETRO_BOARD_STYLES.wentWell, wallOrder: 1, notes: []},
                     {wallTitle: "To Improve", wallStyle: RETRO_BOARD_STYLES.toImprove, wallOrder: 2, notes: []},
                     {wallTitle: "Action Items", wallStyle: RETRO_BOARD_STYLES.actionItems, wallOrder: 3, notes: []}
