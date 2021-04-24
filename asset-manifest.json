@@ -1,27 +1,32 @@
 {
   "files": {
-    "main.css": "/retro-board/static/css/main.487eb362.chunk.css",
-    "main.js": "/retro-board/static/js/main.26cde904.chunk.js",
-    "main.js.map": "/retro-board/static/js/main.26cde904.chunk.js.map",
-    "runtime-main.js": "/retro-board/static/js/runtime-main.262c44d2.js",
-    "runtime-main.js.map": "/retro-board/static/js/runtime-main.262c44d2.js.map",
-    "static/css/2.3679ec75.chunk.css": "/retro-board/static/css/2.3679ec75.chunk.css",
-    "static/js/2.9b9fe6cd.chunk.js": "/retro-board/static/js/2.9b9fe6cd.chunk.js",
-    "static/js/2.9b9fe6cd.chunk.js.map": "/retro-board/static/js/2.9b9fe6cd.chunk.js.map",
-    "index.html": "/retro-board/index.html",
-    "precache-manifest.b45afa7922a8966e839665586454d48c.js": "/retro-board/precache-manifest.b45afa7922a8966e839665586454d48c.js",
-    "service-worker.js": "/retro-board/service-worker.js",
-    "static/css/2.3679ec75.chunk.css.map": "/retro-board/static/css/2.3679ec75.chunk.css.map",
-    "static/css/main.487eb362.chunk.css.map": "/retro-board/static/css/main.487eb362.chunk.css.map",
-    "static/js/2.9b9fe6cd.chunk.js.LICENSE.txt": "/retro-board/static/js/2.9b9fe6cd.chunk.js.LICENSE.txt",
-    "static/media/bootstrap-social.png": "/retro-board/static/media/bootstrap-social.2f75564a.png",
-    "static/media/font-awesome.css": "/retro-board/static/media/fontawesome-webfont.e6cf7c6e.woff2"
+    "main.css": "/static/css/main.6d37b33c.chunk.css",
+    "main.js": "/static/js/main.a1147e8d.chunk.js",
+    "main.js.map": "/static/js/main.a1147e8d.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.a0388208.js",
+    "runtime-main.js.map": "/static/js/runtime-main.a0388208.js.map",
+    "static/css/2.b365c6f1.chunk.css": "/static/css/2.b365c6f1.chunk.css",
+    "static/js/2.70075147.chunk.js": "/static/js/2.70075147.chunk.js",
+    "static/js/2.70075147.chunk.js.map": "/static/js/2.70075147.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.a9ace1b50ee18303ea4b1306baa5672c.js": "/precache-manifest.a9ace1b50ee18303ea4b1306baa5672c.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/2.b365c6f1.chunk.css.map": "/static/css/2.b365c6f1.chunk.css.map",
+    "static/css/main.6d37b33c.chunk.css.map": "/static/css/main.6d37b33c.chunk.css.map",
+    "static/js/2.70075147.chunk.js.LICENSE.txt": "/static/js/2.70075147.chunk.js.LICENSE.txt",
+    "static/media/bootstrap-social.png": "/static/media/bootstrap-social.2f75564a.png",
+    "static/media/font-awesome.css": "/static/media/fontawesome-webfont.e6cf7c6e.woff2",
+    "static/media/logo.svg": "/static/media/logo.5d5d9eef.svg",
+    "static/media/retro-board-create-template.png": "/static/media/retro-board-create-template.734256dc.png",
+    "static/media/retro-board-dashboard.png": "/static/media/retro-board-dashboard.70ce411e.png",
+    "static/media/retro-board-design.png": "/static/media/retro-board-design.dbdaebce.png",
+    "static/media/retro-board-lp-header.svg": "/static/media/retro-board-lp-header.07cde02c.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.262c44d2.js",
-    "static/css/2.3679ec75.chunk.css",
-    "static/js/2.9b9fe6cd.chunk.js",
-    "static/css/main.487eb362.chunk.css",
-    "static/js/main.26cde904.chunk.js"
+    "static/js/runtime-main.a0388208.js",
+    "static/css/2.b365c6f1.chunk.css",
+    "static/js/2.70075147.chunk.js",
+    "static/css/main.6d37b33c.chunk.css",
+    "static/js/main.a1147e8d.chunk.js"
   ]
 }
