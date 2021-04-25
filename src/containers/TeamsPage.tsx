@@ -11,10 +11,6 @@ import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
 const TeamsPage:React.FunctionComponent = () => {
     const teamsService = TeamsServiceFactory.getInstance();
     const [teams, setTeams] = useState<Array<Team>>([]);
-    const getMyTeams = async () => {
-        let myTeams = await teamsService.getMyTeams()
-        setTeams(myTeams);
-    }
 
     const createTeam = async (team: ITeam) => {
         console.log("Creating new team...", teams)
@@ -68,8 +64,12 @@ const TeamsPage:React.FunctionComponent = () => {
     useEffect(() => {
         document.title = "Teams";
         // TODO: show loaded until the teams are loaded
+        const getMyTeams = async () => {
+            let myTeams = await teamsService.getMyTeams()
+            setTeams(myTeams);
+        }
         getMyTeams();
-    }, [])
+    }, [teamsService])
 
     return <>
         <Row>
