@@ -20,6 +20,11 @@ import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
 import {withRouter} from "react-router-dom";
 import Note from "../models/Note";
 
+interface CSVTemplate {
+    data: Data,
+    headers: LabelKeyObject[]
+}
+
 interface Props extends RouteComponentProps<{}, any, { walls: RetroWalls } | any> {
     uid?: string
     retroBoardId?: string
@@ -89,39 +94,53 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
 }
 
 const RetroBoardPage:React.FunctionComponent<Props> = (props:Props) => {
+
+    let {retroBoardId, uid} = props.match.params as Props;
+    if (retroBoardId === undefined)
+        throw Error("Board ID is null!!!");
+    localStorage.setItem("retroBoardId", retroBoardId!);
+
     const [boardId, setBoardId] = useState("");
     const [boardTitle, setBoardTitle] = useState("");
     const [sortSelectValue, setSortSelectValue] = useState<SortType>(SortType.NONE);
     const [teams, setTeams] = useState<Array<Team>>([]);
     const [walls, setWalls] = useState<RetroWalls>(new RetroWalls([]));
-    const [notes, setNotes] = useState<Notes>(new Notes([]));
-
-    const dispatch = useDispatch();
+    const [csvData, setCSVData] = useState<CSVTemplate>({data: [], headers:[]});
 
     /**
      * converts the given JSON data into CSV file
      * the converted file can then be downloaded
      */
-    const convertJsonToCsv = ():{ data: Data, headers: LabelKeyObject[] } => {
+    const convertJsonToCsv = async ():Promise<void> => {
         let headers: LabelKeyObject[] = [
             {label: "Wall Name", key: "wallName"},
             {label: "Note", key: "noteText"},
             {label: "Up-votes", key: "upvotes"}
         ]
 
-        let data: Data = []
+        // fetch all notes for the board
+        let walls = await RetroBoardServiceFactory.getInstance().getRetroWalls(retroBoardId!);
+        let notes:Notes = await RetroBoardServiceFactory.getInstance().getNotes(retroBoardId!, "");
+        console.log("Retro Board Id: ", notes);
 
-        walls.walls.forEach((wall) => {
-            notes.notes.forEach((note) => {
-                if (note.wallId === wall.wallId) {
-                    data.push(
-                        {wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length || 0}
-                    )
-                }
+        // map notes to their respective walls
+        // let data:Data = walls.walls.map(wall => (
+        //     notes.notes.filter(note => note.wallId === wall.wallId)
+        //         .map(note => (
+        //             {wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length?? 0}
+        //         ))
+        // ))
+
+        let data:Data = [];
+        walls.walls.forEach(wall => {
+            let wallNotes = notes.notes.filter(note => note.wallId === wall.wallId);
+            wallNotes.forEach(note => {
+                data.push({wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length?? 0});
             })
         })
 
-        return {data: data, headers: headers}
+        console.log("CSV DAtA: ", data);
+        setCSVData({data: data, headers: headers});
     }
 
     /**
@@ -137,10 +156,6 @@ const RetroBoardPage:React.FunctionComponent<Props> = (props:Props) => {
     }
 
     useEffect(() => {
-        let {retroBoardId, uid} = props.match.params as Props;
-        if (retroBoardId === undefined)
-            throw Error("Board ID is null!!!");
-        localStorage.setItem("retroBoardId", retroBoardId!);
         if (retroBoardId && uid) {
             const initRetroBoard = async (boardId: string, uid: string) => {
                 try {
@@ -149,22 +164,14 @@ const RetroBoardPage:React.FunctionComponent<Props> = (props:Props) => {
                     let teams = await TeamsServiceFactory.getInstance().getMyTeams();
                     let retroBoard = await retroBoardService.getRetroBoardById(uid, boardId);
                     let walls = await retroBoardService.getRetroWalls(retroBoardId!);
-                    let notes:Array<Note> = [];
-
-                    walls.walls.forEach(async wall => [...notes, (await retroBoardService.getNotes(boardId, wall.wallId)).notes]);
-
+                    await convertJsonToCsv();
                     document.title = retroBoard.name;
-                    // open duplex connection
-                    // this method is only called when there is some update in the backend
-                    await retroBoardService.getRetroBoardDataOnUpdate(uid, boardId, (retroBoard => {
-                        console.log("RetroBoard: ", retroBoard);
-                    }));
 
                     setBoardId(boardId);
                     setBoardTitle(retroBoard.name);
                     setTeams(teams);
                     setWalls(walls);
-                    setNotes(new Notes(notes));
+
                 } catch (e) {
                     if (e instanceof UnauthorizedException) {
                         props.history.push("/unauthorized");
@@ -182,11 +189,10 @@ const RetroBoardPage:React.FunctionComponent<Props> = (props:Props) => {
         return <Col key={index}>
             <StickyWall wall={wall}
                         sortBy={sortSelectValue}
+                        callBack={convertJsonToCsv}
                         />
         </Col>
     });
-
-    let csv = convertJsonToCsv();
 
     return <div style={{padding: "50px"}}>
         <Row>
@@ -205,7 +211,7 @@ const RetroBoardPage:React.FunctionComponent<Props> = (props:Props) => {
                 </div>
 
                 <Button className={"pull-right"} style={{border: "1px solid black"}} variant={"light"}>
-                    <CSVLink data={csv.data} headers={csv.headers}  target={"_blank"}
+                    <CSVLink data={csvData.data} headers={csvData.headers}  target={"_blank"}
                              filename={boardTitle}>
                         <i className="fa fa-file-excel-o" style={{color: "blue"}}/>
                     </CSVLink>

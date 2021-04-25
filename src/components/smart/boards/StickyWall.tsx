@@ -12,6 +12,7 @@ import CarouselView from "../../dumb/CarouselView";
 interface Props {
     sortBy?: SortType
     wall: RetroWall
+    callBack: () => Promise<void>
 }
 
 const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
@@ -30,6 +31,7 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
         })
         newNote.createdBy = Firebase.getInstance().getLoggedInUser()!.email;
         setNotes([...notes, await RetroBoardServiceFactory.getInstance().addNewNote(newNote)]);
+        props.callBack();
     }
 
     const handleDrop = async (e: React.DragEvent<HTMLAnchorElement>, droppedOnNote: Note) => {
@@ -51,6 +53,7 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
         await boardService.deleteNote(deletedNote);
 
         setNotes(modifiedNotes);
+        props.callBack();
     }
 
     const handleDragOver = (e: React.DragEvent<HTMLAnchorElement>) => {
