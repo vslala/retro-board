@@ -16,8 +16,12 @@ interface Props {
 
 const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
     const [notes, setNotes] = useState<Array<Note>>([]);
-    const [thisWall, setThisWall] = useState<RetroWall>();
 
+    /**
+     * add a new note to the wall
+     * makes a service call to the backend
+     * @param note
+     */
     const addNote = async (note:string) => {
         let newNote = new Note(props.wall.retroBoardId, props.wall.wallId, note, {
             backgroundColor: props.wall.style?.stickyNote?.backgroundColor || "white",
@@ -58,6 +62,10 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
         e.dataTransfer.setData("text/plain", JSON.stringify(note))
     }
 
+    /**
+     * This is the starting point of this page
+     * replacement of componentDidMount()
+     */
     useEffect(() => {
         const getNotes = async () => {
             setNotes((await RetroBoardServiceFactory.getInstance().getNotes(props.wall.retroBoardId, props.wall.wallId)).notes);
