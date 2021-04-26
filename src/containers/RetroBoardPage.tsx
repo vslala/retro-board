@@ -9,7 +9,7 @@ import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import ShareBoard from "../components/dumb/ShareBoard";
-import Team, {ITeam} from "../models/Team";
+import {Team} from "../models/Team";
 import UnauthorizedException from "../service/UnauthorizedException";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
@@ -60,14 +60,6 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
         let notes: Notes = await RetroBoardServiceFactory.getInstance().getNotes(retroBoardId!, "");
         console.log("Retro Board Id: ", notes);
 
-        // map notes to their respective walls
-        // let data:Data = walls.walls.map(wall => (
-        //     notes.notes.filter(note => note.wallId === wall.wallId)
-        //         .map(note => (
-        //             {wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length?? 0}
-        //         ))
-        // ))
-
         let data: Data = [];
         walls.walls.forEach(wall => {
             let wallNotes = notes.notes.filter(note => note.wallId === wall.wallId);
@@ -84,7 +76,7 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
      * Shares the board with the selected teams
      * @param selectedTeams
      */
-    const shareBoardWith = async (selectedTeams: Array<ITeam>): Promise<boolean> => {
+    const shareBoardWith = async (selectedTeams: Array<Team>): Promise<boolean> => {
         try {
             return await RetroBoardServiceFactory.getInstance().shareBoard(boardId, selectedTeams);
         } catch (e) {
@@ -106,6 +98,16 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
 
     useEffect(() => {
         if (retroBoardId && uid) {
+            // this code will always run when board will be updated in the backend
+            RetroBoardServiceFactory.getInstance().getRetroBoardDataOnUpdate(uid, retroBoardId, async (retroBoard: RetroBoard) => {
+                setBoardProps({
+                    ...boardProps,
+                    uid: uid,
+                    boardId: retroBoard.id,
+                    maxLikes: retroBoard.maxLikes,
+                    blur: retroBoard.blur
+                });
+            });
             const initRetroBoard = async (boardId: string, uid: string) => {
                 try {
 
@@ -117,6 +119,7 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
                     document.title = retroBoard.name;
 
                     setBoardProps({
+                        ...boardProps,
                         boardId: retroBoard.id,
                         maxLikes: retroBoard.maxLikes,
                         uid: uid,
@@ -137,17 +140,12 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
     }, []);
 
     return <div style={{padding: "50px"}}>
-        <Row>
-            <h2 style={{borderBottom: "2px solid black"}}>{boardTitle}</h2>
-        </Row>
-        <Row>
-            <Col>
-                {
-                    // TODO: Sort Toggle Should Come Here 
-                }
+        <Row className={"justify-content-center my-1"} style={{borderBottom: "1px solid white"}}>
+            <Col className={"col-sm-3"}>
+                <h2>{boardTitle}</h2>
             </Col>
-            <Col className={"align-self-center"}>
-                <BlurToggle {...props} />
+            <Col>
+                <BlurToggle />
             </Col>
             <Col className={"align-self-center"}>
                 <div className="pull-right">

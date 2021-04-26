@@ -39,12 +39,13 @@ const StickyNote: React.FunctionComponent<Props> = (props: Props) => {
     const modifyStickyNote = async (modifiedNote: Note) => {
         let savedNote = await RetroBoardServiceFactory.getInstance().updateNote(modifiedNote);
         setShowEditor(false);
+        // state is updated using the websocket callback method inside useEffect()
         // setThisNote(savedNote);
     }
 
     const mergeNoteIfRequired = (note: Note): string | any => {
         let blur = boardProps.blur === "on"
-        && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid) ? "blur(3px)" : "blur(0px)"
+                            && !note.createdBy.includes(Firebase.getInstance().getLoggedInUser()!.uid) ? "blur(3px)" : "blur(0px)"
 
         let cardBodyContent: ReactNode = <div className={"card-text"} style={{width: "95%", filter: blur}}>
             <ReactMarkdown source={note.noteText} escapeHtml={true}/>
@@ -105,7 +106,7 @@ const StickyNote: React.FunctionComponent<Props> = (props: Props) => {
     useEffect(() => {
         RetroBoardServiceFactory.getInstance().getNoteDataWhenModified(props.note, (note: Note) => {
             // check is for delete case
-            // if the thisNote doesn't exist then it has been probably deleted.
+            // if thisNote doesn't exist then it has been probably deleted.
             if (note) {
                 setThisNote(note);
                 props.callBackWall(note);

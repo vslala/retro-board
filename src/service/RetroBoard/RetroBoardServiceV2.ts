@@ -7,7 +7,7 @@ import Firebase from "../Firebase";
 import RetroWall from "../../models/RetroWall";
 import DuplexCommunication from "../WebSocket/DuplexCommunication";
 import {request} from "../../env-config";
-import {ITeam} from "../../models/Team";
+import {Team} from "../../models/Team";
 import UnauthorizedException from "../UnauthorizedException";
 
 class RetroBoardServiceV2 implements RetroBoardService {
@@ -210,7 +210,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
         return this.retroBoardService;
     }
 
-    async shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean> {
+    async shareBoard(retroBoardId: string, selectedTeams: Array<Team>): Promise<boolean> {
         let response = await request.post("/share", {
             itemId: retroBoardId,
             teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)

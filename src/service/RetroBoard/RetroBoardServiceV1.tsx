@@ -4,7 +4,7 @@ import Note from "../../models/Note";
 import RetroWalls from "../../models/RetroWalls";
 import Notes from "../../models/Notes";
 import {RetroBoardService} from "./RetroBoardService";
-import {ITeam} from "../../models/Team";
+import {Team} from "../../models/Team";
 
 class RetroBoardServiceV1 implements RetroBoardService {
 
@@ -17,7 +17,7 @@ class RetroBoardServiceV1 implements RetroBoardService {
     private constructor() {
     }
 
-    shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean> {
+    shareBoard(retroBoardId: string, selectedTeams: Array<Team>): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
 

@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {createContext, ReactNode, useState} from 'react';
-import RetroBoard from "../../models/RetroBoard";
+import {createContext, useState} from 'react';
 
 
 export interface BoardProps {

@@ -2,7 +2,7 @@ import RetroBoard from "../../models/RetroBoard";
 import RetroWalls from "../../models/RetroWalls";
 import Note from "../../models/Note";
 import Notes from "../../models/Notes";
-import {ITeam} from "../../models/Team";
+import {Team} from "../../models/Team";
 
 export interface RetroBoardService {
 
@@ -37,5 +37,5 @@ export interface RetroBoardService {
 
     deleteBoard(board: RetroBoard): Promise<string>;
 
-    shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean>
+    shareBoard(retroBoardId: string, selectedTeams: Array<Team>): Promise<boolean>
 }
