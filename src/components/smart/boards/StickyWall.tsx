@@ -8,6 +8,7 @@ import RetroWall from "../../../models/RetroWall";
 import {SortType} from "../../../redux/types/RetroBoardActionTypes";
 import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
 import CarouselView from "../../dumb/CarouselView";
+import Notes from "../../../models/Notes";
 
 interface Props {
     sortBy?: SortType
@@ -30,7 +31,8 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
             likeBtnPosition: props.wall.style?.stickyNote?.likeBtnPosition || "right"
         })
         newNote.createdBy = Firebase.getInstance().getLoggedInUser()!.email;
-        setNotes([...notes, await RetroBoardServiceFactory.getInstance().addNewNote(newNote)]);
+        setNotes([...notes, await RetroBoardServiceFactory.getInstance().addNewNote(newNote)]
+            .sort((n1, n2) => n2.likedBy.length - n1.likedBy.length));
         props.callBack();
     }
 
@@ -65,17 +67,33 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
         e.dataTransfer.setData("text/plain", JSON.stringify(note))
     }
 
+    const deleteNote = async (noteToDeleted:Note) => {
+        await RetroBoardServiceFactory.getInstance().deleteNote(noteToDeleted);
+        setNotes([...notes.filter(note => note.noteId !== noteToDeleted.noteId)]);
+    }
+
+    const modifyNoteCallback = (note:Note) => {
+        let wallNotes = [...notes];
+        let modifiedNote = wallNotes.find(wallNote => wallNote.noteId === note.noteId)!;
+        modifiedNote.likedBy = note.likedBy;
+        modifiedNote.noteText = note.noteText;
+
+        setNotes(wallNotes.sort((n1,n2) => n2.likedBy.length - n1.likedBy.length));
+    }
+
     /**
      * This is the starting point of this page
      * replacement of componentDidMount()
      */
     useEffect(() => {
         const getNotes = async () => {
-            setNotes((await RetroBoardServiceFactory.getInstance().getNotes(props.wall.retroBoardId, props.wall.wallId)).notes);
+            setNotes((await RetroBoardServiceFactory.getInstance().getNotes(props.wall.retroBoardId, props.wall.wallId))
+                .notes
+                .sort((n1,n2) => n2.likedBy.length - n1.likedBy.length));
         };
-        RetroBoardServiceFactory.getInstance().getDataOnUpdate(props.wall.retroBoardId, props.wall.wallId, () => {
-            console.log("Data Changed!")
-            getNotes();
+        RetroBoardServiceFactory.getInstance().getNotesDataOnUpdate(props.wall.retroBoardId, props.wall.wallId, async (data: Notes) => {
+            console.log("Notes Data Changed!")
+            setNotes(data.notes.sort((n1,n2) => n2.likedBy.length - n1.likedBy.length));
         });
 
         getNotes();
@@ -91,7 +109,10 @@ const StickyWall:React.FunctionComponent<Props> = (props:Props) => {
                        onDragOver={handleDragOver}
                        onDrop={(e: React.DragEvent<HTMLAnchorElement>) => handleDrop(e, stickyNote)}
         >
-            <StickyNote key={stickyNote.noteId} note={stickyNote} retroBoardService={RetroBoardServiceFactory.getInstance()} sortBy={props.sortBy}/>
+            <StickyNote key={stickyNote.noteId}
+                        note={stickyNote}
+                        callBackWall={modifyNoteCallback}
+                        deleteNote={deleteNote}/>
         </ListGroupItem>
 
     ))

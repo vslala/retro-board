@@ -23,9 +23,9 @@ export interface RetroBoardService {
 
     getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void>;
 
-    getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void>;
+    getNotesDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void>;
 
-    getNoteWhenLiked(note: Note, callback: (note: Note) => void): Promise<void>;
+    getNoteDataWhenModified(note: Note, callback: (note: Note) => void): Promise<void>;
 
     deleteNote(note: Note): Promise<Note>;
 

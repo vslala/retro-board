@@ -136,14 +136,14 @@ class RetroBoardServiceV1 implements RetroBoardService {
         })
     }
 
-    async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
+    async getNotesDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardServiceV1.NOTES}`).child(retroBoardId)
         ref.on('value', (snapshot) => {
             callback(snapshot.val() ? new Notes(Object.values(snapshot.val())) : new Notes([]))
         })
     }
 
-    async getNoteWhenLiked(note: Note, callback: (note: Note) => void) {
+    async getNoteDataWhenModified(note: Note, callback: (note: Note) => void) {
         let ref = Firebase.getInstance().getDatabase().ref(`${RetroBoardServiceV1.NOTES}/${note.retroBoardId}/${note.noteId}`)
         ref.on('value', (snapshot) => {
 

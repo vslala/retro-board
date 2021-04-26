@@ -94,10 +94,10 @@ class RetroBoardServiceV2 implements RetroBoardService {
         throw Error("Error deleting note at the backend!");
     }
 
-    async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
+    async getNotesDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
         // This code will only execute whenever a new note is created for the board
         let duplex = DuplexCommunication.getInstance();
-        duplex.subscribe(`/topic/notes/${retroBoardId}`, async (uri:string) => {
+        duplex.subscribe(`/topic/notes/${retroBoardId}`, async (uri: string) => {
             let response = await request.get(`/retro-board/walls/notes`, {
                 params: {
                     retroBoardId: retroBoardId,
@@ -131,9 +131,14 @@ class RetroBoardServiceV2 implements RetroBoardService {
         throw Error("Error encountered while fetching boards for the user");
     }
 
-    getNoteWhenLiked(note: Note, callback: (note: Note) => void): Promise<void> {
-        // TODO: Requires implementation
-        return Promise.resolve();
+    async getNoteDataWhenModified(note: Note, callback: (note: Note) => void): Promise<void> {
+        DuplexCommunication.getInstance()
+            .subscribe(`/topic/notes/${note.noteId}`, async (uri: any) => {
+                console.log("URL:", uri);
+                let response = await request.get(`${uri.body}`);
+                console.log(response.data);
+                callback(await response.data);
+            });
     }
 
 
@@ -161,7 +166,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     async getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void> {
         // This code will only execute whenever a change is made to the retro board
         let duplex = new DuplexCommunication();
-        duplex.subscribe(`/topic/retro-board/${retroBoardId}`, async (uri:any) => {
+        duplex.subscribe(`/topic/retro-board/${retroBoardId}`, async (uri: any) => {
             console.log("URI : ", uri);
             let response = await request.get(uri.body);
             if (response.status === 200) {
@@ -206,7 +211,10 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean> {
-        let response = await request.post("/share", {itemId: retroBoardId, teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)});
+        let response = await request.post("/share", {
+            itemId: retroBoardId,
+            teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)
+        });
         if (response.status === 201)
             return true;
         return false;

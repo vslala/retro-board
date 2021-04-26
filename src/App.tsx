@@ -13,8 +13,8 @@ import LoginPage from "./containers/LandingPage";
 import Logout from "./components/smart/Logout";
 import RetroBoardServiceFactory from "./service/RetroBoard/RetroBoardServiceFactory";
 import TeamsPage from "./containers/TeamsPage";
-import TeamsServiceV1 from "./service/Teams/TeamsServiceV1";
 import TemplateService from "./service/Templates/TemplateService";
+import {BoardContextProvider} from "./redux/context/BoardContext";
 
 interface Props {
 }
@@ -47,15 +47,14 @@ class App extends React.Component<Props, State> {
 
                 <Route exact path={"/teams"} component={(props: RouteComponentProps) =>
                     <LayoutAuthenticated>
-                        <TeamsPage {...props}
-                                  teamsService={TeamsServiceV1.getInstance()}/>
+                        <TeamsPage {...props} />
                     </LayoutAuthenticated>}/>
 
                 <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
                     <LayoutAuthenticated>
-                        <RetroBoardPage {...props}
-                                        retroBoardService={RetroBoardServiceFactory.getInstance()}
-                                        teamsService={TeamsServiceV1.getInstance()}/>
+                        <BoardContextProvider>
+                            <RetroBoardPage {...props.match.params} />
+                        </BoardContextProvider>
                     </LayoutAuthenticated>}/>
 
                     <Route exact path={"/logout"} component={(props: RouteComponentProps) =>

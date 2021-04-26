@@ -41,7 +41,7 @@ describe("StickyWall test suite", () => {
         service.getNotes = jest.fn().mockImplementation(async (retroBoardId, wallId) => {
             return new Notes([note1(), note2()])
         })
-        service.getDataOnUpdate = jest.fn((retroBoardId, retroWallId, callback) =>
+        service.getNotesDataOnUpdate = jest.fn((retroBoardId, retroWallId, callback) =>
             Promise.resolve(callback(new Notes([note1(), note2()]))))
         service.addNewNote = jest.fn().mockImplementation((note: Note) => {
             return note
@@ -89,7 +89,7 @@ describe("StickyWall test suite", () => {
 
     test("it should create a wall with a list of sticky notes", () => {
         let renderedPage = buildStickyWall()
-        expect(service.getDataOnUpdate).toHaveBeenCalledTimes(1)
+        expect(service.getNotesDataOnUpdate).toHaveBeenCalledTimes(1)
         // expect(renderedPage.container.querySelectorAll(".sticky-wall")[0].querySelectorAll(".card").length).toBe(2)
     })
 

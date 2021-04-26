@@ -8,8 +8,8 @@ export interface StickyNoteStyle {
 }
 
 export interface StickyNoteState {
-    showToast: boolean,
-    toastMessage: string,
+    show: boolean,
+    message: string,
     stickyNoteId?: string
     showEditor: boolean,
     noteText: string,

@@ -14,7 +14,7 @@ import RetroBoard from "../models/RetroBoard";
 
 function getRetroBoardService() {
     const retroBoardService = RetroBoardServiceFactory.getInstance()
-    retroBoardService.getDataOnUpdate = jest.fn().mockImplementation((boardId:string, wallId:string, callBack: () => void) => {
+    retroBoardService.getNotesDataOnUpdate = jest.fn().mockImplementation((boardId:string, wallId:string, callBack: () => void) => {
 
     })
     retroBoardService.createNewRetroBoard = ({title, maxLikes}) => {
