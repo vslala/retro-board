@@ -1,16 +1,16 @@
 import * as React from 'react';
 import {FunctionComponent, useState} from 'react';
 import {Badge, Button, Card, ListGroup, ListGroupItem, Modal} from "react-bootstrap";
-import {ITeam} from "../../../models/Team";
+import {Team} from "../../../models/Team";
 import User from "../../../models/User";
 import AddNewTeamMember from "./AddNewTeamMember";
 import Firebase from "../../../service/Firebase";
 
 interface Props {
-    team: ITeam
+    team: Team
     removeMember: (member: User) => void
-    addTeamMember: (team: ITeam, teamMemberEmail: string) => void
-    deleteTeam: (team: ITeam) => void
+    addTeamMember: (team: Team, teamMemberEmail: string) => void
+    deleteTeam: (team: Team) => void
 }
 
 const TeamCard: FunctionComponent<Props> = (props: Props) => {
@@ -27,7 +27,7 @@ const TeamCard: FunctionComponent<Props> = (props: Props) => {
         closeModal();
     }
 
-    const addTeamMember = (team: ITeam, teamMemberEmail: string) => {
+    const addTeamMember = (team: Team, teamMemberEmail: string) => {
         props.addTeamMember(team, teamMemberEmail)
     }
 

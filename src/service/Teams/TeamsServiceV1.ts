@@ -1,4 +1,4 @@
-import Team, {ITeam} from "../../models/Team";
+import {Team} from "../../models/Team";
 import {request} from "../../env-config";
 import User from "../../models/User";
 
@@ -12,11 +12,11 @@ class TeamsServiceV1 {
         return TeamsServiceV1.instance;
     }
 
-    public async createNewTeam(team: ITeam) {
+    public async createNewTeam(team: Team) {
         let response = await request.post("/teams", team);
         if (response.status === 201) {
             let newTeamResponse = await request.get(response.headers.location);
-            return newTeamResponse.data as ITeam;
+            return newTeamResponse.data as Team;
         }
 
         throw Error("Encountered some trouble while trying to create new team!");
@@ -51,17 +51,17 @@ class TeamsServiceV1 {
         throw Error("No user found! Response Status: " + response.status);
     }
 
-    public async deleteTeam(team: ITeam) {
+    public async deleteTeam(team: Team) {
         let response = await request.delete(`/teams/${team.teamId}`);
         if (response.status !== 204) {
             throw Error("Encountered problem while deleting the team. Response Status: " + response.status);
         }
     }
 
-    public async getMyTeams(): Promise<Array<ITeam>> {
+    public async getMyTeams(): Promise<Array<Team>> {
         let response = await request.get("/teams");
         if (response.status === 200) {
-            return await response.data as Array<ITeam>;
+            return await response.data as Array<Team>;
         }
         return [];
     }

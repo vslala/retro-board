@@ -1,11 +1,11 @@
 import * as React from 'react'
 import {useState} from 'react'
 import {Alert, Button, Form, FormGroup, Modal, ProgressBar} from "react-bootstrap";
-import {ITeam} from "../../models/Team";
+import {Team} from "../../models/Team";
 
 interface Props {
-    teams: Array<ITeam>
-    shareWith: (selectedTeams: Array<ITeam>) => Promise<boolean>
+    teams: Array<Team>
+    shareWith: (selectedTeams: Array<Team>) => Promise<boolean>
 }
 
 const ShareBoard: React.FunctionComponent<Props> = (props: Props) => {
@@ -15,12 +15,12 @@ const ShareBoard: React.FunctionComponent<Props> = (props: Props) => {
     const handleClose = () => setShow(false);
     const handleOpen = () => setShow(true);
     const [pageLoader, setPageLoader] = useState(false);
-    const [selectedTeams, setSelectedTeams] = useState<Array<ITeam>>([]);
+    const [selectedTeams, setSelectedTeams] = useState<Array<Team>>([]);
     const [response, setResponse] = useState<React.ReactNode>(undefined);
 
     const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedItems = e.currentTarget.selectedOptions;
-        const selectedTeams: Array<ITeam> = [];
+        const selectedTeams: Array<Team> = [];
         for (let index = 0; index < selectedItems.length; index++) {
             selectedTeams.push(
                 props.teams.find((team) => team.teamId === selectedItems[index].value)!

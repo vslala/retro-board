@@ -14,7 +14,6 @@ import UnauthorizedException from "../service/UnauthorizedException";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
 import {withRouter} from "react-router-dom";
-import Note from "../models/Note";
 import {BoardContext} from "../redux/context/BoardContext";
 import BlurToggle from "../components/dumb/BlurToggle";
 

@@ -4,7 +4,7 @@ import {withRouter} from 'react-router-dom';
 import {Col, Row} from "react-bootstrap";
 import TeamCard from "../components/dumb/teams/TeamCard";
 import User from "../models/User";
-import Team, {ITeam} from "../models/Team";
+import {Team} from "../models/Team";
 import CreateNewTeam from "../components/dumb/teams/CreateNewTeam";
 import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
 
@@ -12,13 +12,13 @@ const TeamsPage:React.FunctionComponent = () => {
     const teamsService = TeamsServiceFactory.getInstance();
     const [teams, setTeams] = useState<Array<Team>>([]);
 
-    const createTeam = async (team: ITeam) => {
+    const createTeam = async (team: Team) => {
         console.log("Creating new team...", teams)
         let newTeam = await teamsService.createNewTeam(team);
         setTeams([...teams, newTeam]);
     }
 
-    const removeMember = async (team: ITeam, member: User) => {
+    const removeMember = async (team: Team, member: User) => {
         console.log("Removing member");
         try {
             await teamsService.removeTeamMember(team, member);
@@ -51,7 +51,7 @@ const TeamsPage:React.FunctionComponent = () => {
         }
     }
 
-    const deleteTeam = async (team: ITeam) => {
+    const deleteTeam = async (team: Team) => {
         try {
             await teamsService.deleteTeam(team);
             const newTeams = teams.filter(t => t.teamId !== team.teamId);
@@ -81,7 +81,7 @@ const TeamsPage:React.FunctionComponent = () => {
         </Row>
         <Row>
             <Col xs={6} md={4}>
-                <CreateNewTeam createTeam={(team: ITeam) => createTeam(team)}  />
+                <CreateNewTeam createTeam={(team: Team) => createTeam(team)}  />
             </Col>
         </Row>
         <hr/>
