@@ -53,21 +53,21 @@ const TeamCard: FunctionComponent<Props> = (props: Props) => {
                 </Card.Header>
                 <Card.Body>
                     <ListGroup>
-                        {props.team.teamMembers.map((teamMember, index) => (
-                            <ListGroupItem key={index}>
-                                <div style={{marginLeft: "auto !important"}}>
-                                    <div className={"pull-right"}>
-                                        {isOwner(Firebase.getInstance().getLoggedInUser()?.uid!) ?
-                                        <Button variant={"link"} onClick={() => showModal(teamMember)}> <i
-                                            style={{color: "crimson"}} className={"fa fa-xs fa-remove"}/></Button> : <></> }
-                                    </div>
-                                    {teamMember.displayName} <br/>
-                                    <span className={"text-muted"}>{teamMember.email}</span> <br />
-                                    {isOwner(teamMember.uid) ? <Badge variant={"primary"}>owner</Badge> : <Badge variant={"secondary"}>member</Badge>}
-                                </div>
+                        {/*{props.team.teamMembers.map((teamMember, index) => (*/}
+                        {/*    <ListGroupItem key={index}>*/}
+                        {/*        <div style={{marginLeft: "auto !important"}}>*/}
+                        {/*            <div className={"pull-right"}>*/}
+                        {/*                {isOwner(Firebase.getInstance().getLoggedInUser()?.uid!) ?*/}
+                        {/*                <Button variant={"link"} onClick={() => showModal(teamMember)}> <i*/}
+                        {/*                    style={{color: "crimson"}} className={"fa fa-xs fa-remove"}/></Button> : <></> }*/}
+                        {/*            </div>*/}
+                        {/*            {teamMember.displayName} <br/>*/}
+                        {/*            <span className={"text-muted"}>{teamMember.email}</span> <br />*/}
+                        {/*            {isOwner(teamMember.uid) ? <Badge variant={"primary"}>owner</Badge> : <Badge variant={"secondary"}>member</Badge>}*/}
+                        {/*        </div>*/}
 
-                            </ListGroupItem>
-                        ))}
+                        {/*    </ListGroupItem>*/}
+                        {/*))}*/}
                     </ListGroup>
                 </Card.Body>
             </Card>

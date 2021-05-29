@@ -1,4 +1,4 @@
-import {Team} from "../../models/Team";
+import {Team, TeamListResponse, TeamMemberListResponse} from "../../models/Team";
 import {request} from "../../env-config";
 import User from "../../models/User";
 
@@ -22,12 +22,12 @@ class TeamsServiceV1 {
         throw Error("Encountered some trouble while trying to create new team!");
     }
 
-    public async addTeamMember(team: Team, teamMember: User) {
-        let response = await request.post("/teams/member", {team: team, teamMember: teamMember});
+    public async addTeamMember(teamId: string, teamMemberEmail: string): Promise<TeamMemberListResponse> {
+        let response = await request.post("/teams/member", {teamId: teamId, userEmail: teamMemberEmail});
         if (response.status === 201) {
             let teamsResponse = await request.get(response.headers.location);
             if (teamsResponse.status === 200)
-                return await teamsResponse.data as {teamMembers: Array<User>};
+                return await teamsResponse.data as TeamMemberListResponse;
         }
 
         throw Error("Member cannot be added. Response Status: " + response.status);
@@ -58,12 +58,21 @@ class TeamsServiceV1 {
         }
     }
 
-    public async getMyTeams(): Promise<Array<Team>> {
+    public async getMyTeams(): Promise<TeamListResponse> {
         let response = await request.get("/teams");
         if (response.status === 200) {
-            return await response.data as Array<Team>;
+            return await response.data as TeamListResponse;
         }
-        return [];
+        return {teams: []};
+    }
+
+    public async getTeamMembers(teamId: string): Promise<TeamMemberListResponse> {
+        let response = await request.get(`/teams/${teamId}/members`);
+        if (response.status === 200) {
+            return await response.data as TeamMemberListResponse;
+        }
+
+        throw Error("Error while trying to fetch team members for team ID: " + teamId);
     }
 }
 

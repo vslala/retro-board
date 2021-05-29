@@ -1,54 +1,28 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
 import {withRouter} from 'react-router-dom';
-import {Col, Row} from "react-bootstrap";
-import TeamCard from "../components/dumb/teams/TeamCard";
-import User from "../models/User";
-import {Team} from "../models/Team";
+import {Alert, Button, Card, Col, ListGroup, ListGroupItem, Modal, Row} from "react-bootstrap";
+import {Team, TeamListResponse, TeamMemberListResponse} from "../models/Team";
 import CreateNewTeam from "../components/dumb/teams/CreateNewTeam";
 import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
+import User from "../models/User";
+import AddNewTeamMember from "../components/dumb/teams/AddNewTeamMember";
 
+interface TeamMemberModalData {
+    teamId: string
+    teamName: string
+    teamMembers: Array<User>
+}
 const TeamsPage:React.FunctionComponent = () => {
     const teamsService = TeamsServiceFactory.getInstance();
     const [teams, setTeams] = useState<Array<Team>>([]);
+    const [showTeamMemberModal, setShowTeamMemberModal] = useState<boolean>(false);
+    const [teamMemberModalData, setTeamMemberModalData] = useState<TeamMemberModalData>({teamId: "", teamName: "", teamMembers: []});
 
     const createTeam = async (team: Team) => {
         console.log("Creating new team...", teams)
         let newTeam = await teamsService.createNewTeam(team);
         setTeams([...teams, newTeam]);
-    }
-
-    const removeMember = async (team: Team, member: User) => {
-        console.log("Removing member");
-        try {
-            await teamsService.removeTeamMember(team, member);
-            let newTeams = teams.map(team => ({
-                ...team,
-                teamMembers: team.teamMembers.filter(teamMember => teamMember.uid !== member.uid)
-            }));
-            setTeams(newTeams);
-        } catch(e) {
-            console.log("Error: " + e.msg, e);
-        }
-
-    }
-
-    const addTeamMember = async (team:Team, teamMemberEmail: string) => {
-        console.log("Adding team member...");
-        try {
-            let teamMember = await teamsService.getTeamMember(teamMemberEmail);
-            let teamMembersResponse: {teamMembers: Array<User>} = await teamsService.addTeamMember(team, teamMember);
-            let newTeams = teams.map(itr => {
-                if (itr.teamId === team.teamId) {
-                    team.teamMembers = teamMembersResponse.teamMembers;
-                    return team;
-                } else return itr;
-            })
-            setTeams(newTeams);
-        } catch (e) {
-            console.log("Team member with the given email is not found!!!");
-            // TODO: show a pop-up and ask to send an invite
-        }
     }
 
     const deleteTeam = async (team: Team) => {
@@ -61,15 +35,30 @@ const TeamsPage:React.FunctionComponent = () => {
         }
     }
 
+    const showModal = async (team: Team) => {
+        let teamMemberListResponse: TeamMemberListResponse = await teamsService.getTeamMembers(team.teamId);
+        setTeamMemberModalData({
+            teamId: team.teamId,
+            teamName: team.teamName,
+            teamMembers: teamMemberListResponse.teamMembers
+        });
+        setShowTeamMemberModal(true);
+    }
+
     useEffect(() => {
         document.title = "Teams";
         // TODO: show loaded until the teams are loaded
         const getMyTeams = async () => {
-            let myTeams = await teamsService.getMyTeams()
-            setTeams(myTeams);
+            let teamListResponse: TeamListResponse = await teamsService.getMyTeams()
+            setTeams(teamListResponse.teams);
         }
         getMyTeams();
     }, [teamsService])
+
+    const addTeamMember = async (userEmail: string) => {
+        let teamMemberListResponse: TeamMemberListResponse = await teamsService.addTeamMember(teamMemberModalData.teamId, userEmail);
+        setTeamMemberModalData({...teamMemberModalData, teamMembers: teamMemberListResponse.teamMembers});
+    }
 
     return <>
         <Row>
@@ -95,17 +84,45 @@ const TeamsPage:React.FunctionComponent = () => {
         <Row>
             {
                 teams.map((team, index) => (
-                    <Col md={4} key={index}>
-                        <TeamCard team={team} removeMember={(member: User) => {
-                            removeMember(team, member)
-                        }} addTeamMember={(team, teamMemberEmail) => addTeamMember(team, teamMemberEmail)}
-                                  deleteTeam={(team) => deleteTeam(team)}
-                        />
+                    <Col md={3} key={index} >
+                        <Card key={index}>
+                            <Card.Body className={"mx-auto"}>
+                                <h4>{team.teamName}</h4>
+                            </Card.Body>
+                            <Card.Body className={"mx-auto"}>
+                                <Button variant={"outline-secondary"} onClick={() => showModal(team)}>View Members</Button>
+                                <Button variant={"outline-danger"} onClick={() => deleteTeam(team)}>Delete Team</Button>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 ))
             }
         </Row>
 
+        <Modal show={showTeamMemberModal} onHide={() => setShowTeamMemberModal(false)}>
+            <Modal.Header>
+                <Modal.Title>{teamMemberModalData.teamName}</Modal.Title>
+                <span><AddNewTeamMember teamName={teamMemberModalData.teamName} addTeamMember={addTeamMember} /></span>
+            </Modal.Header>
+            <Modal.Body>
+                {
+                    teamMemberModalData.teamMembers.length === 0 ?
+                        <Alert variant={"info"}>
+                            No member has been added
+                        </Alert> :
+                        <ListGroup>
+                            {
+                                teamMemberModalData.teamMembers.map((teamMember, index) => (
+                                    <ListGroupItem key={index}>
+                                        {teamMember.displayName}
+                                    </ListGroupItem>
+                                ))
+                            }
+                        </ListGroup>
+                }
+
+            </Modal.Body>
+        </Modal>
     </>;
 }
 
