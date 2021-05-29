@@ -21,10 +21,14 @@ const DisplayBoardTemplate: React.FunctionComponent<DisplayProps> = ({boardTempl
                         className={"fa fa-times"}/></Button></h6>
                     {
                         wall?.notes?.length > 0 ? wall.notes.map((note, index) => (
-                            <StickyNote key={index} note={new Note("","", note.noteText, note.noteStyle)} sortBy={SortType.NONE}
-                                        retroBoardService={RetroBoardServiceFactory.getInstance()}/>
-                        )) : <StickyNote key={index} note={new Note("","", "Foo Bar", wall.wallStyle.stickyNote)} sortBy={SortType.NONE}
-                                         retroBoardService={RetroBoardServiceFactory.getInstance()}/>
+                            <StickyNote key={index}
+                                        note={new Note("","", note.noteText, note.noteStyle)}
+                                        deleteNote={(note: Note) => {console.log("act as dummy in this context!")}}
+                                        callBackWall={(note:Note) => {console.log("act as dummy in this context!")}}/>
+                        )) : <StickyNote key={index}
+                                         note={new Note("","", "Foo Bar", wall.wallStyle.stickyNote)}
+                                         deleteNote={(note: Note) => {console.log("act as dummy in this context!")}}
+                                         callBackWall={(note:Note) => {console.log("act as dummy in this context!")}}/>
                     }
 
                 </Col>

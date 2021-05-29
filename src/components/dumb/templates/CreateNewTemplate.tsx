@@ -8,6 +8,7 @@ import EditText from "../../dumb/EditText";
 import ColorPicker from "../../dumb/ColorPicker";
 import DisplayBoardTemplate from "./DisplayBoardTemplate";
 import Firebase from "../../../service/Firebase";
+import {BoardContextProvider} from "../../../redux/context/BoardContext";
 
 interface Props {
     onCreateTemplate: (templateData: BoardTemplate) => void

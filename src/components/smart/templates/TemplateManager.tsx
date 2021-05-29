@@ -8,6 +8,7 @@ import {Button, Card, Col, Row} from "react-bootstrap";
 import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
 import CreateRetroBoardManager from "../boards/CreateRetroBoardManager";
 import DisplayBoardTemplate from "../../dumb/templates/DisplayBoardTemplate";
+import {BoardContextProvider} from "../../../redux/context/BoardContext";
 
 interface Props extends RouteComponentProps {
     templateService: TemplateService
@@ -35,7 +36,7 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
             });
     }, [props.templateService]);
 
-    return <>
+    return <BoardContextProvider>
         <Row>
             <Col md={1}>
                 <CreateNewTemplate onCreateTemplate={handleCreateTemplate}/>
@@ -53,7 +54,6 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
                         </Card.Body>
                         <Card.Footer>
                             <CreateRetroBoardManager title={"Create Board"}
-                                                     retroBoardService={props.retroBoardService}
                                                      templateWalls={template.walls}/>
 
                             <Button className={"pull-right"} variant={"light"} onClick={() => deleteTemplate(template)}>
@@ -66,7 +66,7 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
 
         </Row>
 
-    </>
+    </BoardContextProvider>
 }
 
 export default withRouter(TemplateManager);
