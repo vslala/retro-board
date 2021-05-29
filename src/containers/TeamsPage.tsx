@@ -113,8 +113,14 @@ const TeamsPage:React.FunctionComponent = () => {
                         <ListGroup>
                             {
                                 teamMemberModalData.teamMembers.map((teamMember, index) => (
-                                    <ListGroupItem key={index}>
-                                        {teamMember.displayName}
+                                    <ListGroupItem key={index} className={"my-auto"}>
+                                        <span className={"pull-left"}>
+                                            {teamMember.displayName} <br/>
+                                            <span className={"text-muted text-sm-left"}>{teamMember.email}</span>
+                                        </span>
+                                        <span className={"badge pull-right"}>
+                                            <Button variant={"outline-danger"}><i className={"fa fa-trash-o"} /></Button>
+                                        </span>
                                     </ListGroupItem>
                                 ))
                             }
