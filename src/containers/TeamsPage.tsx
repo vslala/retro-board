@@ -60,6 +60,10 @@ const TeamsPage:React.FunctionComponent = () => {
         setTeamMemberModalData({...teamMemberModalData, teamMembers: teamMemberListResponse.teamMembers});
     }
 
+    const removeTeamMember = async (teamId: string, userEmail: string) => {
+        // TODO: Write code to remove team member from the team
+    }
+
     return <>
         <Row>
             <Col md={4} sm={6}>
@@ -119,7 +123,7 @@ const TeamsPage:React.FunctionComponent = () => {
                                             <span className={"text-muted text-sm-left"}>{teamMember.email}</span>
                                         </span>
                                         <span className={"badge pull-right"}>
-                                            <Button variant={"outline-danger"}><i className={"fa fa-trash-o"} /></Button>
+                                            <Button variant={"outline-danger"} onClick={() => removeTeamMember(teamMemberModalData.teamId, teamMember.email)}><i className={"fa fa-trash-o"} /></Button>
                                         </span>
                                     </ListGroupItem>
                                 ))

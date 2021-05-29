@@ -9,7 +9,7 @@ import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import ShareBoard from "../components/dumb/ShareBoard";
-import {Team} from "../models/Team";
+import {Team, TeamListResponse} from "../models/Team";
 import UnauthorizedException from "../service/UnauthorizedException";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 import TeamsServiceFactory from "../service/Teams/TeamsServiceFactory";
@@ -111,7 +111,7 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
                 try {
 
                     let retroBoardService = RetroBoardServiceFactory.getInstance();
-                    let teams = await TeamsServiceFactory.getInstance().getMyTeams();
+                    let teamListResponse: TeamListResponse = await TeamsServiceFactory.getInstance().getMyTeams();
                     let retroBoard = await retroBoardService.getRetroBoardById(uid, boardId);
                     let walls = await retroBoardService.getRetroWalls(retroBoardId!);
                     await convertJsonToCsv();
@@ -125,7 +125,7 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props: Props) => {
                     })
                     setBoardId(boardId);
                     setBoardTitle(retroBoard.name);
-                    setTeams(teams);
+                    setTeams(teamListResponse.teams);
                     setWalls(walls);
 
                 } catch (e) {
