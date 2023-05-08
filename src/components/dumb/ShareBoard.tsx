@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ShareBoard: React.FunctionComponent<Props> = (props: Props) => {
-    const teams = props.teams ? props.teams : [];
+    const teams = props.teams.length > 0 ? props.teams : [];
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);

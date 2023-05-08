@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {HashRouter as Router} from 'react-router-dom'
 import './App.css';
 import LayoutAuthenticated from "./components/smart/layouts/LayoutAuthenticated";
@@ -24,49 +24,44 @@ interface State {
     isLogInFlowExecuted: boolean
 }
 
-class App extends React.Component<Props, State> {
+const App: React.FunctionComponent<Props> = () => {
 
-    state: State = {
-        isLogInFlowExecuted: false
-    }
+    const [state, setState] = useState<State>({isLogInFlowExecuted: false});
 
-    render() {
-        return <Provider store={store}>
-            <Router>
-                <Route exact path={"/login"} component={(props: RouteComponentProps) =>
-                    <LayoutUnauthenticated success={() => this.setState({isLogInFlowExecuted: true})}>
-                        <LoginPage
-                            success={() => this.setState({isLogInFlowExecuted: true})}/>
-                    </LayoutUnauthenticated>}/>
+    return <Provider store={store}>
+        <Router>
+            <Route exact path={"/login"} component={(props: RouteComponentProps) =>
+                <LayoutUnauthenticated success={() => setState({isLogInFlowExecuted: true})}>
+                    <LoginPage
+                        success={() => setState({isLogInFlowExecuted: true})}/>
+                </LayoutUnauthenticated>}/>
 
-                <Route exact path={"/"} component={(props: RouteComponentProps) =>
-                    <LayoutAuthenticated>
-                        <HomePage {...props}
-                                  retroBoardService={RetroBoardServiceFactory.getInstance()}
-                                  templateService={TemplateService.getInstance()}/>
-                    </LayoutAuthenticated>}/>
+            <Route exact path={"/"} component={(props: RouteComponentProps) =>
+                <LayoutAuthenticated>
+                    <HomePage {...props}
+                              retroBoardService={RetroBoardServiceFactory.getInstance()}
+                              templateService={TemplateService.getInstance()}/>
+                </LayoutAuthenticated>}/>
 
-                <Route exact path={"/teams"} component={(props: RouteComponentProps) =>
-                    <LayoutAuthenticated>
-                        <TeamsPage {...props}
-                                  teamsService={TeamsServiceV1.getInstance()}/>
-                    </LayoutAuthenticated>}/>
+            <Route exact path={"/teams"} component={(props: RouteComponentProps) =>
+                <LayoutAuthenticated>
+                    <TeamsPage {...props}
+                               teamsService={TeamsServiceV1.getInstance()}/>
+                </LayoutAuthenticated>}/>
 
-                <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
-                    <LayoutAuthenticated>
-                        <RetroBoardPage {...props}
-                                        retroBoardService={RetroBoardServiceFactory.getInstance()}
-                                        teamsService={TeamsServiceV1.getInstance()}/>
-                    </LayoutAuthenticated>}/>
+            <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
+                <LayoutAuthenticated>
+                    <RetroBoardPage {...props}
+                                    retroBoardService={RetroBoardServiceFactory.getInstance()}
+                                    teamsService={TeamsServiceV1.getInstance()}/>
+                </LayoutAuthenticated>}/>
 
-                    <Route exact path={"/logout"} component={(props: RouteComponentProps) =>
-                    <LayoutAuthenticated>
-                        <Logout service={Firebase.getInstance()} />
-                    </LayoutAuthenticated>}/>
-            </Router>
-        </Provider>
-
-    }
+            <Route exact path={"/logout"} component={(props: RouteComponentProps) =>
+                <LayoutAuthenticated>
+                    <Logout service={Firebase.getInstance()}/>
+                </LayoutAuthenticated>}/>
+        </Router>
+    </Provider>
 }
 
 export default App;

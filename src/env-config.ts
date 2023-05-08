@@ -21,7 +21,7 @@ HOST_NAMES.set(UI_HOST_PROD, API_HOST_PROD);
 HOST_NAMES.set(UI_HOST_GITHUB, API_HOST_PROD);
 
 let host = window.location.host;
-// @ts-ignore
+
 export const SERVICE_URL = PROTOCOL + HOST_NAMES.get(host); // hostname:port
 
 console.log("SERVICE_URL: ", SERVICE_URL);
