@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
 import Firebase from "../../../service/Firebase";
 import Container from "react-bootstrap/Container";
 import PageFooter from "../PageFooter";
 import PageHeader from "../PageHeader";
 import {Spinner} from "react-bootstrap";
 
-interface Props extends RouteComponentProps {
+interface Props {
+    children: React.ReactNode
 }
 
 interface State {
@@ -16,6 +17,7 @@ interface State {
 
 const LayoutAuthenticated: React.FunctionComponent<Props> = (props) => {
 
+    const location = useLocation();
     const [state, setState] = useState<State>({
         isUserAuthenticated: false,
         isLoading: true
@@ -36,8 +38,12 @@ const LayoutAuthenticated: React.FunctionComponent<Props> = (props) => {
             <PageFooter/>
         </Container>
     else
-        return <Redirect to={{pathname: "/login", state: {referrer: props.location.pathname}}}/>
+        return <Navigate
+            to="/login"
+            replace
+            state={{referrer: location.pathname}}
+        />
 
 }
 
-export default withRouter(LayoutAuthenticated)
+export default LayoutAuthenticated;

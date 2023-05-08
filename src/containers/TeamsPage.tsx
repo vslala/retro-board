@@ -1,13 +1,12 @@
 import * as React from 'react';
-import {RouteComponentProps, withRouter} from 'react-router-dom';
 import {Col, Row} from "react-bootstrap";
-import TeamCard from "../components/dumb/teams/TeamCard";
+import TeamCard from "../views/dumb/teams/TeamCard";
 import User from "../models/User";
 import Team, {ITeam} from "../models/Team";
-import CreateNewTeam from "../components/dumb/teams/CreateNewTeam";
+import CreateNewTeam from "../views/dumb/teams/CreateNewTeam";
 import TeamsServiceV1 from "../service/Teams/TeamsServiceV1";
 
-interface Props extends RouteComponentProps {
+interface Props {
     teamsService: TeamsServiceV1;
 }
 interface State {
@@ -85,7 +84,7 @@ class TeamsPage extends React.Component<Props, State> {
                 teamMembers: team.teamMembers.filter(teamMember => teamMember.uid !== member.uid)
             }));
             this.setState({teams: newTeams});
-        } catch(e) {
+        } catch(e: any) {
             console.log("Error: " + e.msg, e);
         }
 
@@ -120,4 +119,4 @@ class TeamsPage extends React.Component<Props, State> {
     }
 }
 
-export default withRouter(TeamsPage);
+export default TeamsPage;

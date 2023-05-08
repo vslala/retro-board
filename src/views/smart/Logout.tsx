@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react'
 import Firebase from "../../service/Firebase";
-import {Redirect} from 'react-router-dom';
+import {Navigate} from 'react-router-dom';
 
 interface Props {
     service: Firebase
@@ -12,7 +12,7 @@ const Logout: React.FunctionComponent<Props> = (props: Props) => {
         props.service.logout()
     }, [props])
 
-    return <Redirect to={"/login"} />
+    return <Navigate to={"/login"} replace={true} />
 
 }
 

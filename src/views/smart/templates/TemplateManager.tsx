@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {RouteComponentProps, withRouter} from "react-router-dom";
 import CreateNewTemplate from "../../dumb/templates/CreateNewTemplate";
 import BoardTemplate from "../../../models/BoardTemplate";
 import TemplateService from "../../../service/Templates/TemplateService";
@@ -9,7 +8,7 @@ import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
 import CreateRetroBoardManager from "../boards/CreateRetroBoardManager";
 import DisplayBoardTemplate from "../../dumb/templates/DisplayBoardTemplate";
 
-interface Props extends RouteComponentProps {
+interface Props {
     templateService: TemplateService
     retroBoardService: RetroBoardService
 }
@@ -69,4 +68,4 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
     </>
 }
 
-export default withRouter(TemplateManager);
+export default TemplateManager;

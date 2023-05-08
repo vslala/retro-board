@@ -171,6 +171,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async getRetroWalls(retroBoardId: string): Promise<RetroWalls> {
+        console.log("Getting retro Walls!");
         let response = await request.get(`/retro-board/walls/${retroBoardId}`);
         if (200 === response.status) {
             let retroWalls = await response.data as RetroWalls;

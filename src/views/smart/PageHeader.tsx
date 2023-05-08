@@ -2,17 +2,17 @@ import React from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Button from "react-bootstrap/Button";
-import {Link, withRouter} from "react-router-dom";
-import {RouteComponentProps} from "react-router";
+import {Link, useNavigate} from "react-router-dom";
 import Firebase from "../../service/Firebase";
 
-interface Props extends RouteComponentProps {
-
+interface Props {
+    children: React.ReactNode
 }
 const PageHeader: React.FunctionComponent<Props> = (props:Props) => {
+    const navigate = useNavigate();
     const logout = () => {
         localStorage.clear();
-        props.history.push("/login");
+        navigate("/login");
     }
 
     let loggedInUser = Firebase.getInstance().getLoggedInUser()!;
@@ -44,4 +44,4 @@ const PageHeader: React.FunctionComponent<Props> = (props:Props) => {
     </Navbar>
 }
 
-export default withRouter(PageHeader)
+export default PageHeader;

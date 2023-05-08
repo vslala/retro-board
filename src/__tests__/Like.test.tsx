@@ -1,6 +1,6 @@
 import React from 'react'
 import {fireEvent, render, RenderResult} from '@testing-library/react'
-import Like from "../components/dumb/boards/Like";
+import Like from "../views/dumb/boards/Like";
 import '../setupTests'
 import User from "../models/User";
 
@@ -8,7 +8,7 @@ const testUser: User = new User()
 testUser.username = "vslala"
 
 describe("LikeComponent test suite", () => {
-    
+
     let likeComponent: RenderResult
     let handleUpVoteMock = jest.fn()
     beforeEach(() => {
@@ -20,25 +20,25 @@ describe("LikeComponent test suite", () => {
         localStorage.setItem(User.USER_INFO, JSON.stringify(user))
         likeComponent = render(<Like handleUpVote={handleUpVoteMock} likedBy={[]} stickyNoteId={"sticky_note_1"} />)
     })
-    
+
     afterEach(() => {
         handleUpVoteMock.mockClear()
     })
-    
+
     test("it should contain a clickable like", () => {
         expect(likeComponent.getByTestId("like_thumbs_up")).toBeInTheDocument()
     })
-    
+
     test("it should contain total number of likes made on that component", () => {
         expect(likeComponent.getByText("0")).toBeInTheDocument()
     })
-    
+
     test("it should keep track of the sticky note and the users that liked the button", () => {
         let btn = likeComponent.getByTestId("like_btn")
         fireEvent.click(btn)
         expect(handleUpVoteMock).toBeCalledTimes(1)
     })
-    
+
     test("it should not increment the upvote if the user has already voted", () => {
         let btn = likeComponent.getByTestId("like_btn")
         fireEvent.click(btn)
@@ -46,7 +46,7 @@ describe("LikeComponent test suite", () => {
         fireEvent.click(btn)
         expect(handleUpVoteMock).toBeCalledTimes(3)
     })
-    
+
     test("it should not increment the vote for the note if the count on that note is more than decided number", () => {
         expect(1).toBe(1)
     })

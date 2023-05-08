@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosRequestHeaders} from "axios";
 import User from "./models/User";
 
 const API_HOST_LOCAL = 'localhost:8082';
@@ -35,6 +35,6 @@ request.interceptors.request.use((config) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem(User.ID_TOKEN)!}`,
         'Accept': '*/*'
-    }
+    } as AxiosRequestHeaders
     return config;
 });

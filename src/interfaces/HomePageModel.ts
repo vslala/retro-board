@@ -1,8 +1,7 @@
-import {RouteComponentProps} from "react-router-dom";
 import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
 import TemplateService from "../service/Templates/TemplateService";
 
-export interface HomePageModel extends RouteComponentProps {
+export interface HomePageModel {
     linkText?: string
     linkUrl?: string
     retroBoardService: RetroBoardService

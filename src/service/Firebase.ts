@@ -1,5 +1,7 @@
 import React from 'react'
-import firebase from "firebase";
+import {Auth, getAuth, GoogleAuthProvider, signInAnonymously, signInWithPopup, UserCredential} from 'firebase/auth';
+import {Database, getDatabase} from 'firebase/database';
+import {FirebaseApp, initializeApp} from 'firebase/app';
 import User from "../models/User";
 import {request, SERVICE_URL} from "../env-config";
 
@@ -28,16 +30,15 @@ class Firebase {
 
     private static instance: Firebase
 
-    private auth: firebase.auth.Auth
-    private authenticatedUser: firebase.auth.UserCredential | undefined;
-    private googleAuthenticationProvider = new firebase.auth.GoogleAuthProvider()
+    private auth: Auth
+    private authenticatedUser: UserCredential | undefined;
+    private googleAuthenticationProvider = new GoogleAuthProvider()
     private loggedInUser: User | undefined
+    private app: FirebaseApp;
 
     private constructor() {
-        firebase.initializeApp(config)
-        this.auth = firebase.auth()
-
-        
+        this.app = initializeApp(config)
+        this.auth = getAuth(this.app);
     }
 
     public static getInstance() {
@@ -48,22 +49,22 @@ class Firebase {
         return Firebase.instance;
     }
 
-    public getDatabase(): firebase.database.Database {
-        return firebase.database()
+    public getDatabase(): Database {
+        return getDatabase(this.app);
     }
 
     public async authenticateUser(): Promise<void> {
-        let userCredentials = await this.auth.signInWithPopup(this.googleAuthenticationProvider)
+        let userCredentials: UserCredential = await signInWithPopup(this.auth, this.googleAuthenticationProvider);
         await this.persistLoggedInUserInfo(userCredentials);
     }
 
-    private async persistLoggedInUserInfo(userCredentials: firebase.auth.UserCredential) {
+    private async persistLoggedInUserInfo(userCredentials: UserCredential) {
 
         function generateRandomText(length: number) {
-            let result           = '';
-            let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             let charactersLength = characters.length;
-            for ( let i = 0; i < length; i++ ) {
+            for (let i = 0; i < length; i++) {
                 result += characters.charAt(Math.floor(Math.random() * charactersLength));
             }
             return result;
@@ -135,7 +136,7 @@ class Firebase {
     }
 
     public async authenticateAnonymousUser(): Promise<void> {
-        let userCredentials = await this.auth.signInAnonymously()
+        let userCredentials = await signInAnonymously(this.auth)
         await this.persistLoggedInUserInfo(userCredentials)
     }
 

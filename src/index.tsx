@@ -1,5 +1,4 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -9,8 +8,10 @@ import 'bootstrap-social/assets/css/docs.css'
 import 'bootstrap-social/assets/css/font-awesome.css'
 import 'bootstrap-social/assets/img/bootstrap-social.png'
 import 'bootstrap-social/bootstrap-social.css'
+import React from 'react';
 
-ReactDOM.render(<Provider store={store}><App /></Provider>, document.getElementById('root'));
+const rootElement = document.getElementById('root');
+ReactDOM.createRoot(rootElement!).render(<Provider store={store}><App /></Provider>);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

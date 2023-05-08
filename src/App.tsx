@@ -1,16 +1,15 @@
 import React, {useState} from 'react';
-import {HashRouter as Router} from 'react-router-dom'
+import {HashRouter as Router, Route, RouteProps, Routes} from 'react-router-dom'
 import './App.css';
-import LayoutAuthenticated from "./components/smart/layouts/LayoutAuthenticated";
-import LayoutUnauthenticated from "./components/smart/layouts/LayoutUnauthenticated";
+import LayoutAuthenticated from "./views/smart/layouts/LayoutAuthenticated";
+import LayoutUnauthenticated from "./views/smart/layouts/LayoutUnauthenticated";
 import {Provider} from "react-redux";
 import store from "./redux/store/Store";
 import Firebase from "./service/Firebase";
-import {Route, RouteComponentProps} from "react-router";
 import HomePage from "./containers/HomePage";
 import RetroBoardPage from "./containers/RetroBoardPage";
 import LoginPage from "./containers/LandingPage";
-import Logout from "./components/smart/Logout";
+import Logout from "./views/smart/Logout";
 import RetroBoardServiceFactory from "./service/RetroBoard/RetroBoardServiceFactory";
 import TeamsPage from "./containers/TeamsPage";
 import TeamsServiceV1 from "./service/Teams/TeamsServiceV1";
@@ -30,36 +29,43 @@ const App: React.FunctionComponent<Props> = () => {
 
     return <Provider store={store}>
         <Router>
-            <Route exact path={"/login"} component={(props: RouteComponentProps) =>
-                <LayoutUnauthenticated success={() => setState({isLogInFlowExecuted: true})}>
-                    <LoginPage
-                        success={() => setState({isLogInFlowExecuted: true})}/>
-                </LayoutUnauthenticated>}/>
+            <Routes>
+                <Route path={"/login"} element={
+                    <LayoutUnauthenticated success={() => setState({isLogInFlowExecuted: true})}>
+                        <LoginPage
+                            success={() => setState({isLogInFlowExecuted: true})}/>
+                    </LayoutUnauthenticated>}
+                />
 
-            <Route exact path={"/"} component={(props: RouteComponentProps) =>
-                <LayoutAuthenticated>
-                    <HomePage {...props}
-                              retroBoardService={RetroBoardServiceFactory.getInstance()}
-                              templateService={TemplateService.getInstance()}/>
-                </LayoutAuthenticated>}/>
+                <Route path={"/"} element={
+                    <LayoutAuthenticated>
+                        <HomePage
+                            retroBoardService={RetroBoardServiceFactory.getInstance()}
+                            templateService={TemplateService.getInstance()}
+                        />
+                    </LayoutAuthenticated>}
+                />
 
-            <Route exact path={"/teams"} component={(props: RouteComponentProps) =>
-                <LayoutAuthenticated>
-                    <TeamsPage {...props}
-                               teamsService={TeamsServiceV1.getInstance()}/>
-                </LayoutAuthenticated>}/>
+                <Route path={"/teams"} element={
+                    <LayoutAuthenticated>
+                        <TeamsPage
+                            teamsService={TeamsServiceV1.getInstance()}/>
+                    </LayoutAuthenticated>}
+                />
 
-            <Route exact path={"/retro-board/:uid/:retroBoardId"} component={(props: RouteComponentProps) =>
-                <LayoutAuthenticated>
-                    <RetroBoardPage {...props}
-                                    retroBoardService={RetroBoardServiceFactory.getInstance()}
-                                    teamsService={TeamsServiceV1.getInstance()}/>
-                </LayoutAuthenticated>}/>
+                <Route path={"/retro-board/:uid/:retroBoardId"} element={
+                    <LayoutAuthenticated>
+                        <RetroBoardPage />
+                    </LayoutAuthenticated>}
+                />
 
-            <Route exact path={"/logout"} component={(props: RouteComponentProps) =>
-                <LayoutAuthenticated>
-                    <Logout service={Firebase.getInstance()}/>
-                </LayoutAuthenticated>}/>
+                <Route path={"/logout"} element={
+                    <LayoutAuthenticated>
+                        <Logout service={Firebase.getInstance()}/>
+                    </LayoutAuthenticated>}
+                />
+            </Routes>
+
         </Router>
     </Provider>
 }

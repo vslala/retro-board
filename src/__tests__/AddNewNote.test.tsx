@@ -1,13 +1,13 @@
 import React from 'react'
 import '../setupTests'
 import {fireEvent, render, RenderResult} from "@testing-library/react";
-import AddNewNote from "../components/dumb/boards/AddNewNote";
+import AddNewNote from "../views/dumb/boards/AddNewNote";
 
 describe('AddNewNote test suite', () => {
 
     let addNewNote: RenderResult
     let addNewNoteBtn: HTMLInputElement
-    
+
     beforeEach(() => {
         let addNewNoteFn = jest.fn((note:string) => "")
         addNewNote = render(<AddNewNote addNote={addNewNoteFn} />)
@@ -17,7 +17,7 @@ describe('AddNewNote test suite', () => {
     test("it should show add new note button", () => {
         expect(addNewNoteBtn).toBeInTheDocument()
     })
-    
+
     test("it should show editor in place of add new note button", () => {
         fireEvent.click(addNewNoteBtn)
         expect(addNewNote.container.querySelector("textarea")).toBeInTheDocument()
