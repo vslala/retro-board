@@ -1,10 +1,10 @@
 import * as React from "react";
 import {Button, Col, Row} from "react-bootstrap";
-import StickyNote from "../../smart/boards/StickyNote";
-import {SortType} from "../../../redux/types/RetroBoardActionTypes";
-import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
-import BoardTemplate from "../../../models/BoardTemplate";
-import Note from "../../../models/Note";
+import StickyNote from "./StickyNote";
+import {SortType} from "../redux/types/RetroBoardActionTypes";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
+import BoardTemplate from "../models/BoardTemplate";
+import Note from "../models/Note";
 
 interface DisplayProps {
     boardTemplate: BoardTemplate

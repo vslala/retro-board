@@ -97,7 +97,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     async getDataOnUpdate(retroBoardId: string, retroWallId: string, callback: (notes: Notes) => void): Promise<void> {
         // This code will only execute whenever a new note is created for the board
         let duplex = DuplexCommunication.getInstance();
-        duplex.subscribe(`/topic/notes/${retroBoardId}`, async (uri:string) => {
+        duplex.subscribe(`/topic/notes/${retroBoardId}`, async (uri: string) => {
             let response = await request.get(`/retro-board/walls/notes`, {
                 params: {
                     retroBoardId: retroBoardId,
@@ -161,7 +161,7 @@ class RetroBoardServiceV2 implements RetroBoardService {
     async getRetroBoardDataOnUpdate(uid: string, retroBoardId: string, callback: (retroBoard: RetroBoard) => void): Promise<void> {
         // This code will only execute whenever a change is made to the retro board
         let duplex = new DuplexCommunication();
-        duplex.subscribe(`/topic/retro-board/${retroBoardId}`, async (uri:any) => {
+        duplex.subscribe(`/topic/retro-board/${retroBoardId}`, async (uri: any) => {
             console.log("URI : ", uri);
             let response = await request.get(uri.body);
             if (response.status === 200) {
@@ -177,7 +177,6 @@ class RetroBoardServiceV2 implements RetroBoardService {
             let retroWalls = await response.data as RetroWalls;
             return retroWalls;
         }
-
         throw Error(`Error encountered while fetching retro walls for retro board (${retroBoardId})`);
     }
 
@@ -207,7 +206,10 @@ class RetroBoardServiceV2 implements RetroBoardService {
     }
 
     async shareBoard(retroBoardId: string, selectedTeams: Array<ITeam>): Promise<boolean> {
-        let response = await request.post("/share", {itemId: retroBoardId, teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)});
+        let response = await request.post("/share", {
+            itemId: retroBoardId,
+            teamIds: selectedTeams.map(selectedTeam => selectedTeam.teamId)
+        });
         if (response.status === 201)
             return true;
         return false;

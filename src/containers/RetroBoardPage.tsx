@@ -1,26 +1,23 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import StickyWall from "../views/smart/boards/StickyWall";
-import {Button, Col, Form, InputGroup, Row} from "react-bootstrap";
+import StickyWall from "../components/sticky-wall/StickyWall";
+import {Button, Col, Row} from "react-bootstrap";
 import RetroBoard from "../models/RetroBoard";
 import RetroWalls from "../models/RetroWalls";
-import {TypedUseSelectorHook, useDispatch, useSelector, useSelector as useReduxSelector} from 'react-redux'
-import RetroBoardState from "../redux/reducers/RetroBoardState";
 import {SortType} from "../redux/types/RetroBoardActionTypes";
-import RetroBoardActions from "../redux/actions/RetroBoardActions";
 import Notes from "../models/Notes";
 import {CSVLink} from "react-csv";
 import {Data, LabelKeyObject} from "react-csv/components/CommonPropTypes";
 import SortSelect from "../views/SortSelect";
-import Firebase from "../service/Firebase";
-import ShareBoard from "../views/dumb/ShareBoard";
-import TeamsServiceV1 from "../service/Teams/TeamsServiceV1";
+import ShareBoard from "../views/ShareBoard";
 import {ITeam} from "../models/Team";
 import UnauthorizedException from "../service/UnauthorizedException";
-import {useLocation, useMatch, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import RetroWall from "../models/RetroWall";
 import Note from "../models/Note";
 import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
 import BlurToggle from "../views/BlurToggle";
+import RetroBoardPageViewModel from "../viewmodel/RetroBoardPageViewModel";
+import {eventBus, EventRegistry} from "../common";
 
 interface LocationParams {
     uid?: string
@@ -28,11 +25,11 @@ interface LocationParams {
 }
 
 interface State {
-    retroBoardId: string
-    retroBoardTitle: string
+    board: RetroBoard
+    walls: RetroWalls
+    notes: Notes
     sortSelectValue: SortType
     teams: Array<ITeam>
-    retroWalls: RetroWalls
 }
 
 interface Props {
@@ -40,61 +37,58 @@ interface Props {
 }
 
 const RetroBoardPage: React.FunctionComponent<Props> = (props) => {
+    const vm = useMemo(() => new RetroBoardPageViewModel(), []);
     const retroBoardService = useMemo(() => RetroBoardServiceFactory.getInstance(), []);
-    const retroBoardActions = useMemo(() => new RetroBoardActions(), []);
-    const teamsService = TeamsServiceV1.getInstance();
-    const location = useLocation();
-    const params = useParams();
+    const params = useParams() as LocationParams;
     const navigate = useNavigate();
 
-    const {retroBoardId, uid} = params as LocationParams;
+    const {retroBoardId, uid} = params;
 
     const [state, setState] = useState<State>({
-        retroBoardId: "",
-        retroBoardTitle: "",
+        notes: new Notes([]),
+        board: new RetroBoard('', '', uid!),
         sortSelectValue: SortType.NONE,
         teams: [],
-        retroWalls: new RetroWalls([])
+        walls: new RetroWalls([])
     });
 
-    const {retroBoard, retroWalls, notes} = useSelector((state: RetroBoardState) => ({
-        retroBoard: state.retroBoard,
-        retroWalls: state.retroWalls,
-        notes: state.notes
-    }));
-
-    const dispatch = useDispatch();
-
     const initRetroBoard = async (retroBoardId: string, uid: string) => {
-
-        try {
-
-            let retroBoard = await retroBoardService.getRetroBoardById(uid, retroBoardId);
-            document.title = retroBoard.name;
-
-            let teams = await teamsService.getMyTeams();
-
-            // open duplex connection
-            // this method is only called when there is some update in the backend
-            await retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
-                console.log("RetroBoard: ", retroBoard);
-            }));
-
-            await dispatch(retroBoardActions.createRetroBoard(retroBoard));
-            let retroWalls = await retroBoardService.getRetroWalls(retroBoardId);
-
-            setState((prevState) => ({
-                ...prevState, retroBoardId: retroBoardId,
-                retroBoardTitle: retroBoard.name,
-                teams: teams,
-                retroWalls: retroWalls
-            }))
-        } catch (e) {
-            if (e instanceof UnauthorizedException) {
+        eventBus.subscribe(EventRegistry.ERROR, (e) => {
+            console.log("Error Received: ", e, e instanceof UnauthorizedException)
+            if (e instanceof UnauthorizedException || e.code === 'ERR_BAD_REQUEST') {
                 navigate("/unauthorized");
             }
+        });
+        // open duplex connection
+        // this method is only called when there is some update in the backend
+        retroBoardService.getRetroBoardDataOnUpdate(uid, retroBoardId, (retroBoard => {
+            console.log("RetroBoard: ", retroBoard);
+        }));
+
+        const [retroBoard, teams, retroWalls] = await Promise.all([
+                vm.getRetroBoard(uid, retroBoardId),
+                vm.getMyTeams(),
+                vm.getRetroWalls(retroBoardId)
+            ]
+        );
+
+        if (retroBoard !== undefined) {
+            document.title = retroBoard.name;
+            setState((prevState) => {
+                if (retroBoard !== undefined && retroWalls !== undefined && teams !== undefined) {
+                    return {
+                        ...prevState,
+                        board: retroBoard,
+                        walls: retroWalls,
+                        teams: teams
+                    }
+                } else {
+                    return prevState
+                }
+            })
         }
     }
+
     const convertJsonToCsv = (): { data: Data, headers: LabelKeyObject[] } => {
 
         let headers: LabelKeyObject[] = [
@@ -104,8 +98,8 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props) => {
         ]
         let data: Data = []
 
-        retroWalls.walls.forEach((wall) => {
-            notes.notes.forEach((note) => {
+        state.walls.walls.forEach((wall) => {
+            state.notes.notes.forEach((note) => {
                 if (note.wallId === wall.wallId) {
                     data.push(
                         {wallName: wall.title, noteText: note.noteText, upvotes: note.likedBy?.length || 0}
@@ -119,22 +113,12 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props) => {
     const shareBoardWith = async (selectedTeams: Array<ITeam>): Promise<boolean> => {
 
         try {
-            return await retroBoardService.shareBoard(state.retroBoardId, selectedTeams);
+            return await retroBoardService.shareBoard(retroBoardId!, selectedTeams);
         } catch (e) {
             return false;
         }
     }
 
-
-    let walls = state.retroWalls.walls.map((wall: RetroWall, index: number) => {
-        wall.retroBoardId = retroBoardId!
-        return <Col key={index}>
-            <StickyWall
-                wall={wall}
-                sortBy={state.sortSelectValue}
-            />
-        </Col>
-    });
 
     useEffect(() => {
         localStorage.setItem("retroBoardId", retroBoardId!);
@@ -147,14 +131,14 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props) => {
     return (
         <div style={{padding: "50px"}}>
             <Row>
-                <h2 style={{borderBottom: "2px solid black"}}>{state.retroBoardTitle}</h2>
+                <h2 style={{borderBottom: "2px solid black"}}>{state.board.name}</h2>
             </Row>
             <Row>
                 <Col>
                     <SortSelect/>
                 </Col>
                 <Col className={"align-self-center"}>
-                    <BlurToggle retroBoard={retroBoard}/>
+                    <BlurToggle retroBoard={state.board}/>
                 </Col>
                 <Col className={"align-self-center"}>
                     <div className="pull-right">
@@ -163,14 +147,23 @@ const RetroBoardPage: React.FunctionComponent<Props> = (props) => {
 
                     <Button className={"pull-right"} style={{border: "1px solid black"}} variant={"light"}>
                         <CSVLink {...convertJsonToCsv()} target={"_blank"}
-                                 filename={retroBoard.name}>
+                                 filename={state.board.name}>
                             <i className="fa fa-file-excel-o" style={{color: "blue"}}/>
                         </CSVLink>
                     </Button>
                 </Col>
             </Row>
             <Row>
-                {walls}
+                {
+                    state.walls.walls.map((wall: RetroWall, index: number) => {
+                        return <Col key={index}>
+                            <StickyWall
+                                wall={wall}
+                                sortBy={state.sortSelectValue}
+                            />
+                        </Col>
+                    })
+                }
             </Row>
         </div>
     )

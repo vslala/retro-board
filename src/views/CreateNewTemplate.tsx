@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {useState} from 'react';
 import {Button, Col, Form, FormGroup, Modal, Row} from "react-bootstrap";
-import {RETRO_BOARD_STYLES} from "../../../models/RetroBoard";
-import './style.css';
-import BoardTemplate, {TemplateWall} from "../../../models/BoardTemplate";
-import EditText from "../../dumb/EditText";
-import ColorPicker from "../../dumb/ColorPicker";
+import {RETRO_BOARD_STYLES} from "../models/RetroBoard";
+import './templates.css';
+import BoardTemplate, {TemplateWall} from "../models/BoardTemplate";
+import EditText from "./EditText";
+import ColorPicker from "./ColorPicker";
 import DisplayBoardTemplate from "./DisplayBoardTemplate";
-import Firebase from "../../../service/Firebase";
+import Firebase from "../service/Firebase";
 
 interface Props {
     onCreateTemplate: (templateData: BoardTemplate) => void

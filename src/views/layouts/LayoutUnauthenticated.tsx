@@ -1,6 +1,6 @@
 import React from 'react'
 import {Navigate, useLocation} from "react-router-dom";
-import Firebase from "../../../service/Firebase";
+import Firebase from "../../service/Firebase";
 
 interface Props {
     success: () => void

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import CreateNewTemplate from "../../dumb/templates/CreateNewTemplate";
-import BoardTemplate from "../../../models/BoardTemplate";
-import TemplateService from "../../../service/Templates/TemplateService";
+import CreateNewTemplate from "./CreateNewTemplate";
+import BoardTemplate from "../models/BoardTemplate";
+import TemplateService from "../service/Templates/TemplateService";
 import {Button, Card, Col, Row} from "react-bootstrap";
-import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
-import CreateRetroBoardManager from "../boards/CreateRetroBoardManager";
-import DisplayBoardTemplate from "../../dumb/templates/DisplayBoardTemplate";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import DisplayBoardTemplate from "./DisplayBoardTemplate";
+import CreateRetroBoard from "../components/create-retro-board/CreateRetroBoard";
 
 interface Props {
     templateService: TemplateService
@@ -46,14 +46,17 @@ const TemplateManager: React.FunctionComponent<Props> = (props: Props) => {
                         <Card.Body>
                                 <div key={index}>
                                     <Card.Title>{template.templateTitle}</Card.Title>
-                                    <DisplayBoardTemplate boardTemplate={template}
-                                                          removeWall={(index) => console.log("Test Button Clicked!")}/>
+                                    <DisplayBoardTemplate
+                                        boardTemplate={template}
+                                        removeWall={(index) => console.log("Test Button Clicked!")}
+                                    />
                                 </div>
                         </Card.Body>
                         <Card.Footer>
-                            <CreateRetroBoardManager title={"Create Board"}
-                                                     retroBoardService={props.retroBoardService}
-                                                     templateWalls={template.walls}/>
+                            <CreateRetroBoard
+                                title={"Create Board"}
+                                wallTemplates={template.walls}
+                            />
 
                             <Button className={"pull-right"} variant={"light"} onClick={() => deleteTemplate(template)}>
                                 <i className={"fa fa-trash-o fa-lg"} style={{color: "red"}}/>

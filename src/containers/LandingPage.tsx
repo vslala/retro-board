@@ -14,7 +14,7 @@ import retroBoardImg from '../img/retro-board-design.png';
 import retroBoardDashboardImg from '../img/retro-board-dashboard.png';
 // @ts-ignore
 import retroBoardTemplateImg from '../img/retro-board-create-template.png';
-import PageFooter from "../views/smart/PageFooter";
+import PageFooter from "../views/PageFooter";
 import {Image} from "react-bootstrap";
 import './style.css';
 import {useLocation, useNavigate} from "react-router-dom";

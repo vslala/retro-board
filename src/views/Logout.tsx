@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import Firebase from "../../service/Firebase";
+import Firebase from "../service/Firebase";
 import {Navigate} from 'react-router-dom';
 
 interface Props {

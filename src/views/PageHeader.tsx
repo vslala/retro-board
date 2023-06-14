@@ -3,10 +3,10 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import Button from "react-bootstrap/Button";
 import {Link, useNavigate} from "react-router-dom";
-import Firebase from "../../service/Firebase";
+import Firebase from "../service/Firebase";
 
 interface Props {
-    children: React.ReactNode
+    children?: React.ReactNode
 }
 const PageHeader: React.FunctionComponent<Props> = (props:Props) => {
     const navigate = useNavigate();

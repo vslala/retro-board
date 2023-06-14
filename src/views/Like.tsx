@@ -1,17 +1,34 @@
-import React, {useState} from 'react'
-import User from "../../../models/User";
+import React, {useMemo, useState} from 'react'
+import User from "../models/User";
 import {Badge, Card} from "react-bootstrap";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
+import {eventBus, EventRegistry} from "../common";
+import Note from "../models/Note";
 
 interface Props {
-    stickyNoteId: string
+    note: Note
 }
 
 interface State {
     users: User[]
 }
 
+class LikeViewModel {
+    private retroBoardService: RetroBoardService
+
+    constructor() {
+        this.retroBoardService = RetroBoardServiceFactory.getInstance();
+    }
+
+    handleUpvote(note: Note, user: User) {
+        eventBus.publish(EventRegistry.UPVOTE, {user: user, noteId: note.noteId});
+    }
+}
+
 const Like: React.FunctionComponent<Props> = (props) => {
-    const [state, setState] = useState<State>({users: []});
+    const vm = useMemo(() => new LikeViewModel(), []);
+    const [state, setState] = useState<State>({users: props.note.likedBy});
 
     const handleUpVote = (e: any) => {
         e.preventDefault()
@@ -22,6 +39,7 @@ const Like: React.FunctionComponent<Props> = (props) => {
         if (user) {
             const newUsers = [...state.users, user];
             console.log("New Users: ",newUsers);
+            vm.handleUpvote(props.note, user);
             setState({users: newUsers});
         }
     }

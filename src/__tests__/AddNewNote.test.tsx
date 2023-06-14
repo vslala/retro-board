@@ -1,7 +1,7 @@
 import React from 'react'
 import '../setupTests'
 import {fireEvent, render, RenderResult} from "@testing-library/react";
-import AddNewNote from "../views/dumb/boards/AddNewNote";
+import AddNewNote from "../views/AddNewNote";
 
 describe('AddNewNote test suite', () => {
 

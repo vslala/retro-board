@@ -1,9 +1,9 @@
 import * as React from 'react';
 import {Col, Row} from "react-bootstrap";
-import TeamCard from "../views/dumb/teams/TeamCard";
+import TeamCard from "../views/TeamCard";
 import User from "../models/User";
 import Team, {ITeam} from "../models/Team";
-import CreateNewTeam from "../views/dumb/teams/CreateNewTeam";
+import CreateNewTeam from "../views/CreateNewTeam";
 import TeamsServiceV1 from "../service/Teams/TeamsServiceV1";
 
 interface Props {

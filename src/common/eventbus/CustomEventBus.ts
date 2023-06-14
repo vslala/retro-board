@@ -18,11 +18,15 @@ class CustomEventBus {
     }
 
     public publish(topic: string, data: any) {
+        console.log("Event Published To: ", topic, data);
         this.mitt?.emit(topic, data);
     }
 
     public subscribe(topic: string, callback: (data: any) => void) {
-        this.mitt?.on(topic, callback);
+        console.log("Subscribing to: ", topic);
+        this.mitt?.on(topic, async (data) => {
+            callback(await data);
+        });
     }
 
     public unsubscribe(topic: string, callback: (data: any) => void) {

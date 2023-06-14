@@ -1,38 +1,39 @@
-import React, {FunctionComponent, useEffect, useState} from 'react'
-import RetroBoard from "../../../models/RetroBoard";
+import React, {FunctionComponent, useEffect, useMemo, useState} from 'react'
+import RetroBoard from "../models/RetroBoard";
 import Card from "react-bootstrap/Card";
 import {Row, Spinner} from 'react-bootstrap';
 import Col from "react-bootstrap/Col";
 import {Link} from "react-router-dom";
-import Firebase from "../../../service/Firebase";
+import Firebase from "../service/Firebase";
 import Button from "react-bootstrap/Button";
-import {RetroBoardService} from "../../../service/RetroBoard/RetroBoardService";
+import {RetroBoardService} from "../service/RetroBoard/RetroBoardService";
+import MyBoardsViewModel from "../viewmodel/MyBoardsViewModel";
 
 interface Props {
     retroBoardService: RetroBoardService
 }
 
 const MyBoards: FunctionComponent<Props> = ({retroBoardService}) => {
-
+    const vm = useMemo(() => new MyBoardsViewModel(), []);
     const [boards, setBoards] = useState<RetroBoard[]>([])
     const [loader, setLoader] = useState<boolean>(false)
 
 
     useEffect(() => {
         async function _getMyBoards() {
-            let myBoards = await retroBoardService.getMyBoards()
+            let myBoards = await vm.getMyBoards();
             setBoards(myBoards)
         }
-        
+
         _getMyBoards().catch((e) => console.log("User not logged In!", e));
     }, [retroBoardService])
 
-    const handleDelete = (board: RetroBoard) => {
+    const handleDelete = async (board: RetroBoard) => {
         setLoader(true)
-        retroBoardService.deleteBoard(board).then(boardId => {
-            setLoader(false)
-            setBoards(boards.filter(board => board.id !== boardId))
-        }).catch(e => {console.log("Error deleting board! ", e); setLoader(false)})
+        let retroBoardId = await vm.deleteBoard(board);
+
+        setLoader(false);
+        setBoards(boards.filter(board => board.id !== retroBoardId));
     }
 
     return <>

@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {useState} from 'react'
 import {Alert, Button, Form, FormGroup, Modal, ProgressBar} from "react-bootstrap";
-import {ITeam} from "../../models/Team";
+import {ITeam} from "../models/Team";
 
 interface Props {
     teams: Array<ITeam>

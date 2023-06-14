@@ -1,17 +1,17 @@
 import React, {useEffect, useMemo, useState} from 'react'
-import StickyNote from "./StickyNote";
-import AddNewNote from "../../dumb/boards/AddNewNote";
+import StickyNote from "../../views/StickyNote";
+import AddNewNote from "../../views/AddNewNote";
 import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
-import Note from "../../../models/Note";
-import Firebase from "../../../service/Firebase";
-import RetroWall from "../../../models/RetroWall";
-import {useDispatch} from "react-redux";
-import {SortType} from "../../../redux/types/RetroBoardActionTypes";
-import RetroBoardActions from "../../../redux/actions/RetroBoardActions";
-import RetroBoardServiceFactory from "../../../service/RetroBoard/RetroBoardServiceFactory";
-import CarouselView from "../../dumb/CarouselView";
-import Notes from "../../../models/Notes";
-import notes from "../../../models/Notes";
+import Note from "../../models/Note";
+import Firebase from "../../service/Firebase";
+import RetroWall from "../../models/RetroWall";
+import {SortType} from "../../redux/types/RetroBoardActionTypes";
+import RetroBoardActions from "../../redux/actions/RetroBoardActions";
+import RetroBoardServiceFactory from "../../service/RetroBoard/RetroBoardServiceFactory";
+import CarouselView from "../../views/CarouselView";
+import Notes from "../../models/Notes";
+import {eventBus, EventRegistry} from "../../common";
+import StickyWallViewModel from "./StickyWallViewModel";
 
 interface State {
     notes: Note[]
@@ -23,12 +23,10 @@ interface Props {
 }
 
 const StickyWall: React.FunctionComponent<Props> = (props) => {
+    const vm = useMemo(() => new StickyWallViewModel(), []);
     const retroBoardActions = new RetroBoardActions();
     const retroBoardService = useMemo(() => RetroBoardServiceFactory.getInstance(), []);
     const [state, setState] = useState<State>({notes: []});
-
-    const dispatch = useDispatch();
-
 
     const addNote = async (note: string) => {
         let retroWall = props.wall;
@@ -39,8 +37,7 @@ const StickyWall: React.FunctionComponent<Props> = (props) => {
         })
         newNote.createdBy = Firebase.getInstance().getLoggedInUser()!.email;
 
-        dispatch(retroBoardActions.createNote(await retroBoardService.addNewNote(newNote)));
-        dispatch(retroBoardActions.sortByVotes());
+        vm.createNewNote(newNote);
     }
 
     const handleDrop = async (e: React.DragEvent<HTMLAnchorElement>, droppedOnNote: Note) => {
@@ -50,8 +47,8 @@ const StickyWall: React.FunctionComponent<Props> = (props) => {
 
         droppedOnNote.noteText += "  " + draggedNote.noteText; // markdown for line-break
 
-        dispatch(retroBoardActions.updateNote(await retroBoardService.updateNote(droppedOnNote)));
-        dispatch(retroBoardActions.deleteNote(await retroBoardService.deleteNote(draggedNote)));
+        vm.updateNote(droppedOnNote);
+        vm.deleteNote(draggedNote);
     }
 
     const handleDragOver = (e: React.DragEvent<HTMLAnchorElement>) => {
@@ -81,16 +78,30 @@ const StickyWall: React.FunctionComponent<Props> = (props) => {
     useEffect(() => {
         const init = async () => {
             const notes: Notes = await retroBoardService.getNotes(props.wall.retroBoardId, props.wall.wallId);
+            console.log("Wall Notes: ", notes);
             setState({notes: notes.notes});
+
             retroBoardService.getDataOnUpdate(props.wall.retroBoardId, props.wall.wallId, async (newNotes) => {
-                console.log("Data Changed!")
+                console.log("Data Changed!");
                 setState({notes: newNotes.notes});
-            })
+            });
+
+            eventBus.subscribe(EventRegistry.SORT_BY_VOTES, (data) => {
+                let sortedNotes = vm.sortByVotes(state.notes);
+                setState({notes: sortedNotes});
+            });
+            // eventBus.subscribe(EventRegistry.CREATE_NOTE, async (newNote: Note) => {
+            //     console.log("New Note:", newNote)
+            //     if (newNote.wallId === props.wall.wallId) {
+            //         setState((prevState) => ({notes: [...prevState.notes, newNote]}));
+            //     }
+            // });
         }
 
         init();
     }, []);
 
+    console.log(state.notes);
     return (
         <section className="sticky-wall text-center">
             <h3>{props.wall.title} </h3>
@@ -112,21 +123,3 @@ const StickyWall: React.FunctionComponent<Props> = (props) => {
 
 
 export default StickyWall;
-
-
-/*
-       // this method is called whenever there is a change in the properties
-       public static getDerivedStateFromProps(props: StickyWallModel, state: State) {
-           if (props.sortCards) {
-               let notes = [...props.stickyNotes]
-               notes = notes.sort((a, b) => {
-                   if (a.likedBy.length > b.likedBy.length)
-                       return -1
-                   if (a.likedBy.length < b.likedBy.length)
-                       return 1
-                   return 0
-               }).slice()
-               return {notes: notes}
-           }
-       }
-   */

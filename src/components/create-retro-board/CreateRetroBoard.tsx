@@ -1,16 +1,35 @@
-import React, {FunctionComponent, useState} from 'react'
+import React, {FunctionComponent, useMemo, useState} from 'react'
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import CreateRetroBoardViewModel from "./CreateRetroBoardViewModel";
+import RetroWalls from "../../models/RetroWalls";
+import {useNavigate} from "react-router-dom";
+import {RETRO_BOARD_STYLES} from "../../models/RetroBoard";
+import RetroWall from "../../models/RetroWall";
+import {TemplateWall} from "../../models/BoardTemplate";
 
 interface Props {
-    title:string
-    onCreateRetroBoard: (retroBoard:{title:string,maxLikes:number}) => void
+    title: string
+    wallTemplates?: Array<TemplateWall>
 }
 
-const CreateRetroBoard: FunctionComponent<Props> = ({onCreateRetroBoard, title}) => {
+const defaultProps: Partial<Props> = {
+    title: "Default Retro Board",
+    wallTemplates: [
+        {wallTitle: "Went Well", wallStyle: RETRO_BOARD_STYLES.wentWell, wallOrder: 1, notes: []},
+        {wallTitle: "To Improve", wallStyle: RETRO_BOARD_STYLES.toImprove, wallOrder: 2, notes: []},
+        {wallTitle: "Action Items", wallStyle: RETRO_BOARD_STYLES.actionItems, wallOrder: 3, notes: []}
+    ]
+};
+
+const CreateRetroBoard: FunctionComponent<Props> = (props) => {
+    const vm = useMemo(() => new CreateRetroBoardViewModel(), []);
+    const navigate = useNavigate();
     const [show, setShow] = useState(false)
     const [formInput, setFormInput] = useState({title: "", maxLikes: 5})
+
+    const mergedProps = { ...defaultProps, ...props }
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -19,18 +38,23 @@ const CreateRetroBoard: FunctionComponent<Props> = ({onCreateRetroBoard, title})
         setFormInput({...formInput, [name]: value})
     }
     const handleCreateRetroBoard = async () => {
-        onCreateRetroBoard(formInput);
+        let retroBoard = await vm.createRetroBoard(formInput);
+        console.log(props);
+        let boardWalls = await vm.createWalls(retroBoard, mergedProps.wallTemplates!);
+
         handleClose();
+
+        navigate(`/retro-board/${retroBoard.userId}/${retroBoard.id}`, {state: {walls: new RetroWalls(boardWalls.walls)}})
     }
-    
+
     return <>
         <Button variant="outline-primary" onClick={handleShow}>
-            {title}
+            {mergedProps.title}
         </Button>
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>{title}</Modal.Title>
+                <Modal.Title>{mergedProps.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
@@ -43,7 +67,7 @@ const CreateRetroBoard: FunctionComponent<Props> = ({onCreateRetroBoard, title})
                     <Form.Group>
                         <Form.Label>Max Likes</Form.Label>
                         <Form.Control name={"maxLikes"} type={"number"} placeholder={"e.g. 5 or 6 "}
-                                      onChange={handleChange("maxLikes")} 
+                                      onChange={handleChange("maxLikes")}
                                       autoComplete={"false"}
                                       value={String(formInput.maxLikes)}/>
                     </Form.Group>

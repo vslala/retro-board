@@ -13,7 +13,7 @@ const UI_HOST_PROD = 'retro.bemyaficionado.com';
 const UI_HOST_GITHUB = 'vslala.github.io';
 
 const PROTOCOL = window.location.protocol + "//";
-const HOST_NAMES:Map<string,string> = new Map<string,string>();
+const HOST_NAMES: Map<string, string> = new Map<string, string>();
 HOST_NAMES.set(UI_HOST_LOCAL, API_HOST_LOCAL);
 HOST_NAMES.set(UI_INET_LOCAL, API_INET_LOCAL);
 HOST_NAMES.set(UI_HOST_TEST, API_HOST_TEST);

@@ -1,14 +1,16 @@
-import React, {ReactNode, useState} from 'react'
+import React, {ReactNode, useEffect, useMemo, useState} from 'react'
 import Card from "react-bootstrap/Card";
-import Editor from "../../dumb/boards/Editor";
-import Like from "../../dumb/boards/Like";
-import User from "../../../models/User";
-import Note from "../../../models/Note";
+import Editor from "./Editor";
+import Like from "./Like";
+import User from "../models/User";
+import Note from "../models/Note";
 import Badge from "react-bootstrap/Badge";
 import Toast from "react-bootstrap/Toast";
-import Firebase from "../../../service/Firebase";
+import Firebase from "../service/Firebase";
 import './sticky-note.css'
-import {eventBus} from "../../../common";
+import StickyNoteViewModel from "../viewmodel/StickyNoteViewModel";
+import {eventBus, EventRegistry} from "../common";
+import RetroBoard from "../models/RetroBoard";
 
 interface State {
     showToast: boolean,
@@ -26,7 +28,7 @@ interface Props {
 
 const StickyNote: React.FunctionComponent<Props> = (props) => {
 
-    eventBus.subscribe("BOARD:WALL:NOTE:LIKE:INCREMENT", (newLikeCount: number) => {});
+    const vm = useMemo(() => new StickyNoteViewModel(), []);
 
     const [state, setState] = useState<State>({
         showToast: false,
@@ -52,7 +54,7 @@ const StickyNote: React.FunctionComponent<Props> = (props) => {
 
     const modifyStickyNote = (modifiedNote: Note) => {
         setState((prevState) => ({...prevState, showEditor: false, noteText: modifiedNote.noteText}));
-        eventBus.publish("BOARD:WALL:NOTE:UPDATE", modifiedNote);
+        vm.updateNoteText(modifiedNote);
     }
 
     const _mergeNoteIfRequired = (note: Note): string | any => {
@@ -75,8 +77,29 @@ const StickyNote: React.FunctionComponent<Props> = (props) => {
     }
 
     const deleteNote = (note:Note) => {
-
+        vm.deleteNote(note);
     }
+
+    useEffect(() => {
+        eventBus.subscribe(EventRegistry.CHANGE_BLUR_ON, (board: RetroBoard) => {
+            setState((prevState) => ({...prevState, blur: board.blur}))
+        });
+        eventBus.subscribe(EventRegistry.CHANGE_BLUR_OFF, (board: RetroBoard) => {
+            setState((prevState) => ({...prevState, blur: board.blur}))
+        });
+        eventBus.subscribe(EventRegistry.UPVOTE, (data) => {
+            console.log("Upvote Received!");
+            vm.handleUpvote(props.note, data.user);
+            setState((prevState) => {
+                if (prevState.likedBy !== undefined) {
+                    const newLikedBy = [...prevState.likedBy, data.user];
+                    return {...prevState, likedBy: newLikedBy};
+                } else {
+                    return {...prevState, likedBy: [data.user]}
+                }
+            });
+        })
+    }, []);
 
     let note = props.note
     let cardBodyContent = _mergeNoteIfRequired(note)
@@ -102,7 +125,7 @@ const StickyNote: React.FunctionComponent<Props> = (props) => {
             <ul className={"list-inline pull-right"} style={{position: 'absolute', right: "5px", bottom: "0px"}}>
                 <li className="list-inline-item">
                     <Like key={`like_note.noteId`}
-                          stickyNoteId={note.noteId}
+                          note={note}
                     />
                 </li>
                 <li className={"list-inline-item"}>

@@ -1,8 +1,8 @@
 import * as React from 'react'
 import {FunctionComponent, useState} from 'react'
 import {Button, FormControl, Modal} from "react-bootstrap";
-import Team, {ITeam} from "../../../models/Team";
-import Firebase from "../../../service/Firebase";
+import Team, {ITeam} from "../models/Team";
+import Firebase from "../service/Firebase";
 
 interface Props {
     createTeam: (team: ITeam) => void

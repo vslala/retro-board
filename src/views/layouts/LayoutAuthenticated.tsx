@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import {Navigate, useLocation} from "react-router-dom";
-import Firebase from "../../../service/Firebase";
+import Firebase from "../../service/Firebase";
 import Container from "react-bootstrap/Container";
 import PageFooter from "../PageFooter";
 import PageHeader from "../PageHeader";

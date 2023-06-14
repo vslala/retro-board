@@ -1,23 +1,15 @@
 import RetroBoard from "../models/RetroBoard";
-import React from "react";
-import {TypedUseSelectorHook, useDispatch} from "react-redux";
-import RetroBoardState from "../redux/reducers/RetroBoardState";
-import {useSelector as useReduxSelector} from "react-redux/es/hooks/useSelector";
-import RetroBoardServiceFactory from "../service/RetroBoard/RetroBoardServiceFactory";
-import RetroBoardActions from "../redux/actions/RetroBoardActions";
+import React, {useMemo} from "react";
 import Firebase from "../service/Firebase";
 import {Form, InputGroup} from "react-bootstrap";
+import BlurToggleViewModel from "../viewmodel/BlurToggleViewModel";
 
 interface Props {
     retroBoard: RetroBoard
 }
 
 const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
-    const useSelector: TypedUseSelectorHook<RetroBoardState> = useReduxSelector
-    const retroBoardState = useSelector(state => state)
-    const retroBoardService = RetroBoardServiceFactory.getInstance();
-    const retroBoardActions = new RetroBoardActions()
-    const dispatch = useDispatch()
+    const vm = useMemo(() => new BlurToggleViewModel(), [])
 
     // if the board is not created by the logged in user
     // then do not show the blur feature
@@ -27,10 +19,7 @@ const BlurToggle: React.FunctionComponent<Props> = (props: Props) => {
 
     const handleChange = async (val: "on" | "off") => {
         console.log("Value: ", val)
-
-        let retroBoard: RetroBoard = {...retroBoardState.retroBoard}
-        retroBoard.blur = val
-        dispatch(retroBoardActions.createRetroBoard(await retroBoardService.updateRetroBoard(retroBoard)))
+        let updatedBoard = vm.updateBoardBlur(props.retroBoard, val);
     }
 
     let isChecked = props.retroBoard.blur === "on" ? true : false;
